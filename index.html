@@ -37,7 +37,7 @@
 
     <!-- Load External JS Data -->
     <script src="data.js"></script>
-    <h1>Pham Dong Ha</h1>
+    <h1>Pham Dong Ha1</h1>
     <script>
         function displayTree(data) {
             const treeDiv = document.getElementById("tree");
@@ -52,6 +52,7 @@
                 if (!generations[generation]) generations[generation] = [];
                 generations[generation].push({ name, birthdate, sex });
             });
+            <h1>Pham Dong Ha2</h1>
 
             Object.keys(generations).sort((a, b) => a - b).forEach(gen => {
                 let genDiv = document.createElement("div");
