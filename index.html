@@ -52,7 +52,7 @@
                 if (!generations[generation]) generations[generation] = [];
                 generations[generation].push({ name, birthdate, sex });
             });
-            <h1>Pham Dong Ha2</h1>
+            
 
             Object.keys(generations).sort((a, b) => a - b).forEach(gen => {
                 let genDiv = document.createElement("div");
@@ -68,6 +68,7 @@
                 treeDiv.appendChild(genDiv);
             });
         }
+        <h1>Pham Dong Ha2</h1>
 
         // Run when the script loads
         displayTree(familyData);
