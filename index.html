@@ -16,38 +16,72 @@
 </head>
 <body>
     <h2>Family Tree - First 3 Generations</h2>
-    <svg id="tree" width="1200" height="600"></svg>
+    <svg id="tree" width="1800" height="800"></svg> <!-- Increased width and height -->
     
     <script>
         function buildTree(data) {
             const svg = document.getElementById("tree");
             const filteredData = data.filter(p => p.Generation <= 3);
-            const width = 1200;
-            const height = 600;
+            const width = 1800; // Wider to accommodate spacing
+            const height = 800; // Taller for staggering
             const genHeight = height / 3;
 
-            // Organize nodes by generation and calculate positions
+            // Organize nodes by generation
             const nodesByGen = [[], [], []]; // Gen 1, 2, 3
             filteredData.forEach(person => {
                 nodesByGen[person.Generation - 1].push(person);
             });
 
             const nodes = [];
-            nodesByGen.forEach((gen, genIndex) => {
-                const y = genIndex * genHeight + genHeight / 2;
-                const xSpacing = width / (gen.length + 1);
-                gen.forEach((person, i) => {
-                    const x = (i + 1) * xSpacing;
-                    nodes.push({ ...person, x, y });
-                });
+            // Generation 1: Simple spacing
+            let gen1Y = genHeight / 2;
+            let gen1Spacing = width / (nodesByGen[0].length + 1);
+            nodesByGen[0].forEach((person, i) => {
+                const x = (i + 1) * gen1Spacing;
+                nodes.push({ ...person, x, y: gen1Y });
             });
 
-            // Draw links (parent-child to first wife, spouse links)
+            // Generation 2: Group couples with spacing between groups
+            let gen2Y = genHeight + genHeight / 2;
+            const coupleWidth = 150; // Width for husband + 2 wives
+            const coupleSpacing = 100; // Space between couples
+            let currentX = 50; // Start with padding
+            const gen2Males = nodesByGen[1].filter(p => p.Sex === "M" && !p.PersonCode.includes("w"));
+            gen2Males.forEach(male => {
+                // Husband
+                nodes.push({ ...male, x: currentX, y: gen2Y });
+                // Wife 1
+                const w1 = nodesByGen[1].find(p => p.PersonCode === `${male.PersonCode}w1`);
+                if (w1) nodes.push({ ...w1, x: currentX + 50, y: gen2Y });
+                // Wife 2
+                const w2 = nodesByGen[1].find(p => p.PersonCode === `${male.PersonCode}w2`);
+                if (w2) nodes.push({ ...w2, x: currentX + 100, y: gen2Y });
+                currentX += coupleWidth + coupleSpacing; // Move to next couple
+            });
+            // Add Gen 2 females without husbands (e.g., Mary, Ellen)
+            const gen2Extras = nodesByGen[1].filter(p => p.Sex === "F" && !p.PersonCode.includes("w"));
+            gen2Extras.forEach((person, i) => {
+                nodes.push({ ...person, x: currentX + i * 100, y: gen2Y });
+            });
+
+            // Generation 3: Spread out with slight staggering
+            const gen3BaseY = 2 * genHeight + genHeight / 4; // Start higher in Gen 3 band
+            const gen3Spacing = width / (nodesByGen[2].length + 1);
+            let gen3X = gen3Spacing;
+            nodesByGen[2].forEach((person, i) => {
+                const fatherCode = person.Goc ? person.Goc.replace("#", "") : null;
+                const mother = fatherCode ? nodes.find(n => n.PersonCode === `${fatherCode}w1`) : null;
+                const yOffset = mother ? (i % 3) * 40 : 0; // Stagger every 3 nodes
+                const y = gen3BaseY + yOffset;
+                nodes.push({ ...person, x: gen3X, y });
+                gen3X += gen3Spacing; // Wider spacing
+            });
+
+            // Draw links
             nodes.forEach(node => {
-                // Parent-child link (to mother, assumed as first wife)
                 if (node.Goc) {
                     const fatherCode = node.Goc.replace("#", "");
-                    const mother = nodes.find(n => n.PersonCode === `${fatherCode}w1`); // Default to first wife
+                    const mother = nodes.find(n => n.PersonCode === `${fatherCode}w1`);
                     if (mother) {
                         const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
                         line.setAttribute("x1", mother.x);
@@ -58,7 +92,6 @@
                         svg.appendChild(line);
                     }
                 }
-                // Spouse link (horizontal)
                 if (node.Sex === "M" && !node.PersonCode.includes("w")) {
                     const spouse1 = nodes.find(s => s.PersonCode === `${node.PersonCode}w1`);
                     const spouse2 = nodes.find(s => s.PersonCode === `${node.PersonCode}w2`);
