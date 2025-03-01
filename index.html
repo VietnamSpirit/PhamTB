@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Family Tree - SVG & Vanilla JS</title>
+     <script src="data.js"></script>
     <style>
         body { font-family: Arial, sans-serif; }
         svg { border: 1px solid #ccc; }
@@ -16,10 +17,8 @@
 <body>
     <h2>Family Tree - First 3 Generations</h2>
     <svg id="tree" width="1200" height="600"></svg>
-    <script src="data.js"></script>
+   
     <script>
-        
-
         function buildTree(data) {
             const svg = document.getElementById("tree");
             const filteredData = data.filter(p => p.Generation <= 3);
