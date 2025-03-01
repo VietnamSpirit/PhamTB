@@ -4,75 +4,115 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Family Tree</title>
+    <script src="data.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-        }
-        .tree-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-        }
-        .node {
-            display: inline-block;
-            padding: 10px;
-            margin: 5px;
-            border: 2px solid;
-            text-align: center;
-            min-width: 100px;
-            position: relative;
-            background: white;
-        }
-        .male { border-color: blue; }
-        .female { border-color: pink; border-radius: 50%; }
-        .generation { display: flex; justify-content: center; margin-top: 20px; position: relative; }
+        body { font-family: Arial, sans-serif; }
+        .tree-container { text-align: center; }
+        .node rect { fill: white; stroke-width: 2px; }
+        .node circle { fill: white; stroke-width: 2px; }
+        .male { stroke: blue; }
+        .female { stroke: pink; }
+        .spouse { fill: gray; stroke: orange; }
+        .link { fill: none; stroke: black; stroke-width: 1.5px; }
+        .curve { fill: none; stroke: black; stroke-width: 1.5px; }
+        .tabs { margin-bottom: 10px; }
+        .tab { display: inline-block; padding: 5px 15px; cursor: pointer; border: 1px solid black; background: lightgray; }
+        .tab.active { background: gray; color: white; }
     </style>
 </head>
 <body>
-    <h1>Family Tree</h1>
+    <div class="tabs" id="tabs"></div>
     <div id="tree" class="tree-container"></div>
     
-
-    <!-- Load External JS Data -->
-    <script src="data.js"></script>
-    <h1>Pham Dong Ha1</h1>
     <script>
-        function displayTree(data) {
-            const treeDiv = document.getElementById("tree");
-            treeDiv.innerHTML = "";
+        let data = [];
 
-            let generations = {};
+        function loadData() {
+            if (typeof window.data !== 'undefined') {
+                data = window.data;
+                createTabs();
+                buildTree(1);
+            } else {
+                console.error("Data is not loaded correctly. Make sure data.js is included and correctly defines the 'data' variable.");
+            }
+        }
 
-            data.forEach(person => {
-                let { RealName: name, Birthdate: birthdate, Sex: sex, Generation: generation } = person;
-                if (!name || !generation) return;
-
-                if (!generations[generation]) generations[generation] = [];
-                generations[generation].push({ name, birthdate, sex });
-            });
+        function buildTree(genStart) {
+            d3.select("#tree").html("");
+            const dataFiltered = data.filter(d => d.Generation >= genStart && d.Generation < genStart + 4);
+            const width = 1200, height = 600;
+            const svg = d3.select("#tree").append("svg").attr("width", width).attr("height", height);
             
+            const simulation = d3.forceSimulation(dataFiltered)
+                .force("charge", d3.forceManyBody().strength(-100))
+                .force("link", d3.forceLink().id(d => d.PersonCode))
+                .force("center", d3.forceCenter(width / 2, height / 2));
+            
+            const links = svg.selectAll(".link")
+                .data(dataFiltered)
+                .enter().append("line")
+                .attr("class", "link");
 
-            Object.keys(generations).sort((a, b) => a - b).forEach(gen => {
-                let genDiv = document.createElement("div");
-                genDiv.className = "generation";
-                
-                generations[gen].forEach(person => {
-                    let nodeDiv = document.createElement("div");
-                    nodeDiv.className = "node " + (person.sex === "M" ? "male" : "female");
-                    nodeDiv.innerHTML = `${person.name} (b. ${person.birthdate})`;
-                    genDiv.appendChild(nodeDiv);
-                });
-                
-                treeDiv.appendChild(genDiv);
+            const nodes = svg.selectAll(".node")
+                .data(dataFiltered)
+                .enter().append("g")
+                .attr("class", "node");
+
+            nodes.append(d => {
+                if (d.Sex === "M") {
+                    return document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                } else {
+                    return document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                }
+            })
+            .attr("class", d => d.Sex === "M" ? "male" : "female")
+            .attr("r", d => d.Sex === "F" ? 20 : 0)
+            .attr("width", d => d.Sex === "M" ? 40 : 0)
+            .attr("height", d => d.Sex === "M" ? 40 : 0)
+            .attr("fill", d => d.Goc ? "gray" : "white")
+            .attr("stroke", d => d.Goc ? "orange" : d.Sex === "M" ? "blue" : "pink");
+            
+            nodes.append("text")
+                .attr("dy", 5)
+                .attr("dx", -20)
+                .text(d => d["Real Name"]);
+            
+            nodes.append("a")
+                .attr("href", d => d.Goc ? d.Goc : "#")
+                .append("text")
+                .attr("dy", 20)
+                .attr("dx", -20)
+                .attr("fill", "blue")
+                .text("Goc");
+            
+            simulation.on("tick", () => {
+                nodes.attr("transform", d => `translate(${d.x},${d.y})`);
+                links.attr("x1", d => d.x)
+                    .attr("y1", d => d.y)
+                    .attr("x2", d => d.x)
+                    .attr("y2", d => d.y);
             });
         }
         
-
-        // Run when the script loads
-        displayTree(familyData);
+        function createTabs() {
+            const generations = [...new Set(data.map(d => d.Generation))];
+            const tabsDiv = d3.select("#tabs");
+            generations.forEach((gen, i) => {
+                if (i % 4 === 0) {
+                    tabsDiv.append("div")
+                        .attr("class", "tab")
+                        .text(`Generations ${gen}-${gen+3}`)
+                        .on("click", () => {
+                            d3.selectAll(".tab").classed("active", false);
+                            d3.select(event.target).classed("active", true);
+                            buildTree(gen);
+                        });
+                }
+            });
+        }
+        
+        window.onload = loadData;
     </script>
-    <h1>Pham Dong Ha2</h1>
 </body>
 </html>
