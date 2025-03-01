@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Family Tree - SVG & Vanilla JS</title>
-     <script src="data.js"></script>
+    <script src="data.js"></script>
     <style>
         body { font-family: Arial, sans-serif; }
         svg { border: 1px solid #ccc; }
@@ -17,7 +17,7 @@
 <body>
     <h2>Family Tree - First 3 Generations</h2>
     <svg id="tree" width="1200" height="600"></svg>
-   
+    
     <script>
         function buildTree(data) {
             const svg = document.getElementById("tree");
@@ -42,17 +42,18 @@
                 });
             });
 
-            // Draw links (parent-child to mother, spouse links)
+            // Draw links (parent-child to first wife, spouse links)
             nodes.forEach(node => {
-                // Parent-child link (to mother)
-                if (node.Mother) {
-                    const mother = nodes.find(n => n.PersonCode === node.Mother);
+                // Parent-child link (to mother, assumed as first wife)
+                if (node.Goc) {
+                    const fatherCode = node.Goc.replace("#", "");
+                    const mother = nodes.find(n => n.PersonCode === `${fatherCode}w1`); // Default to first wife
                     if (mother) {
                         const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
                         line.setAttribute("x1", mother.x);
-                        line.setAttribute("y1", mother.y + 20); // Bottom of mother node
+                        line.setAttribute("y1", mother.y + 20);
                         line.setAttribute("x2", node.x);
-                        line.setAttribute("y2", node.y - 30); // Top of child node
+                        line.setAttribute("y2", node.y - 30);
                         line.setAttribute("class", "link");
                         svg.appendChild(line);
                     }
@@ -87,7 +88,6 @@
                 const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
                 g.setAttribute("transform", `translate(${node.x},${node.y})`);
 
-                // Shape
                 const shape = document.createElementNS("http://www.w3.org/2000/svg", node.Sex === "M" ? "rect" : "circle");
                 shape.setAttribute("class", node.Sex === "M" ? "male" : "female");
                 if (node.Sex === "M") {
@@ -100,10 +100,8 @@
                 }
                 g.appendChild(shape);
 
-                // Text (include Mother if present)
-                const motherText = node.Mother ? `<tspan x="0" dy="12">Mother: ${nodes.find(n => n.PersonCode === node.Mother)?.["Real Name"] || node.Mother}</tspan>` : "";
                 const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                text.innerHTML = `${node["Real Name"]}<tspan x="0" dy="12">Born: ${node.Birthdate}</tspan><tspan x="0" dy="12">Died: ${node["Death Date"]}</tspan><tspan x="0" dy="12">ID: ${node.PersonCode}</tspan>${motherText}`;
+                text.innerHTML = `${node["Real Name"]}<tspan x="0" dy="12">Born: ${node.Birthdate}</tspan><tspan x="0" dy="12">Died: ${node["Death Date"]}</tspan><tspan x="0" dy="12">ID: ${node.PersonCode}</tspan>`;
                 text.setAttribute("y", node.Sex === "M" ? -25 : -30);
                 g.appendChild(text);
 
@@ -111,7 +109,14 @@
             });
         }
 
-        window.onload = () => buildTree(datajs);
+        window.onload = () => {
+            if (typeof datajs === "undefined") {
+                console.error("Error: datajs is not defined. Check if data.js is loaded correctly.");
+                document.body.innerHTML += "<p>Error: Could not load family tree data.</p>";
+            } else {
+                buildTree(datajs);
+            }
+        };
     </script>
 </body>
 </html>
