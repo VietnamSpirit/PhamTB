@@ -5,35 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Family Tree</title>
     <script src="data.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/treant-js/1.0/Treant.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/treant-js/1.0/Treant.css">
     <style>
         body { font-family: Arial, sans-serif; }
-        .tree-container { display: flex; justify-content: center; align-items: center; flex-direction: column; }
-        .tree ul {
-            padding-top: 20px; position: relative;
-            transition: all 0.5s;
-            display: flex; justify-content: center;
-        }
-        .tree li {
-            list-style-type: none; position: relative;
-            padding: 20px; text-align: center;
-        }
-        .tree li::before, .tree li::after {
-            content: ''; position: absolute; top: 0; left: 50%;
-            border-top: 1px solid black; width: 50%; height: 20px;
-        }
-        .tree li::after {
-            left: auto; right: 50%;
-        }
-        .tree li:only-child::after, .tree li:only-child::before {
-            display: none;
-        }
-        .tree li:only-child { padding-top: 0; }
-        .tree li div {
-            border: 1px solid black; padding: 10px;
-            display: inline-block; background: white;
-        }
-        .male { border: 2px solid blue; }
-        .female { border: 2px solid pink; border-radius: 50%; }
+        .tree-container { width: 100%; height: 600px; display: flex; justify-content: center; align-items: center; }
     </style>
 </head>
 <body>
@@ -54,24 +30,38 @@
         }
 
         function buildTree(data) {
-            const treeContainer = document.getElementById("tree");
-            treeContainer.innerHTML = createTreeHTML(data, null);
-        }
-
-        function createTreeHTML(data, parentCode) {
-            let children = data.filter(person => person.Goc && person.Goc.replace('#', '') === parentCode);
-            if (children.length === 0) return "";
+            let nodes = {};
             
-            let html = "<ul>";
-            children.forEach(person => {
-                let genderClass = person.Sex === "M" ? "male" : "female";
-                html += `<li>
-                            <div class="${genderClass}">${person["Real Name"]}</div>
-                            ${createTreeHTML(data, person.PersonCode)}
-                         </li>`;
+            data.forEach(person => {
+                nodes[person.PersonCode] = {
+                    text: { name: person["Real Name"] },
+                    HTMLclass: person.Sex === "M" ? "male" : "female"
+                };
             });
-            html += "</ul>";
-            return html;
+            
+            data.forEach(person => {
+                if (person.Goc) {
+                    let parentCode = person.Goc.replace('#', '');
+                    if (nodes[parentCode]) {
+                        nodes[person.PersonCode].parent = nodes[parentCode];
+                    }
+                }
+            });
+            
+            let chartConfig = {
+                chart: {
+                    container: "#tree",
+                    levelSeparation: 30,
+                    siblingSeparation: 15,
+                    subTeeSeparation: 25,
+                    nodeAlign: "BOTTOM",
+                    connectors: { type: "step" },
+                    node: { HTMLclass: "node" }
+                },
+                nodeStructure: Object.values(nodes).find(n => !n.parent)
+            };
+            
+            new Treant(chartConfig);
         }
         
         window.onload = loadData;
