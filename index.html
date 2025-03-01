@@ -4,22 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Family Tree</title>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="data.js"></script> <!-- Ensure this points to your data.js file -->
+    <script src="data.js"></script>
     <style>
         body { font-family: Arial, sans-serif; }
-        .tree-container { text-align: center; }
-        .node rect { fill: white; stroke-width: 2px; }
-        .node circle { fill: white; stroke-width: 2px; }
-        .male { stroke: blue; }
-        .female { stroke: pink; }
-        .link { fill: none; stroke: black; stroke-width: 1.5px; }
-        .node text { font-size: 12px; }
-        .info-text { font-size: 10px; fill: #555; }
+        .tree-container { display: flex; justify-content: center; align-items: center; flex-direction: column; }
+        .tree ul {
+            padding-top: 20px; position: relative;
+            transition: all 0.5s;
+            display: flex; justify-content: center;
+        }
+        .tree li {
+            list-style-type: none; position: relative;
+            padding: 20px; text-align: center;
+        }
+        .tree li::before, .tree li::after {
+            content: ''; position: absolute; top: 0; left: 50%;
+            border-top: 1px solid black; width: 50%; height: 20px;
+        }
+        .tree li::after {
+            left: auto; right: 50%;
+        }
+        .tree li:only-child::after, .tree li:only-child::before {
+            display: none;
+        }
+        .tree li:only-child { padding-top: 0; }
+        .tree li div {
+            border: 1px solid black; padding: 10px;
+            display: inline-block; background: white;
+        }
+        .male { border: 2px solid blue; }
+        .female { border: 2px solid pink; border-radius: 50%; }
     </style>
 </head>
 <body>
-    <h2>Family Tree - First 3 Generations</h2>
+    <h2 style="text-align: center;">Family Tree - First 3 Generations</h2>
     <div id="tree" class="tree-container"></div>
     
     <script>
@@ -36,122 +54,26 @@
         }
 
         function buildTree(data) {
-            d3.select("#tree").html("");
-            const width = 1200, height = 600;
-            const svg = d3.select("#tree").append("svg")
-                .attr("width", width)
-                .attr("height", height)
-                .append("g")
-                .attr("transform", "translate(0, 20)");
-
-            // Separate primary nodes (with Goc or root) and spouses
-            const primaryNodes = data.filter(d => !d.PersonCode.includes("w") || d.Goc); // Exclude spouses unless they have a Goc
-            const spouseNodes = data.filter(d => d.PersonCode.includes("w") && !d.Goc); // Spouses with no Goc
-
-            // Stratify only primary nodes
-            const stratify = d3.stratify()
-                .id(d => d.PersonCode)
-                .parentId(d => d.Goc ? d.Goc.replace("#", "") : null);
-
-            let rootData;
-            try {
-                rootData = stratify(primaryNodes);
-            } catch (e) {
-                console.error("Stratify error:", e);
-                return;
-            }
-
-            // Create tree layout
-            const treeLayout = d3.tree()
-                .size([width - 40, height - 40])
-                .separation((a, b) => (a.parent === b.parent ? 1 : 2));
-
-            const treeData = treeLayout(rootData);
-
-            // Adjust y-positions by generation
-            const generationHeight = (height - 40) / 3;
-            treeData.each(d => {
-                d.y = (d.depth * generationHeight);
-            });
-
-            // Add spouse nodes manually
-            const allNodes = treeData.descendants().slice(); // Copy primary nodes
-            const spouseMap = new Map();
-            primaryNodes.forEach(d => {
-                if (d.Sex === "M") {
-                    const spouse1 = spouseNodes.find(s => s.PersonCode === `${d.PersonCode}w1`);
-                    const spouse2 = spouseNodes.find(s => s.PersonCode === `${d.PersonCode}w2`);
-                    if (spouse1) spouseMap.set(spouse1.PersonCode, d.PersonCode);
-                    if (spouse2) spouseMap.set(spouse2.PersonCode, d.PersonCode);
-                }
-            });
-
-            spouseNodes.forEach(spouse => {
-                const partner = allNodes.find(n => n.data.PersonCode === spouseMap.get(spouse.PersonCode));
-                if (partner) {
-                    allNodes.push({
-                        data: spouse,
-                        x: partner.x + 50, // Position spouse to the right
-                        y: partner.y,
-                        depth: partner.depth
-                    });
-                }
-            });
-
-            // Draw links (only for primary hierarchy)
-            const linkGenerator = d3.linkVertical()
-                .x(d => d.x)
-                .y(d => d.y);
-
-            svg.selectAll(".link")
-                .data(treeData.links())
-                .enter().append("path")
-                .attr("class", "link")
-                .attr("d", linkGenerator);
-
-            // Draw all nodes (primary + spouses)
-            const nodes = svg.selectAll(".node")
-                .data(allNodes)
-                .enter().append("g")
-                .attr("class", "node")
-                .attr("transform", d => `translate(${d.x},${d.y})`);
-
-            nodes.append(d => {
-                return document.createElementNS("http://www.w3.org/2000/svg", d.data.Sex === "M" ? "rect" : "circle");
-            })
-            .attr("class", d => d.data.Sex === "M" ? "male" : "female")
-            .attr("r", d => d.data.Sex === "F" ? 20 : 0)
-            .attr("width", d => d.data.Sex === "M" ? 40 : 0)
-            .attr("height", d => d.data.Sex === "M" ? 40 : 0)
-            .attr("x", d => d.data.Sex === "M" ? -20 : 0)
-            .attr("y", d => d.data.Sex === "M" ? -20 : 0)
-            .attr("fill", d => d.data.Goc ? "gray" : "white")
-            .attr("stroke", d => d.data.Sex === "M" ? "blue" : "pink");
-
-            nodes.append("text")
-                .attr("dy", d => d.data.Sex === "M" ? -25 : -25)
-                .attr("text-anchor", "middle")
-                .text(d => d.data["Real Name"]);
-
-            nodes.append("text")
-                .attr("class", "info-text")
-                .attr("dy", d => d.data.Sex === "M" ? 25 : 30)
-                .attr("text-anchor", "middle")
-                .text(d => `Born: ${d.data.Birthdate}`);
-
-            nodes.append("text")
-                .attr("class", "info-text")
-                .attr("dy", d => d.data.Sex === "M" ? 35 : 40)
-                .attr("text-anchor", "middle")
-                .text(d => `Died: ${d.data["Death Date"]}`);
-
-            nodes.append("text")
-                .attr("class", "info-text")
-                .attr("dy", d => d.data.Sex === "M" ? 45 : 50)
-                .attr("text-anchor", "middle")
-                .text(d => `ID: ${d.data.PersonCode}`);
+            const treeContainer = document.getElementById("tree");
+            treeContainer.innerHTML = createTreeHTML(data, null);
         }
 
+        function createTreeHTML(data, parentCode) {
+            let children = data.filter(person => person.Goc && person.Goc.replace('#', '') === parentCode);
+            if (children.length === 0) return "";
+            
+            let html = "<ul>";
+            children.forEach(person => {
+                let genderClass = person.Sex === "M" ? "male" : "female";
+                html += `<li>
+                            <div class="${genderClass}">${person["Real Name"]}</div>
+                            ${createTreeHTML(data, person.PersonCode)}
+                         </li>`;
+            });
+            html += "</ul>";
+            return html;
+        }
+        
         window.onload = loadData;
     </script>
 </body>
