@@ -11,83 +11,57 @@
         .male { stroke: blue; stroke-width: 2px; fill: white; }
         .female { stroke: pink; stroke-width: 2px; fill: white; }
         .link { stroke: black; stroke-width: 1.5px; }
-        text { font-size: 10px; text-anchor: middle; }
+        text { font-size: 9px; text-anchor: middle; }
+        .tab { display: inline-block; padding: 10px; cursor: pointer; background: #f0f0f0; margin: 5px; }
+        .tab.active { background: #d0d0d0; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        a { fill: blue; text-decoration: underline; }
     </style>
 </head>
 <body>
-    <h2>Family Tree - First 3 Generations</h2>
-    <svg id="tree" width="2000" height="800"></svg> <!-- Wider SVG for Gen 3 -->
+    <h2>Family Tree</h2>
+    <div id="tabs"></div>
+    <div id="tab-contents"></div>
     
     <script>
-        function buildTree(data) {
-            const svg = document.getElementById("tree");
-            const filteredData = data.filter(p => p.Generation <= 3);
-            const width = 2000; // Increased width for more spacing
+        function buildTree(data, svgId, minGen, maxGen) {
+            const svg = document.getElementById(svgId);
+            const filteredData = data.filter(p => p.Generation >= minGen && p.Generation <= maxGen);
+            const width = 2000;
             const height = 800;
-            const genHeight = height / 3;
+            const genHeight = height / (maxGen - minGen + 1);
 
-            // Organize nodes by generation
-            const nodesByGen = [[], [], []]; // Gen 1, 2, 3
+            const nodesByGen = Array(maxGen - minGen + 1).fill().map(() => []);
             filteredData.forEach(person => {
-                nodesByGen[person.Generation - 1].push(person);
+                nodesByGen[person.Generation - minGen].push(person);
             });
 
             const nodes = [];
-            // Generation 1: Simple spacing
-            let gen1Y = genHeight / 2;
-            let gen1Spacing = width / (nodesByGen[0].length + 1);
-            nodesByGen[0].forEach((person, i) => {
-                const x = (i + 1) * gen1Spacing;
-                nodes.push({ ...person, x, y: gen1Y });
+            nodesByGen.forEach((gen, genIndex) => {
+                const y = genIndex * genHeight + genHeight / 2;
+                const coupleWidth = 150;
+                const coupleSpacing = 100;
+                let currentX = 50;
+                const genMales = gen.filter(p => p.Sex === "M" && !p.BranchCode.includes("w"));
+                genMales.forEach(male => {
+                    nodes.push({ ...male, x: currentX, y });
+                    const w1 = gen.find(p => p.BranchCode === `${male.BranchCode}w1`);
+                    if (w1) nodes.push({ ...w1, x: currentX + 50, y });
+                    const w2 = gen.find(p => p.BranchCode === `${male.BranchCode}w2`);
+                    if (w2) nodes.push({ ...w2, x: currentX + 100, y });
+                    currentX += coupleWidth + coupleSpacing;
+                });
+                const genExtras = gen.filter(p => p.Sex === "F" && !p.BranchCode.includes("w"));
+                genExtras.forEach((person, i) => {
+                    nodes.push({ ...person, x: currentX + i * 100, y });
+                });
             });
 
-            // Generation 2: Group couples with spacing
-            let gen2Y = genHeight + genHeight / 2;
-            const coupleWidth = 150; // Width for husband + 2 wives
-            const coupleSpacing = 100; // Space between couples
-            let currentX = 50;
-            const gen2Males = nodesByGen[1].filter(p => p.Sex === "M" && !p.PersonCode.includes("w"));
-            gen2Males.forEach(male => {
-                nodes.push({ ...male, x: currentX, y: gen2Y });
-                const w1 = nodesByGen[1].find(p => p.PersonCode === `${male.PersonCode}w1`);
-                if (w1) nodes.push({ ...w1, x: currentX + 50, y: gen2Y });
-                const w2 = nodesByGen[1].find(p => p.PersonCode === `${male.PersonCode}w2`);
-                if (w2) nodes.push({ ...w2, x: currentX + 100, y: gen2Y });
-                currentX += coupleWidth + coupleSpacing;
-            });
-            const gen2Extras = nodesByGen[1].filter(p => p.Sex === "F" && !p.PersonCode.includes("w"));
-            gen2Extras.forEach((person, i) => {
-                nodes.push({ ...person, x: currentX + i * 100, y: gen2Y });
-            });
-
-            // Generation 3: Group by parent couples with spacing
-            const gen3BaseY = 2 * genHeight + genHeight / 4;
-            const gen3CoupleWidth = 150; // Width for child + 2 wives
-            const gen3CoupleSpacing = 100; // Space between unrelated couples
-            currentX = 50; // Reset X for Gen 3
-            const gen3Males = nodesByGen[2].filter(p => p.Sex === "M" && !p.PersonCode.includes("w"));
-            gen3Males.forEach((male, maleIndex) => {
-                const fatherCode = male.Goc ? male.Goc.replace("#", "") : null;
-                const mother = fatherCode ? nodes.find(n => n.PersonCode === `${fatherCode}w1`) : null;
-                const yOffset = maleIndex % 3 * 40; // Stagger within groups
-                const y = gen3BaseY + yOffset;
-
-                // Male child
-                nodes.push({ ...male, x: currentX, y });
-                // Wife 1
-                const w1 = nodesByGen[2].find(p => p.PersonCode === `${male.PersonCode}w1`);
-                if (w1) nodes.push({ ...w1, x: currentX + 50, y });
-                // Wife 2
-                const w2 = nodesByGen[2].find(p => p.PersonCode === `${male.PersonCode}w2`);
-                if (w2) nodes.push({ ...w2, x: currentX + 100, y });
-                currentX += gen3CoupleWidth + gen3CoupleSpacing; // Space after each couple
-            });
-
-            // Draw links
             nodes.forEach(node => {
                 if (node.Goc) {
                     const fatherCode = node.Goc.replace("#", "");
-                    const mother = nodes.find(n => n.PersonCode === `${fatherCode}w1`);
+                    const mother = nodes.find(n => n.BranchCode === `${fatherCode}w1`);
                     if (mother) {
                         const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
                         line.setAttribute("x1", mother.x);
@@ -98,9 +72,9 @@
                         svg.appendChild(line);
                     }
                 }
-                if (node.Sex === "M" && !node.PersonCode.includes("w")) {
-                    const spouse1 = nodes.find(s => s.PersonCode === `${node.PersonCode}w1`);
-                    const spouse2 = nodes.find(s => s.PersonCode === `${node.PersonCode}w2`);
+                if (node.Sex === "M" && !node.BranchCode.includes("w")) {
+                    const spouse1 = nodes.find(s => s.BranchCode === `${node.BranchCode}w1`);
+                    const spouse2 = nodes.find(s => s.BranchCode === `${node.BranchCode}w2`);
                     if (spouse1) {
                         const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
                         line.setAttribute("x1", node.x + 20);
@@ -122,7 +96,6 @@
                 }
             });
 
-            // Draw nodes
             nodes.forEach(node => {
                 const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
                 g.setAttribute("transform", `translate(${node.x},${node.y})`);
@@ -140,12 +113,100 @@
                 g.appendChild(shape);
 
                 const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                text.innerHTML = `${node["Real Name"]}<tspan x="0" dy="12">Born: ${node.Birthdate}</tspan><tspan x="0" dy="12">Died: ${node["Death Date"]}</tspan><tspan x="0" dy="12">ID: ${node.PersonCode}</tspan>`;
-                text.setAttribute("y", node.Sex === "M" ? -25 : -30);
+                const gocLink = node.Goc ? `<tspan x="0" dy="10"><a xlink:href="#node-${findGreatGreatGrandma(data, node.BranchCode)}" target="_self">Goc: ${node.Goc}</a></tspan>` : '';
+                text.innerHTML = `${node["Real Name"]}<tspan x="0" dy="10">ID: ${node.ID}</tspan><tspan x="0" dy="10">Branch: ${node.BranchCode}</tspan><tspan x="0" dy="10">Born: ${node.Birthyear}</tspan><tspan x="0" dy="10">Died: ${node["Death Date"]}</tspan><tspan x="0" dy="10">Lunar: ${node["Death Date (Vietnamese Lunar)"]}</tspan><tspan x="0" dy="10">Addr: ${node.Address}</tspan>${gocLink}`;
+                text.setAttribute("y", node.Sex === "M" ? -35 : -40);
                 g.appendChild(text);
 
+                g.setAttribute("id", `node-${node.BranchCode}`); // ID for linking
                 svg.appendChild(g);
             });
+        }
+
+        function findGreatGreatGrandma(data, branchCode) {
+            let current = data.find(p => p.BranchCode === branchCode);
+            let steps = 0;
+            while (current && current.Goc && steps < 4) { // Up to great-great-grandma (4 steps back)
+                const fatherCode = current.Goc.replace("#", "");
+                current = data.find(p => p.BranchCode === fatherCode);
+                steps++;
+            }
+            if (steps >= 2 && current) { // At least great-grandparent level
+                const motherCode = `${current.BranchCode}w1`; // Assume first wife
+                return motherCode;
+            }
+            return "man1w1"; // Default to Alice Turner if not found
+        }
+
+        function createTabs() {
+            const tabsDiv = document.getElementById("tabs");
+            const contentsDiv = document.getElementById("tab-contents");
+            
+            // Tab 1: Gen 1-3
+            const tab1 = document.createElement("div");
+            tab1.className = "tab active";
+            tab1.textContent = "Gen 1-3";
+            tab1.onclick = () => switchTab("tab1");
+            tabsDiv.appendChild(tab1);
+
+            const content1 = document.createElement("div");
+            content1.id = "tab1";
+            content1.className = "tab-content active";
+            const svg1 = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            svg1.setAttribute("id", "svg1");
+            svg1.setAttribute("width", "2000");
+            svg1.setAttribute("height", "800");
+            content1.appendChild(svg1);
+            contentsDiv.appendChild(content1);
+            buildTree(datajs, "svg1", 1, 3);
+
+            // Tabs for Gen 3 males
+            const gen3Males = datajs.filter(p => p.Generation === 3 && p.Sex === "M" && !p.BranchCode.includes("w"));
+            gen3Males.forEach((male, index) => {
+                const tabId = `tab${index + 2}`;
+                const tab = document.createElement("div");
+                tab.className = "tab";
+                tab.textContent = `${male["Real Name"]} (${male.BranchCode}) Gen 4-7`;
+                tab.onclick = () => switchTab(tabId);
+                tabsDiv.appendChild(tab);
+
+                const content = document.createElement("div");
+                content.id = tabId;
+                content.className = "tab-content";
+                const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                svg.setAttribute("id", `svg${index + 2}`);
+                svg.setAttribute("width", "2000");
+                svg.setAttribute("height", "800");
+                content.appendChild(svg);
+                contentsDiv.appendChild(content);
+
+                const descendants = getDescendants(datajs, male.BranchCode, 4, 7);
+                buildTree(descendants, `svg${index + 2}`, 4, 7);
+            });
+        }
+
+        function getDescendants(data, branchCode, minGen, maxGen) {
+            const descendants = [];
+            function addDescendant(code) {
+                const person = data.find(p => p.BranchCode === code);
+                if (person && person.Generation >= minGen && person.Generation <= maxGen) {
+                    descendants.push(person);
+                    data.filter(p => p.Goc === `#${code}`).forEach(child => addDescendant(child.BranchCode));
+                    const w1 = data.find(p => p.BranchCode === `${code}w1`);
+                    if (w1) descendants.push(w1);
+                    const w2 = data.find(p => p.BranchCode === `${code}w2`);
+                    if (w2) descendants.push(w2);
+                }
+            }
+            addDescendant(branchCode);
+            return descendants;
+        }
+
+        function switchTab(activeId) {
+            document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+            document.querySelectorAll(".tab-content").forEach(content => content.classList.remove("active"));
+            document.getElementById(activeId).classList.add("active");
+            document.querySelector(`.tab[onclick="switchTab('${activeId}')"]`).classList.add("active");
         }
 
         window.onload = () => {
@@ -153,7 +214,7 @@
                 console.error("Error: datajs is not defined. Check if data.js is loaded correctly.");
                 document.body.innerHTML += "<p>Error: Could not load family tree data.</p>";
             } else {
-                buildTree(datajs);
+                createTabs();
             }
         };
     </script>
