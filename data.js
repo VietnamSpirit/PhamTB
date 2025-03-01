@@ -1,42 +1,41 @@
 const datajs = [
     // Generation 1
-    {"PersonCode": "man1", "Real Name": "Henry Carter", "Birthdate": "01/01/1549", "Death Date": "01/01/1619", "Sex": "M", "Generation": 1},
-    {"PersonCode": "man1w1", "Real Name": "Alice Turner", "Birthdate": "01/01/1551", "Death Date": "01/01/1621", "Sex": "F", "Generation": 1},
-    {"PersonCode": "man1w2", "Real Name": "Jane Foster", "Birthdate": "01/01/1553", "Death Date": "01/01/1623", "Sex": "F", "Generation": 1},
-    
-    // Generation 2 (5 children of man1, split: 3 to man1w1, 2 to man1w2)
-    {"PersonCode": "C1", "Real Name": "Thomas Carter", "Birthdate": "01/01/1567", "Death Date": "01/01/1637", "Sex": "M", "Goc": "#man1", "Mother": "man1w1", "Generation": 2},
-    {"PersonCode": "C2", "Real Name": "William Carter", "Birthdate": "01/01/1567", "Death Date": "01/01/1639", "Sex": "M", "Goc": "#man1", "Mother": "man1w1", "Generation": 2},
-    {"PersonCode": "C3", "Real Name": "Edward Carter", "Birthdate": "01/01/1567", "Death Date": "01/01/1637", "Sex": "M", "Goc": "#man1", "Mother": "man1w1", "Generation": 2},
-    {"PersonCode": "C1g", "Real Name": "Mary Carter", "Birthdate": "01/01/1571", "Death Date": "01/01/1641", "Sex": "F", "Goc": "#man1", "Mother": "man1w2", "Generation": 2},
-    {"PersonCode": "C3g", "Real Name": "Ellen Carter", "Birthdate": "01/01/1571", "Death Date": "01/01/1641", "Sex": "F", "Goc": "#man1", "Mother": "man1w2", "Generation": 2},
-    {"PersonCode": "C1w1", "Real Name": "Sarah Miles", "Birthdate": "01/01/1569", "Death Date": "01/01/1639", "Sex": "F", "Generation": 2},
-    {"PersonCode": "C1w2", "Real Name": "Ellen Gray", "Birthdate": "01/01/1571", "Death Date": "01/01/1641", "Sex": "F", "Generation": 2},
-    {"PersonCode": "C2w1", "Real Name": "Margaret Lee", "Birthdate": "01/01/1569", "Death Date": "01/01/1639", "Sex": "F", "Generation": 2},
-    {"PersonCode": "C2w2", "Real Name": "Rose Evans", "Birthdate": "01/01/1571", "Death Date": "01/01/1641", "Sex": "F", "Generation": 2},
-    {"PersonCode": "C3w1", "Real Name": "Grace Hill", "Birthdate": "01/01/1569", "Death Date": "01/01/1639", "Sex": "F", "Generation": 2},
-    {"PersonCode": "C3w2", "Real Name": "Anne Brooks", "Birthdate": "01/01/1571", "Death Date": "01/01/1641", "Sex": "F", "Generation": 2},
-    
-    // Generation 3 (split children between each father's wives)
-    {"PersonCode": "C1-N1", "Real Name": "Robert Carter", "Birthdate": "01/01/1585", "Death Date": "01/01/1655", "Sex": "M", "Goc": "#C1", "Mother": "C1w1", "Generation": 3},
-    {"PersonCode": "C1-N2", "Real Name": "Samuel Carter", "Birthdate": "01/01/1585", "Death Date": "01/01/1655", "Sex": "M", "Goc": "#C1", "Mother": "C1w2", "Generation": 3},
-    {"PersonCode": "C1-N3", "Real Name": "Charles Carter", "Birthdate": "01/01/1585", "Death Date": "01/01/1655", "Sex": "M", "Goc": "#C1", "Mother": "C1w1", "Generation": 3},
-    {"PersonCode": "C1-N1w1", "Real Name": "Emily Ward", "Birthdate": "01/01/1587", "Death Date": "01/01/1657", "Sex": "F", "Generation": 3},
-    {"PersonCode": "C1-N1w2", "Real Name": "Clara Dean", "Birthdate": "01/01/1589", "Death Date": "01/01/1659", "Sex": "F", "Generation": 3},
-    {"PersonCode": "C1-N2w1", "Real Name": "Hannah Perry", "Birthdate": "01/01/1587", "Death Date": "01/01/1657", "Sex": "F", "Generation": 3},
-    {"PersonCode": "C1-N2w2", "Real Name": "Ruth King", "Birthdate": "01/01/1589", "Death Date": "01/01/1659", "Sex": "F", "Generation": 3},
-    {"PersonCode": "C1-N3w1", "Real Name": "Laura Hayes", "Birthdate": "01/01/1587", "Death Date": "01/01/1657", "Sex": "F", "Generation": 3},
-    {"PersonCode": "C1-N3w2", "Real Name": "Susan Cole", "Birthdate": "01/01/1589", "Death Date": "01/01/1659", "Sex": "F", "Generation": 3},
-    {"PersonCode": "C2-N1", "Real Name": "George Carter", "Birthdate": "01/01/1585", "Death Date": "01/01/1655", "Sex": "M", "Goc": "#C2", "Mother": "C2w1", "Generation": 3},
-    {"PersonCode": "C2-N2", "Real Name": "Arthur Carter", "Birthdate": "01/01/1585", "Death Date": "01/01/1655", "Sex": "M", "Goc": "#C2", "Mother": "C2w2", "Generation": 3},
-    {"PersonCode": "C2-N1w1", "Real Name": "Rachel King", "Birthdate": "01/01/1587", "Death Date": "01/01/1657", "Sex": "F", "Generation": 3},
-    {"PersonCode": "C2-N1w2", "Real Name": "Zoe Parker", "Birthdate": "01/01/1589", "Death Date": "01/01/1659", "Sex": "F", "Generation": 3},
-    {"PersonCode": "C2-N2w1", "Real Name": "Julia Shaw", "Birthdate": "01/01/1587", "Death Date": "01/01/1657", "Sex": "F", "Generation": 3},
-    {"PersonCode": "C2-N2w2", "Real Name": "Eva Ross", "Birthdate": "01/01/1589", "Death Date": "01/01/1659", "Sex": "F", "Generation": 3},
-    {"PersonCode": "C3-N1", "Real Name": "Philip Carter", "Birthdate": "01/01/1585", "Death Date": "01/01/1655", "Sex": "M", "Goc": "#C3", "Mother": "C3w1", "Generation": 3},
-    {"PersonCode": "C3-N2", "Real Name": "John Carter", "Birthdate": "01/01/1585", "Death Date": "01/01/1655", "Sex": "M", "Goc": "#C3", "Mother": "C3w2", "Generation": 3},
-    {"PersonCode": "C3-N1w1", "Real Name": "Lily Ford", "Birthdate": "01/01/1587", "Death Date": "01/01/1657", "Sex": "F", "Generation": 3},
-    {"PersonCode": "C3-N1w2", "Real Name": "Nora Lane", "Birthdate": "01/01/1589", "Death Date": "01/01/1659", "Sex": "F", "Generation": 3},
-    {"PersonCode": "C3-N2w1", "Real Name": "Martha Cole", "Birthdate": "01/01/1587", "Death Date": "01/01/1657", "Sex": "F", "Generation": 3},
-    {"PersonCode": "C3-N2w2", "Real Name": "Grace Hart", "Birthdate": "01/01/1589", "Death Date": "01/01/1659", "Sex": "F", "Generation": 3}
+    {"ID": 1, "BranchCode": "man1", "Real Name": "Henry Carter", "Birthyear": 1549, "Death Date": "01/01/1619", "Death Date (Vietnamese Lunar)": "13/12/1618 Âm lịch", "Sex": "M", "Address": "12 High Street, London", "Note": null, "Goc": null, "Generation": 1},
+    {"ID": 2, "BranchCode": "man1w1", "Real Name": "Alice Turner", "Birthyear": 1551, "Death Date": "01/01/1621", "Death Date (Vietnamese Lunar)": "14/12/1620 Âm lịch", "Sex": "F", "Address": "14 High Street, London", "Note": null, "Goc": null, "Generation": 1},
+    {"ID": 3, "BranchCode": "man1w2", "Real Name": "Jane Foster", "Birthyear": 1553, "Death Date": "01/01/1623", "Death Date (Vietnamese Lunar)": "15/12/1622 Âm lịch", "Sex": "F", "Address": "16 High Street, London", "Note": null, "Goc": null, "Generation": 1},
+
+    // Generation 2
+    {"ID": 4, "BranchCode": "C1", "Real Name": "Thomas Carter", "Birthyear": 1567, "Death Date": "01/01/1637", "Death Date (Vietnamese Lunar)": "13/12/1636 Âm lịch", "Sex": "M", "Address": "5 Market Lane, Bristol", "Note": null, "Goc": "#man1", "Generation": 2},
+    {"ID": 5, "BranchCode": "C1w1", "Real Name": "Sarah Miles", "Birthyear": 1569, "Death Date": "01/01/1639", "Death Date (Vietnamese Lunar)": "14/12/1638 Âm lịch", "Sex": "F", "Address": "7 Market Lane, Bristol", "Note": null, "Goc": null, "Generation": 2},
+    {"ID": 6, "BranchCode": "C1w2", "Real Name": "Ellen Gray", "Birthyear": 1571, "Death Date": "01/01/1641", "Death Date (Vietnamese Lunar)": "15/12/1640 Âm lịch", "Sex": "F", "Address": "9 Market Lane, Bristol", "Note": null, "Goc": null, "Generation": 2},
+    {"ID": 7, "BranchCode": "C2", "Real Name": "William Carter", "Birthyear": 1567, "Death Date": "01/01/1639", "Death Date (Vietnamese Lunar)": "14/12/1638 Âm lịch", "Sex": "M", "Address": "22 Church Road, York", "Note": null, "Goc": "#man1", "Generation": 2},
+    {"ID": 8, "BranchCode": "C2w1", "Real Name": "Margaret Lee", "Birthyear": 1569, "Death Date": "01/01/1639", "Death Date (Vietnamese Lunar)": "14/12/1638 Âm lịch", "Sex": "F", "Address": "24 Church Road, York", "Note": null, "Goc": null, "Generation": 2},
+    {"ID": 9, "BranchCode": "C2w2", "Real Name": "Rose Evans", "Birthyear": 1571, "Death Date": "01/01/1641", "Death Date (Vietnamese Lunar)": "15/12/1640 Âm lịch", "Sex": "F", "Address": "26 Church Road, York", "Note": null, "Goc": null, "Generation": 2},
+    {"ID": 10, "BranchCode": "C3", "Real Name": "Edward Carter", "Birthyear": 1567, "Death Date": "01/01/1637", "Death Date (Vietnamese Lunar)": "13/12/1636 Âm lịch", "Sex": "M", "Address": "3 River Way, Oxford", "Note": null, "Goc": "#man1", "Generation": 2},
+    {"ID": 11, "BranchCode": "C3w1", "Real Name": "Grace Hill", "Birthyear": 1569, "Death Date": "01/01/1639", "Death Date (Vietnamese Lunar)": "14/12/1638 Âm lịch", "Sex": "F", "Address": "5 River Way, Oxford", "Note": null, "Goc": null, "Generation": 2},
+    {"ID": 12, "BranchCode": "C3w2", "Real Name": "Anne Brooks", "Birthyear": 1571, "Death Date": "01/01/1641", "Death Date (Vietnamese Lunar)": "15/12/1640 Âm lịch", "Sex": "F", "Address": "7 River Way, Oxford", "Note": null, "Goc": null, "Generation": 2},
+    {"ID": 13, "BranchCode": "C1g", "Real Name": "Mary Carter", "Birthyear": 1571, "Death Date": "01/01/1641", "Death Date (Vietnamese Lunar)": "15/12/1640 Âm lịch", "Sex": "F", "Address": "10 Bridge Street, London", "Note": null, "Goc": "#man1", "Generation": 2},
+    {"ID": 14, "BranchCode": "C3g", "Real Name": "Ellen Carter", "Birthyear": 1571, "Death Date": "01/01/1641", "Death Date (Vietnamese Lunar)": "15/12/1640 Âm lịch", "Sex": "F", "Address": "15 Bridge Street, London", "Note": null, "Goc": "#man1", "Generation": 2},
+
+    // Generation 3
+    {"ID": 15, "BranchCode": "C1-N1", "Real Name": "Robert Carter", "Birthyear": 1585, "Death Date": "01/01/1655", "Death Date (Vietnamese Lunar)": "14/12/1654 Âm lịch", "Sex": "M", "Address": "20 Elm Street, Bristol", "Note": null, "Goc": "#C1", "Generation": 3},
+    {"ID": 16, "BranchCode": "C1-N1w1", "Real Name": "Emily Ward", "Birthyear": 1587, "Death Date": "01/01/1657", "Death Date (Vietnamese Lunar)": "15/12/1656 Âm lịch", "Sex": "F", "Address": "22 Elm Street, Bristol", "Note": null, "Goc": null, "Generation": 3},
+    {"ID": 17, "BranchCode": "C1-N1w2", "Real Name": "Clara Dean", "Birthyear": 1589, "Death Date": "01/01/1659", "Death Date (Vietnamese Lunar)": "16/12/1658 Âm lịch", "Sex": "F", "Address": "24 Elm Street, Bristol", "Note": null, "Goc": null, "Generation": 3},
+    {"ID": 18, "BranchCode": "C1-N2", "Real Name": "Samuel Carter", "Birthyear": 1585, "Death Date": "01/01/1655", "Death Date (Vietnamese Lunar)": "14/12/1654 Âm lịch", "Sex": "M", "Address": "30 Oak Lane, Bristol", "Note": null, "Goc": "#C1", "Generation": 3},
+    {"ID": 19, "BranchCode": "C1-N2w1", "Real Name": "Hannah Perry", "Birthyear": 1587, "Death Date": "01/01/1657", "Death Date (Vietnamese Lunar)": "15/12/1656 Âm lịch", "Sex": "F", "Address": "32 Oak Lane, Bristol", "Note": null, "Goc": null, "Generation": 3},
+    {"ID": 20, "BranchCode": "C1-N2w2", "Real Name": "Ruth King", "Birthyear": 1589, "Death Date": "01/01/1659", "Death Date (Vietnamese Lunar)": "16/12/1658 Âm lịch", "Sex": "F", "Address": "34 Oak Lane, Bristol", "Note": null, "Goc": null, "Generation": 3},
+    {"ID": 21, "BranchCode": "C1-N3", "Real Name": "Charles Carter", "Birthyear": 1585, "Death Date": "01/01/1655", "Death Date (Vietnamese Lunar)": "14/12/1654 Âm lịch", "Sex": "M", "Address": "40 Pine Road, Bristol", "Note": null, "Goc": "#C1", "Generation": 3},
+    {"ID": 22, "BranchCode": "C1-N3w1", "Real Name": "Laura Hayes", "Birthyear": 1587, "Death Date": "01/01/1657", "Death Date (Vietnamese Lunar)": "15/12/1656 Âm lịch", "Sex": "F", "Address": "42 Pine Road, Bristol", "Note": null, "Goc": null, "Generation": 3},
+    {"ID": 23, "BranchCode": "C1-N3w2", "Real Name": "Susan Cole", "Birthyear": 1589, "Death Date": "01/01/1659", "Death Date (Vietnamese Lunar)": "16/12/1658 Âm lịch", "Sex": "F", "Address": "44 Pine Road, Bristol", "Note": null, "Goc": null, "Generation": 3},
+    {"ID": 24, "BranchCode": "C2-N1", "Real Name": "George Carter", "Birthyear": 1585, "Death Date": "01/01/1655", "Death Date (Vietnamese Lunar)": "14/12/1654 Âm lịch", "Sex": "M", "Address": "50 Stone Path, York", "Note": null, "Goc": "#C2", "Generation": 3},
+
+    // Generation 4-7 for Robert Carter (C1-N1) as an example
+    {"ID": 25, "BranchCode": "C1-N1-1", "Real Name": "James Carter", "Birthyear": 1603, "Death Date": "01/01/1673", "Death Date (Vietnamese Lunar)": "14/12/1672 Âm lịch", "Sex": "M", "Address": "60 Maple Ave, Bristol", "Note": null, "Goc": "#C1-N1", "Generation": 4},
+    {"ID": 26, "BranchCode": "C1-N1-1w1", "Real Name": "Sarah Ross", "Birthyear": 1605, "Death Date": "01/01/1675", "Death Date (Vietnamese Lunar)": "15/12/1674 Âm lịch", "Sex": "F", "Address": "62 Maple Ave, Bristol", "Note": null, "Goc": null, "Generation": 4},
+    {"ID": 27, "BranchCode": "C1-N1-2", "Real Name": "William Carter", "Birthyear": 1639, "Death Date": "01/01/1709", "Death Date (Vietnamese Lunar)": "14/12/1708 Âm lịch", "Sex": "M", "Address": "70 Cedar St, Bristol", "Note": null, "Goc": "#C1-N1-1", "Generation": 5},
+    {"ID": 28, "BranchCode": "C1-N1-2w1", "Real Name": "Martha Ross", "Birthyear": 1641, "Death Date": "01/01/1711", "Death Date (Vietnamese Lunar)": "15/12/1710 Âm lịch", "Sex": "F", "Address": "72 Cedar St, Bristol", "Note": null, "Goc": null, "Generation": 5},
+    {"ID": 29, "BranchCode": "C1-N1-3", "Real Name": "John Carter", "Birthyear": 1657, "Death Date": "01/01/1727", "Death Date (Vietnamese Lunar)": "14/12/1726 Âm lịch", "Sex": "M", "Address": "80 Birch Rd, Bristol", "Note": null, "Goc": "#C1-N1-2", "Generation": 6},
+    {"ID": 30, "BranchCode": "C1-N1-3w1", "Real Name": "Rose Parker", "Birthyear": 1659, "Death Date": "01/01/1729", "Death Date (Vietnamese Lunar)": "15/12/1728 Âm lịch", "Sex": "F", "Address": "82 Birch Rd, Bristol", "Note": null, "Goc": null, "Generation": 6},
+    {"ID": 31, "BranchCode": "C1-N1-4", "Real Name": "David Carter", "Birthyear": 1675, "Death Date": "01/01/1745", "Death Date (Vietnamese Lunar)": "14/12/1744 Âm lịch", "Sex": "M", "Address": "90 Willow Ln, Bristol", "Note": null, "Goc": "#C1-N1-3", "Generation": 7},
+    {"ID": 32, "BranchCode": "C1-N1-4w1", "Real Name": "Julia Ross", "Birthyear": 1677, "Death Date": "01/01/1747", "Death Date (Vietnamese Lunar)": "15/12/1746 Âm lịch", "Sex": "F", "Address": "92 Willow Ln, Bristol", "Note": null, "Goc": null, "Generation": 7}
 ];
