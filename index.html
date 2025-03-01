@@ -3,40 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Family Data Display</title>
-    <script src="data.js"></script> 
+    <title>Family Tree</title>
+    <script src="data.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .tree-container { text-align: center; }
+        .node rect { fill: white; stroke-width: 2px; }
+        .node circle { fill: white; stroke-width: 2px; }
+        .male { stroke: blue; }
+        .female { stroke: pink; }
+        .spouse { fill: gray; stroke: orange; }
+        .link { fill: none; stroke: black; stroke-width: 1.5px; }
+        .curve { fill: none; stroke: black; stroke-width: 1.5px; }
+    </style>
+</head>
+<body>
+    <h2>Family Tree - First 3 Generations</h2>
+    <div id="tree" class="tree-container"></div>
+    
     <script>
         function loadData() {
             if (typeof datajs !== 'undefined') {
                 console.log("Data loaded successfully:", datajs);
-                let filteredData = datajs.filter(person => person.Generation <= 3); // First 3 generations
-                displayData(filteredData);
+                let filteredData = datajs.filter(person => person.Generation <= 3);
+                console.log("Filtered Data:", filteredData);
+                buildTree(filteredData);
             } else {
-                console.error("Data.js did not load correctly.");
-                document.getElementById("output").innerText = "Failed to load data.";
+                console.error("ERROR: data.js did not load correctly.");
+                document.getElementById("tree").innerText = "Failed to load data.";
             }
         }
 
-        function displayData(data) {
-            let table = "<table border='1'><tr>";
-            let headers = Object.keys(data[0]);
-            headers.forEach(header => table += `<th>${header}</th>`);
-            table += "</tr>";
+        function buildTree(data) {
+            d3.select("#tree").html("");
+            const width = 1200, height = 600;
+            const svg = d3.select("#tree").append("svg").attr("width", width).attr("height", height);
             
-            data.forEach(person => {
-                table += "<tr>";
-                headers.forEach(header => table += `<td>${person[header] || ''}</td>`);
-                table += "</tr>";
-            });
-            table += "</table>";
-            document.getElementById("output").innerHTML = table;
-        }
+            const simulation = d3.forceSimulation(data)
+                .force("charge", d3.forceManyBody().strength(-200))
+                .force("link", d3.forceLink().id(d => d.PersonCode).distance(100))
+                .force("center", d3.forceCenter(width / 2, height / 2))
+                .alphaMin(0.3);
+            
+            const links = svg.selectAll(".link")
+                .data(data)
+                .enter().append("line")
+                .attr("class", "link");
 
+            const nodes = svg.selectAll(".node")
+                .data(data)
+                .enter().append("g")
+                .attr("class", "node");
+
+            nodes.append(d => {
+                if (d.Sex === "M") {
+                    return document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                } else {
+                    return document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                }
+            })
+            .attr("class", d => d.Sex === "M" ? "male" : "female")
+            .attr("r", d => d.Sex === "F" ? 20 : 0)
+            .attr("width", d => d.Sex === "M" ? 40 : 0)
+            .attr("height", d => d.Sex === "M" ? 40 : 0)
+            .attr("fill", d => d.Goc ? "gray" : "white")
+            .attr("stroke", d => d.Goc ? "orange" : d.Sex === "M" ? "blue" : "pink");
+            
+            nodes.append("text")
+                .attr("dy", 5)
+                .attr("dx", -20)
+                .text(d => d["Real Name"]);
+            
+            nodes.append("a")
+                .attr("href", d => d.Goc ? d.Goc : "#")
+                .append("text")
+                .attr("dy", 20)
+                .attr("dx", -20)
+                .attr("fill", "blue")
+                .text("Goc");
+        }
+        
         window.onload = loadData;
     </script>
-</head>
-<body>
-    <h2>Simple Family Data Display - First 3 Generations</h2>
-    <div id="output">Loading data...</div>
 </body>
 </html>
