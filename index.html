@@ -9,13 +9,11 @@
     <style>
         body { font-family: Arial, sans-serif; }
         .tree-container { text-align: center; }
-        .node rect { fill: white; stroke-width: 2px; }
-        .node circle { fill: white; stroke-width: 2px; }
+        .node rect, .node circle { fill: white; stroke-width: 2px; }
         .male { stroke: blue; }
         .female { stroke: pink; }
         .spouse { fill: gray; stroke: orange; }
         .link { fill: none; stroke: black; stroke-width: 1.5px; }
-        .curve { fill: none; stroke: black; stroke-width: 1.5px; }
     </style>
 </head>
 <body>
@@ -39,44 +37,51 @@
             d3.select("#tree").html("");
             const width = 1200, height = 600;
             const svg = d3.select("#tree").append("svg").attr("width", width).attr("height", height);
-            
-            const simulation = d3.forceSimulation(data)
-                .force("charge", d3.forceManyBody().strength(-200))
-                .force("link", d3.forceLink().id(d => d.PersonCode).distance(100))
-                .force("center", d3.forceCenter(width / 2, height / 2))
-                .alphaMin(0.3);
-            
-            const links = svg.selectAll(".link")
-                .data(data)
+
+            // Create hierarchy and tree layout
+            const root = d3.stratify()
+                .id(d => d.PersonCode)
+                .parentId(d => d.Goc ? d.Goc.replace('#', '') : null)
+                (data);
+
+            const treeLayout = d3.tree().size([width, height - 100]);
+            treeLayout(root);
+
+            // Draw links
+            svg.selectAll(".link")
+                .data(root.links())
                 .enter().append("line")
-                .attr("class", "link");
+                .attr("class", "link")
+                .attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y)
+                .attr("stroke", "black");
 
+            // Draw nodes
             const nodes = svg.selectAll(".node")
-                .data(data)
+                .data(root.descendants())
                 .enter().append("g")
-                .attr("class", "node");
+                .attr("class", "node")
+                .attr("transform", d => `translate(${d.x},${d.y})`);
 
-            nodes.append(d => {
-                if (d.Sex === "M") {
-                    return document.createElementNS("http://www.w3.org/2000/svg", "rect");
-                } else {
-                    return document.createElementNS("http://www.w3.org/2000/svg", "circle");
-                }
-            })
-            .attr("class", d => d.Sex === "M" ? "male" : "female")
-            .attr("r", d => d.Sex === "F" ? 20 : 0)
-            .attr("width", d => d.Sex === "M" ? 40 : 0)
-            .attr("height", d => d.Sex === "M" ? 40 : 0)
-            .attr("fill", d => d.Goc ? "gray" : "white")
-            .attr("stroke", d => d.Goc ? "orange" : d.Sex === "M" ? "blue" : "pink");
+            nodes.append(d => d.data.Sex === "M" ? 
+                document.createElementNS("http://www.w3.org/2000/svg", "rect") :
+                document.createElementNS("http://www.w3.org/2000/svg", "circle"))
+                .attr("class", d => d.data.Sex === "M" ? "male" : "female")
+                .attr("r", d => d.data.Sex === "F" ? 20 : 0)
+                .attr("width", d => d.data.Sex === "M" ? 40 : 0)
+                .attr("height", d => d.data.Sex === "M" ? 40 : 0)
+                .attr("fill", d => d.data.Goc ? "gray" : "white")
+                .attr("stroke", d => d.data.Goc ? "orange" : d.data.Sex === "M" ? "blue" : "pink");
             
             nodes.append("text")
                 .attr("dy", 5)
                 .attr("dx", -20)
-                .text(d => d["Real Name"]);
+                .text(d => d.data["Real Name"]);
             
             nodes.append("a")
-                .attr("href", d => d.Goc ? d.Goc : "#")
+                .attr("href", d => d.data.Goc ? d.data.Goc : "#")
                 .append("text")
                 .attr("dy", 20)
                 .attr("dx", -20)
