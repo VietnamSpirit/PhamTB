@@ -7,7 +7,7 @@
     <script src="data.js"></script>
     <style>
         body { font-family: Arial, sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; }
-        svg { border: 1px solid #ccc; }
+        svg { border: 1px solid #ccc; width: 100%; height: 1200px; } /* 100% width, fixed height */
         .male { fill: lightblue; stroke: black; stroke-width: 1px; }
         .female { fill: lightpink; stroke: black; stroke-width: 1px; }
         .link { stroke: black; stroke-width: 1.5px; }
@@ -15,7 +15,7 @@
         text { font-size: 10px; text-anchor: middle; }
         .tab { display: inline-block; padding: 10px; cursor: pointer; background: #f0f0f0; margin: 5px; }
         .tab.active { background: #d0d0d0; }
-        .tab-content { display: none; }
+        .tab-content { display: none; width: 100%; }
         .tab-content.active { display: block; }
         a { fill: blue; text-decoration: underline; }
     </style>
@@ -28,11 +28,11 @@
     <script>
         function buildTree(data, svgId, minGen, maxGen) {
             const svg = document.getElementById(svgId);
-            const filteredData = data.filter(p => p.Generation >= minGen && p.Generation <= maxGen);
-            const width = 2500; // Wider for more spacing
-            const height = 1200; // Taller for textboxes and spacing
+            const width = svg.clientWidth; // Use actual screen width
+            const height = 1200;
             const genHeight = height / (maxGen - minGen + 1);
 
+            const filteredData = data.filter(p => p.Generation >= minGen && p.Generation <= maxGen);
             const nodesByGen = Array(maxGen - minGen + 1).fill().map(() => []);
             filteredData.forEach(person => {
                 nodesByGen[person.Generation - minGen].push(person);
@@ -43,16 +43,16 @@
 
             nodesByGen.forEach((gen, genIndex) => {
                 const y = genIndex * genHeight + genHeight / 2;
-                const coupleWidth = 300; // Increased for shape + textbox + padding
-                const coupleSpacing = 200; // Increased for more gap between couples
+                const coupleWidth = Math.min(300, width / (gen.length / 3 + 1)); // Dynamic width, min 300px
+                const coupleSpacing = Math.max(150, coupleWidth / 2); // Ensure spacing scales
                 let currentX = 50;
                 const genMales = gen.filter(p => p.Sex === "M" && !p.BranchCode.includes("w"));
                 genMales.forEach(male => {
                     nodes.push({ ...male, x: currentX, y });
                     const w1 = gen.find(p => p.BranchCode === `${male.BranchCode}w1`);
-                    if (w1) nodes.push({ ...w1, x: currentX + 70, y }); // Adjusted spacing within couple
+                    if (w1) nodes.push({ ...w1, x: currentX + coupleWidth / 4, y });
                     const w2 = gen.find(p => p.BranchCode === `${male.BranchCode}w2`);
-                    if (w2) nodes.push({ ...w2, x: currentX + 140, y });
+                    if (w2) nodes.push({ ...w2, x: currentX + coupleWidth / 2, y });
                     currentX += coupleWidth + coupleSpacing;
                 });
                 const genExtras = gen.filter(p => p.Sex === "F" && !p.BranchCode.includes("w"));
@@ -60,7 +60,7 @@
                     nodes.push({ ...person, x: currentX + i * (coupleWidth + coupleSpacing), y });
                     currentX += coupleWidth + coupleSpacing;
                 });
-                totalWidthUsed = Math.max(totalWidthUsed, currentX - coupleSpacing); // Track widest generation
+                totalWidthUsed = Math.max(totalWidthUsed, currentX - coupleSpacing);
             });
 
             // Center the tree
@@ -124,16 +124,16 @@
                 const textbox = document.createElementNS("http://www.w3.org/2000/svg", "rect");
                 textbox.setAttribute("class", "textbox");
                 textbox.setAttribute("x", -75);
-                textbox.setAttribute("y", 30); // Further below shape for more space
+                textbox.setAttribute("y", 30);
                 textbox.setAttribute("width", 150);
-                textbox.setAttribute("height", 90); // Taller for spacing
+                textbox.setAttribute("height", 90);
                 g.appendChild(textbox);
 
                 const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
                 const gocLink = node.Goc ? `<tspan x="0" dy="11"><a xlink:href="#node-${findGreatGreatGrandma(data, node.BranchCode)}" target="_self">Goc: ${node.Goc}</a></tspan>` : '';
                 text.innerHTML = `${node["Real Name"]}<tspan x="0" dy="11">ID: ${node.ID}</tspan><tspan x="0" dy="11">Branch: ${node.BranchCode}</tspan><tspan x="0" dy="11">Born: ${node.Birthyear}</tspan><tspan x="0" dy="11">Died: ${node["Death Date"]}</tspan><tspan x="0" dy="11">Lunar: ${node["Death Date (Vietnamese Lunar)"]}</tspan><tspan x="0" dy="11">Addr: ${node.Address}</tspan>${gocLink}`;
                 text.setAttribute("x", 0);
-                text.setAttribute("y", 35); // Adjusted for taller textbox
+                text.setAttribute("y", 35);
                 g.appendChild(text);
 
                 g.setAttribute("id", `node-${node.BranchCode}`);
@@ -171,8 +171,6 @@
             content1.className = "tab-content active";
             const svg1 = document.createElementNS("http://www.w3.org/2000/svg", "svg");
             svg1.setAttribute("id", "svg1");
-            svg1.setAttribute("width", "2500");
-            svg1.setAttribute("height", "1200");
             content1.appendChild(svg1);
             contentsDiv.appendChild(content1);
             buildTree(datajs, "svg1", 1, 3);
@@ -191,8 +189,6 @@
                 content.className = "tab-content";
                 const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
                 svg.setAttribute("id", `svg${index + 2}`);
-                svg.setAttribute("width", "2500");
-                svg.setAttribute("height", "1200");
                 content.appendChild(svg);
                 contentsDiv.appendChild(content);
 
