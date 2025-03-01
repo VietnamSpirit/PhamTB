@@ -11,20 +11,21 @@
         .female { stroke: pink; stroke-width: 2px; fill: white; }
         .link { stroke: black; stroke-width: 1.5px; }
         text { font-size: 10px; text-anchor: middle; }
-        .node-box { border: 1px solid #ccc; padding: 5px; background: white; }
     </style>
 </head>
 <body>
     <h2>Family Tree - First 3 Generations</h2>
     <svg id="tree" width="1200" height="600"></svg>
-    <script src="data.js"></script>
     <script>
+        // Insert the fabricated datajs here for testing
+        const datajs = [/* Insert the datajs array from above here */];
+
         function buildTree(data) {
             const svg = document.getElementById("tree");
             const filteredData = data.filter(p => p.Generation <= 3);
             const width = 1200;
             const height = 600;
-            const genHeight = height / 3; // Space for each generation
+            const genHeight = height / 3;
 
             // Organize nodes by generation and calculate positions
             const nodesByGen = [[], [], []]; // Gen 1, 2, 3
@@ -34,23 +35,23 @@
 
             const nodes = [];
             nodesByGen.forEach((gen, genIndex) => {
-                const y = genIndex * genHeight + genHeight / 2; // Center vertically in each generation band
-                const xSpacing = width / (gen.length + 1); // Evenly space nodes horizontally
+                const y = genIndex * genHeight + genHeight / 2;
+                const xSpacing = width / (gen.length + 1);
                 gen.forEach((person, i) => {
                     const x = (i + 1) * xSpacing;
                     nodes.push({ ...person, x, y });
                 });
             });
 
-            // Draw links (parent-child and spouse)
+            // Draw links (parent-child to mother, spouse links)
             nodes.forEach(node => {
-                // Parent-child link
-                if (node.Goc) {
-                    const parent = nodes.find(p => `#${p.PersonCode}` === node.Goc);
-                    if (parent) {
+                // Parent-child link (to mother)
+                if (node.Mother) {
+                    const mother = nodes.find(n => n.PersonCode === node.Mother);
+                    if (mother) {
                         const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-                        line.setAttribute("x1", parent.x);
-                        line.setAttribute("y1", parent.y + 30); // Bottom of parent node
+                        line.setAttribute("x1", mother.x);
+                        line.setAttribute("y1", mother.y + 20); // Bottom of mother node
                         line.setAttribute("x2", node.x);
                         line.setAttribute("y2", node.y - 30); // Top of child node
                         line.setAttribute("class", "link");
@@ -63,8 +64,8 @@
                     const spouse2 = nodes.find(s => s.PersonCode === `${node.PersonCode}w2`);
                     if (spouse1) {
                         const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-                        line.setAttribute("x1", node.x + 20); // Right of male
-                        line.setAttribute("x2", spouse1.x - 20); // Left of spouse
+                        line.setAttribute("x1", node.x + 20);
+                        line.setAttribute("x2", spouse1.x - 20);
                         line.setAttribute("y1", node.y);
                         line.setAttribute("y2", spouse1.y);
                         line.setAttribute("class", "link");
@@ -100,10 +101,11 @@
                 }
                 g.appendChild(shape);
 
-                // Text
+                // Text (include Mother if present)
+                const motherText = node.Mother ? `<tspan x="0" dy="12">Mother: ${nodes.find(n => n.PersonCode === node.Mother)?.["Real Name"] || node.Mother}</tspan>` : "";
                 const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                text.innerHTML = `${node["Real Name"]}<tspan x="0" dy="12">Born: ${node.Birthdate}</tspan><tspan x="0" dy="12">Died: ${node["Death Date"]}</tspan><tspan x="0" dy="12">ID: ${node.PersonCode}</tspan>`;
-                text.setAttribute("y", node.Sex === "M" ? -25 : -30); // Above shape
+                text.innerHTML = `${node["Real Name"]}<tspan x="0" dy="12">Born: ${node.Birthdate}</tspan><tspan x="0" dy="12">Died: ${node["Death Date"]}</tspan><tspan x="0" dy="12">ID: ${node.PersonCode}</tspan>${motherText}`;
+                text.setAttribute("y", node.Sex === "M" ? -25 : -30);
                 g.appendChild(text);
 
                 svg.appendChild(g);
