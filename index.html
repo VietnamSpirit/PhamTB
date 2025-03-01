@@ -44,14 +44,29 @@
     <script>
         async function loadFamilyTree() {
             try {
-                const response = await fetch("https://raw.githubusercontent.com/vietnamspirit/phamtb/main/family_tree.json"); // Fetch JSON from Colab
+                console.log("Fetching JSON data...");
+        
+                // Fetch JSON with 'no-cors' mode
+                const response = await fetch("https://your-username.github.io/family-tree/family_tree.json", {
+                    method: "GET",
+                    headers: { "Content-Type": "application/json" },
+                    cache: "no-store"  // Prevent caching issues
+                });
+        
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+        
                 const data = await response.json();
+                console.log("Data loaded successfully:", data);
                 displayTree(data);
             } catch (error) {
-                console.error("Error loading family tree data:", error);
-                document.body.innerHTML += "<p>Failed to load family tree. Please ensure the JSON file exists.</p>";
+                console.error("Error loading family tree:", error);
+                document.body.innerHTML += `<p style="color:red;">Failed to load family tree. Check the browser console (F12) for errors.</p>`;
             }
         }
+
+
 
         function displayTree(data) {
             const treeDiv = document.getElementById("tree");
