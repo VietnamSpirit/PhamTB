@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Data Display</title>
+    <title>Simple Family Data Display</title>
     <script src="data.js"></script> 
     <script>
         function loadData() {
             if (typeof datajs !== 'undefined') {
                 console.log("Data loaded successfully:", datajs);
-                displayData(datajs);
+                let filteredData = datajs.filter(person => person.Generation <= 3); // First 3 generations
+                displayData(filteredData);
             } else {
                 console.error("Data.js did not load correctly.");
                 document.getElementById("output").innerText = "Failed to load data.";
@@ -17,14 +18,15 @@
         }
 
         function displayData(data) {
-            let table = "<table border='1'><tr><th>Name</th><th>Birthdate</th><th>Sex</th><th>Generation</th></tr>";
-            data.slice(0, 10).forEach(person => { // Show only first 10 entries
-                table += `<tr>
-                    <td>${person["Real Name"]}</td>
-                    <td>${person["Birthdate"]}</td>
-                    <td>${person["Sex"]}</td>
-                    <td>${person["Generation"]}</td>
-                </tr>`;
+            let table = "<table border='1'><tr>";
+            let headers = Object.keys(data[0]);
+            headers.forEach(header => table += `<th>${header}</th>`);
+            table += "</tr>";
+            
+            data.forEach(person => {
+                table += "<tr>";
+                headers.forEach(header => table += `<td>${person[header] || ''}</td>`);
+                table += "</tr>";
             });
             table += "</table>";
             document.getElementById("output").innerHTML = table;
@@ -34,7 +36,7 @@
     </script>
 </head>
 <body>
-    <h2>Simple Data Display</h2>
+    <h2>Simple Family Data Display - First 3 Generations</h2>
     <div id="output">Loading data...</div>
 </body>
 </html>
