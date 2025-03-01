@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Tree</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .tree-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        .node {
+            display: inline-block;
+            padding: 10px;
+            margin: 5px;
+            border: 2px solid;
+            text-align: center;
+            min-width: 100px;
+            position: relative;
+            background: white;
+        }
+        .male { border-color: blue; }
+        .female { border-color: pink; border-radius: 50%; }
+        .spouse { border-color: orange; background-color: lightgray; }
+        .generation { display: flex; justify-content: center; margin-top: 20px; position: relative; }
+        .line {
+            position: absolute;
+            width: 2px;
+            background: black;
+        }
+    </style>
+</head>
+<body>
+    <h1>Family Tree</h1>
+    <p>Loading data from Google Colab...</p>
+    <div id="tree" class="tree-container"></div>
+
+    <script>
+        async function loadFamilyTree() {
+            try {
+                const response = await fetch("family_tree.json"); // Fetch JSON from Colab
+                const data = await response.json();
+                displayTree(data);
+            } catch (error) {
+                console.error("Error loading family tree data:", error);
+                document.body.innerHTML += "<p>Failed to load family tree. Please ensure the JSON file exists.</p>";
+            }
+        }
+
+        function displayTree(data) {
+            const treeDiv = document.getElementById("tree");
+            treeDiv.innerHTML = "";
+
+            let generations = {};
+            let parentMap = {};
+
+            data.forEach(person => {
+                let { Name: name, BirthDate: birthdate, Sex: sex, Branch: branch, Note: note } = person;
+                if (!name || !branch) return;
+                let generationNum = parseInt(branch.match(/\d+/)[0]);
+
+                if (!generations[generationNum]) generations[generationNum] = [];
+                generations[generationNum].push({ name, birthdate, sex, branch, note });
+                parentMap[branch] = branch.split('.').slice(0, -1).join('.');
+            });
+
+            Object.keys(generations).sort((a, b) => a - b).forEach(gen => {
+                let genDiv = document.createElement("div");
+                genDiv.className = "generation";
+                
+                generations[gen].forEach(person => {
+                    let nodeDiv = document.createElement("div");
+                    nodeDiv.className = "node " + (person.sex === "M" ? "male" : "female");
+                    nodeDiv.innerHTML = `${person.name} (b. ${person.birthdate})`;
+                    nodeDiv.id = person.branch;
+                    
+                    if (person.note && person.note.includes("Goc")) {
+                        nodeDiv.innerHTML += ` <a href="#${parentMap[parentMap[person.branch]] || '#'}">Goc</a>`;
+                    }
+
+                    if (parentMap[person.branch]) {
+                        let line = document.createElement("div");
+                        line.className = "line";
+                        line.style.height = "20px";
+                        line.style.left = "50%";
+                        line.style.top = "-20px";
+                        nodeDiv.appendChild(line);
+                    }
+                    
+                    genDiv.appendChild(nodeDiv);
+                });
+                treeDiv.appendChild(genDiv);
+            });
+        }
+
+        // Run when the page loads
+        loadFamilyTree();
+    </script>
+</body>
+</html>
