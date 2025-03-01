@@ -7,7 +7,7 @@
     <script src="data.js"></script>
     <style>
         body { font-family: Arial, sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; }
-        svg { border: 1px solid #ccc; width: 100%; height: 1200px; } /* 100% width, fixed height */
+        svg { border: 1px solid #ccc; width: 100%; height: 1200px; }
         .male { fill: lightblue; stroke: black; stroke-width: 1px; }
         .female { fill: lightpink; stroke: black; stroke-width: 1px; }
         .link { stroke: black; stroke-width: 1.5px; }
@@ -28,7 +28,7 @@
     <script>
         function buildTree(data, svgId, minGen, maxGen) {
             const svg = document.getElementById(svgId);
-            const width = svg.clientWidth; // Use actual screen width
+            const width = svg.clientWidth;
             const height = 1200;
             const genHeight = height / (maxGen - minGen + 1);
 
@@ -43,16 +43,16 @@
 
             nodesByGen.forEach((gen, genIndex) => {
                 const y = genIndex * genHeight + genHeight / 2;
-                const coupleWidth = Math.min(300, width / (gen.length / 3 + 1)); // Dynamic width, min 300px
-                const coupleSpacing = Math.max(150, coupleWidth / 2); // Ensure spacing scales
+                const coupleWidth = Math.min(450, width / (gen.length / 3 + 1)); // Increased for longer lines
+                const coupleSpacing = Math.max(200, coupleWidth / 2); // Adjusted spacing between couples
                 let currentX = 50;
                 const genMales = gen.filter(p => p.Sex === "M" && !p.BranchCode.includes("w"));
                 genMales.forEach(male => {
                     nodes.push({ ...male, x: currentX, y });
                     const w1 = gen.find(p => p.BranchCode === `${male.BranchCode}w1`);
-                    if (w1) nodes.push({ ...w1, x: currentX + coupleWidth / 4, y });
+                    if (w1) nodes.push({ ...w1, x: currentX + 150, y }); // Longer gap to wife1
                     const w2 = gen.find(p => p.BranchCode === `${male.BranchCode}w2`);
-                    if (w2) nodes.push({ ...w2, x: currentX + coupleWidth / 2, y });
+                    if (w2) nodes.push({ ...w2, x: currentX + 300, y }); // Longer gap to wife2
                     currentX += coupleWidth + coupleSpacing;
                 });
                 const genExtras = gen.filter(p => p.Sex === "F" && !p.BranchCode.includes("w"));
@@ -63,7 +63,6 @@
                 totalWidthUsed = Math.max(totalWidthUsed, currentX - coupleSpacing);
             });
 
-            // Center the tree
             const xOffset = (width - totalWidthUsed) / 2;
             nodes.forEach(node => node.x += xOffset);
 
