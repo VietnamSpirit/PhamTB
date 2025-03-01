@@ -14,6 +14,8 @@
         .male { stroke: blue; }
         .female { stroke: pink; }
         .link { fill: none; stroke: black; stroke-width: 1.5px; }
+        .node text { font-size: 12px; }
+        .info-text { font-size: 10px; fill: #555; }
     </style>
 </head>
 <body>
@@ -40,52 +42,63 @@
                 .attr("width", width)
                 .attr("height", height)
                 .append("g")
-                .attr("transform", "translate(0, 20)"); // Small top margin
+                .attr("transform", "translate(0, 20)");
 
-            // Prepare data for hierarchy
+            // Separate primary nodes (with Goc or root) and spouses
+            const primaryNodes = data.filter(d => !d.PersonCode.includes("w") || d.Goc); // Exclude spouses unless they have a Goc
+            const spouseNodes = data.filter(d => d.PersonCode.includes("w") && !d.Goc); // Spouses with no Goc
+
+            // Stratify only primary nodes
             const stratify = d3.stratify()
                 .id(d => d.PersonCode)
                 .parentId(d => d.Goc ? d.Goc.replace("#", "") : null);
 
-            // Add a root node if needed (for multi-root cases, but here we assume "man1" is root)
-            const rootData = stratify(data);
+            let rootData;
+            try {
+                rootData = stratify(primaryNodes);
+            } catch (e) {
+                console.error("Stratify error:", e);
+                return;
+            }
 
             // Create tree layout
             const treeLayout = d3.tree()
-                .size([width - 40, height - 40]) // Leave some padding
-                .separation((a, b) => (a.parent === b.parent ? 1 : 2)); // Closer siblings
+                .size([width - 40, height - 40])
+                .separation((a, b) => (a.parent === b.parent ? 1 : 2));
 
             const treeData = treeLayout(rootData);
 
-            // Adjust y-positions by generation for strict layering
-            const generationHeight = (height - 40) / 3; // Divide height into 3 layers
+            // Adjust y-positions by generation
+            const generationHeight = (height - 40) / 3;
             treeData.each(d => {
-                d.y = (d.depth * generationHeight); // Depth 0 = Gen 1, 1 = Gen 2, 2 = Gen 3
+                d.y = (d.depth * generationHeight);
             });
 
-            // Handle spouses (position them next to their partner)
+            // Add spouse nodes manually
+            const allNodes = treeData.descendants().slice(); // Copy primary nodes
             const spouseMap = new Map();
-            data.forEach(d => {
-                if (d.Sex === "M" && !d.PersonCode.includes("w")) {
-                    const spouse1 = data.find(s => s.PersonCode === `${d.PersonCode}w1`);
-                    const spouse2 = data.find(s => s.PersonCode === `${d.PersonCode}w2`);
+            primaryNodes.forEach(d => {
+                if (d.Sex === "M") {
+                    const spouse1 = spouseNodes.find(s => s.PersonCode === `${d.PersonCode}w1`);
+                    const spouse2 = spouseNodes.find(s => s.PersonCode === `${d.PersonCode}w2`);
                     if (spouse1) spouseMap.set(spouse1.PersonCode, d.PersonCode);
                     if (spouse2) spouseMap.set(spouse2.PersonCode, d.PersonCode);
                 }
             });
 
-            // Assign spouse positions
-            treeData.each(d => {
-                if (spouseMap.has(d.data.PersonCode)) {
-                    const partner = treeData.descendants().find(n => n.data.PersonCode === spouseMap.get(d.data.PersonCode));
-                    if (partner) {
-                        d.x = partner.x + 50; // Position spouse 50px to the right
-                        d.y = partner.y; // Same vertical level
-                    }
+            spouseNodes.forEach(spouse => {
+                const partner = allNodes.find(n => n.data.PersonCode === spouseMap.get(spouse.PersonCode));
+                if (partner) {
+                    allNodes.push({
+                        data: spouse,
+                        x: partner.x + 50, // Position spouse to the right
+                        y: partner.y,
+                        depth: partner.depth
+                    });
                 }
             });
 
-            // Draw links (parent-child only, exclude spouse links)
+            // Draw links (only for primary hierarchy)
             const linkGenerator = d3.linkVertical()
                 .x(d => d.x)
                 .y(d => d.y);
@@ -96,9 +109,9 @@
                 .attr("class", "link")
                 .attr("d", linkGenerator);
 
-            // Draw nodes
+            // Draw all nodes (primary + spouses)
             const nodes = svg.selectAll(".node")
-                .data(treeData.descendants())
+                .data(allNodes)
                 .enter().append("g")
                 .attr("class", "node")
                 .attr("transform", d => `translate(${d.x},${d.y})`);
@@ -110,15 +123,33 @@
             .attr("r", d => d.data.Sex === "F" ? 20 : 0)
             .attr("width", d => d.data.Sex === "M" ? 40 : 0)
             .attr("height", d => d.data.Sex === "M" ? 40 : 0)
-            .attr("x", d => d.data.Sex === "M" ? -20 : 0) // Center rect
+            .attr("x", d => d.data.Sex === "M" ? -20 : 0)
             .attr("y", d => d.data.Sex === "M" ? -20 : 0)
             .attr("fill", d => d.data.Goc ? "gray" : "white")
             .attr("stroke", d => d.data.Sex === "M" ? "blue" : "pink");
 
             nodes.append("text")
-                .attr("dy", 5)
+                .attr("dy", d => d.data.Sex === "M" ? -25 : -25)
                 .attr("text-anchor", "middle")
                 .text(d => d.data["Real Name"]);
+
+            nodes.append("text")
+                .attr("class", "info-text")
+                .attr("dy", d => d.data.Sex === "M" ? 25 : 30)
+                .attr("text-anchor", "middle")
+                .text(d => `Born: ${d.data.Birthdate}`);
+
+            nodes.append("text")
+                .attr("class", "info-text")
+                .attr("dy", d => d.data.Sex === "M" ? 35 : 40)
+                .attr("text-anchor", "middle")
+                .text(d => `Died: ${d.data["Death Date"]}`);
+
+            nodes.append("text")
+                .attr("class", "info-text")
+                .attr("dy", d => d.data.Sex === "M" ? 45 : 50)
+                .attr("text-anchor", "middle")
+                .text(d => `ID: ${d.data.PersonCode}`);
         }
 
         window.onload = loadData;
