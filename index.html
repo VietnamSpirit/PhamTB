@@ -3,116 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Family Tree</title>
-    <script src="data.js"></script>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        .tree-container { text-align: center; }
-        .node rect { fill: white; stroke-width: 2px; }
-        .node circle { fill: white; stroke-width: 2px; }
-        .male { stroke: blue; }
-        .female { stroke: pink; }
-        .spouse { fill: gray; stroke: orange; }
-        .link { fill: none; stroke: black; stroke-width: 1.5px; }
-        .curve { fill: none; stroke: black; stroke-width: 1.5px; }
-        .tabs { margin-bottom: 10px; }
-        .tab { display: inline-block; padding: 5px 15px; cursor: pointer; border: 1px solid black; background: lightgray; }
-        .tab.active { background: gray; color: white; }
-    </style>
-</head>
-<body>
-    <div class="tabs" id="tabs"></div>
-    <div id="tree" class="tree-container"></div>
-    
+    <title>Simple Data Display</title>
+    <script src="data.js"></script> 
     <script>
-        let data = [];
-
         function loadData() {
-            if (typeof window.data !== 'undefined') {
-                data = window.data;
-                createTabs();
-                buildTree(1);
+            if (typeof datajs !== 'undefined') {
+                console.log("Data loaded successfully:", datajs);
+                displayData(datajs);
             } else {
-                console.error("Data is not loaded correctly. Make sure data.js is included and correctly defines the 'data' variable.");
+                console.error("Data.js did not load correctly.");
+                document.getElementById("output").innerText = "Failed to load data.";
             }
         }
 
-        function buildTree(genStart) {
-            d3.select("#tree").html("");
-            const dataFiltered = data.filter(d => d.Generation >= genStart && d.Generation < genStart + 4);
-            const width = 1200, height = 600;
-            const svg = d3.select("#tree").append("svg").attr("width", width).attr("height", height);
-            
-            const simulation = d3.forceSimulation(dataFiltered)
-                .force("charge", d3.forceManyBody().strength(-100))
-                .force("link", d3.forceLink().id(d => d.PersonCode))
-                .force("center", d3.forceCenter(width / 2, height / 2));
-            
-            const links = svg.selectAll(".link")
-                .data(dataFiltered)
-                .enter().append("line")
-                .attr("class", "link");
-
-            const nodes = svg.selectAll(".node")
-                .data(dataFiltered)
-                .enter().append("g")
-                .attr("class", "node");
-
-            nodes.append(d => {
-                if (d.Sex === "M") {
-                    return document.createElementNS("http://www.w3.org/2000/svg", "rect");
-                } else {
-                    return document.createElementNS("http://www.w3.org/2000/svg", "circle");
-                }
-            })
-            .attr("class", d => d.Sex === "M" ? "male" : "female")
-            .attr("r", d => d.Sex === "F" ? 20 : 0)
-            .attr("width", d => d.Sex === "M" ? 40 : 0)
-            .attr("height", d => d.Sex === "M" ? 40 : 0)
-            .attr("fill", d => d.Goc ? "gray" : "white")
-            .attr("stroke", d => d.Goc ? "orange" : d.Sex === "M" ? "blue" : "pink");
-            
-            nodes.append("text")
-                .attr("dy", 5)
-                .attr("dx", -20)
-                .text(d => d["Real Name"]);
-            
-            nodes.append("a")
-                .attr("href", d => d.Goc ? d.Goc : "#")
-                .append("text")
-                .attr("dy", 20)
-                .attr("dx", -20)
-                .attr("fill", "blue")
-                .text("Goc");
-            
-            simulation.on("tick", () => {
-                nodes.attr("transform", d => `translate(${d.x},${d.y})`);
-                links.attr("x1", d => d.x)
-                    .attr("y1", d => d.y)
-                    .attr("x2", d => d.x)
-                    .attr("y2", d => d.y);
+        function displayData(data) {
+            let table = "<table border='1'><tr><th>Name</th><th>Birthdate</th><th>Sex</th><th>Generation</th></tr>";
+            data.slice(0, 10).forEach(person => { // Show only first 10 entries
+                table += `<tr>
+                    <td>${person["Real Name"]}</td>
+                    <td>${person["Birthdate"]}</td>
+                    <td>${person["Sex"]}</td>
+                    <td>${person["Generation"]}</td>
+                </tr>`;
             });
+            table += "</table>";
+            document.getElementById("output").innerHTML = table;
         }
-        
-        function createTabs() {
-            const generations = [...new Set(data.map(d => d.Generation))];
-            const tabsDiv = d3.select("#tabs");
-            generations.forEach((gen, i) => {
-                if (i % 4 === 0) {
-                    tabsDiv.append("div")
-                        .attr("class", "tab")
-                        .text(`Generations ${gen}-${gen+3}`)
-                        .on("click", () => {
-                            d3.selectAll(".tab").classed("active", false);
-                            d3.select(event.target).classed("active", true);
-                            buildTree(gen);
-                        });
-                }
-            });
-        }
-        
+
         window.onload = loadData;
     </script>
+</head>
+<body>
+    <h2>Simple Data Display</h2>
+    <div id="output">Loading data...</div>
 </body>
 </html>
