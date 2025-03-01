@@ -4,20 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Family Tree</title>
-    <script src="data.js"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="data.js"></script> <!-- Ensure this points to your data.js file -->
     <style>
         body { font-family: Arial, sans-serif; }
-        .tree-container { display: flex; justify-content: center; align-items: center; height: 90vh; }
-        .node rect, .node circle { fill: white; stroke-width: 2px; }
+        .tree-container { text-align: center; }
+        .node rect { fill: white; stroke-width: 2px; }
+        .node circle { fill: white; stroke-width: 2px; }
         .male { stroke: blue; }
         .female { stroke: pink; }
-        .spouse { fill: gray; stroke: orange; }
         .link { fill: none; stroke: black; stroke-width: 1.5px; }
     </style>
 </head>
 <body>
-    <h2 style="text-align: center;">Family Tree - First 3 Generations</h2>
+    <h2>Family Tree - First 3 Generations</h2>
     <div id="tree" class="tree-container"></div>
     
     <script>
@@ -26,7 +26,7 @@
                 console.log("Data loaded successfully:", datajs);
                 let filteredData = datajs.filter(person => person.Generation <= 3);
                 console.log("Filtered Data:", filteredData);
-                buildTree(filteredData);
+                buildTree(filteredData); // Calls buildTree here
             } else {
                 console.error("ERROR: data.js did not load correctly.");
                 document.getElementById("tree").innerText = "Failed to load data.";
@@ -36,64 +36,76 @@
         function buildTree(data) {
             d3.select("#tree").html("");
             const width = 1200, height = 600;
-            const svg = d3.select("#tree").append("svg")
-                .attr("width", width)
-                .attr("height", height)
-                .append("g")
-                .attr("transform", "translate(50,50)");
+            const svg = d3.select("#tree").append("svg").attr("width", width).attr("height", height);
 
-            // Create hierarchy and tree layout
-            const root = d3.stratify()
-                .id(d => d.PersonCode)
-                .parentId(d => d.Goc ? d.Goc.replace('#', '') : null)
-                (data);
+            // Create links: parent-child and inferred spouses
+            const linksData = [];
+            data.forEach(d => {
+                // Parent-child link (Goc)
+                if (d.Goc) {
+                    const parentCode = d.Goc.replace("#", "");
+                    linksData.push({ source: parentCode, target: d.PersonCode });
+                }
+                // Infer spouse link (e.g., "C1" -> "C1w1" or "C1w2")
+                if (d.Sex === "M" && !d.PersonCode.includes("w")) {
+                    const spouse1 = data.find(s => s.PersonCode === `${d.PersonCode}w1`);
+                    const spouse2 = data.find(s => s.PersonCode === `${d.PersonCode}w2`);
+                    if (spouse1) linksData.push({ source: d.PersonCode, target: spouse1.PersonCode });
+                    if (spouse2) linksData.push({ source: d.PersonCode, target: spouse2.PersonCode });
+                }
+            });
 
-            const treeLayout = d3.tree()
-                .size([width - 100, height - 150])
-                .separation((a, b) => (a.parent === b.parent ? 1.5 : 2));
-            treeLayout(root);
+            // Force simulation
+            const simulation = d3.forceSimulation(data)
+                .force("charge", d3.forceManyBody().strength(-300)) // Increased repulsion
+                .force("link", d3.forceLink(linksData).id(d => d.PersonCode).distance(100))
+                .force("center", d3.forceCenter(width / 2, height / 2))
+                .force("y", d3.forceY().strength(0.1)) // Slight vertical pull for hierarchy
+                .alphaMin(0.3);
 
             // Draw links
-            svg.selectAll(".link")
-                .data(root.links())
-                .enter().append("path")
-                .attr("class", "link")
-                .attr("d", d3.linkVertical()
-                    .x(d => d.x)
-                    .y(d => d.y));
+            const links = svg.selectAll(".link")
+                .data(linksData)
+                .enter().append("line")
+                .attr("class", "link");
 
             // Draw nodes
             const nodes = svg.selectAll(".node")
-                .data(root.descendants())
+                .data(data)
                 .enter().append("g")
-                .attr("class", "node")
-                .attr("transform", d => `translate(${d.x},${d.y})`);
+                .attr("class", "node");
 
-            nodes.append(d => d.data.Sex === "M" ? 
-                document.createElementNS("http://www.w3.org/2000/svg", "rect") :
-                document.createElementNS("http://www.w3.org/2000/svg", "circle"))
-                .attr("class", d => d.data.Sex === "M" ? "male" : "female")
-                .attr("r", d => d.data.Sex === "F" ? 20 : 0)
-                .attr("width", d => d.data.Sex === "M" ? 40 : 0)
-                .attr("height", d => d.data.Sex === "M" ? 40 : 0)
-                .attr("fill", d => d.data.Goc ? "gray" : "white")
-                .attr("stroke", d => d.data.Goc ? "orange" : d.data.Sex === "M" ? "blue" : "pink");
-            
+            nodes.append(d => {
+                return document.createElementNS("http://www.w3.org/2000/svg", d.Sex === "M" ? "rect" : "circle");
+            })
+            .attr("class", d => d.Sex === "M" ? "male" : "female")
+            .attr("r", d => d.Sex === "F" ? 20 : 0)
+            .attr("width", d => d.Sex === "M" ? 40 : 0)
+            .attr("height", d => d.Sex === "M" ? 40 : 0)
+            .attr("x", d => d.Sex === "M" ? -20 : 0) // Center rect
+            .attr("y", d => d.Sex === "M" ? -20 : 0)
+            .attr("fill", d => d.Goc ? "gray" : "white") // Gray for children with Goc
+            .attr("stroke", d => d.Sex === "M" ? "blue" : "pink");
+
             nodes.append("text")
                 .attr("dy", 5)
-                .attr("dx", -20)
-                .text(d => d.data["Real Name"]);
-            
-            nodes.append("a")
-                .attr("href", d => d.data.Goc ? d.data.Goc : "#")
-                .append("text")
-                .attr("dy", 20)
-                .attr("dx", -20)
-                .attr("fill", "blue")
-                .text("Goc");
+                .attr("text-anchor", "middle")
+                .text(d => d["Real Name"]);
+
+            // Update positions on tick
+            simulation.on("tick", () => {
+                links
+                    .attr("x1", d => d.source.x)
+                    .attr("y1", d => d.source.y)
+                    .attr("x2", d => d.target.x)
+                    .attr("y2", d => d.target.y);
+
+                nodes
+                    .attr("transform", d => `translate(${d.x},${d.y})`);
+            });
         }
-        
-        window.onload = loadData;
+
+        window.onload = loadData; // Trigger loadData when page loads
     </script>
 </body>
 </html>
