@@ -16,14 +16,14 @@
 </head>
 <body>
     <h2>Family Tree - First 3 Generations</h2>
-    <svg id="tree" width="1800" height="800"></svg> <!-- Increased width and height -->
+    <svg id="tree" width="2000" height="800"></svg> <!-- Wider SVG for Gen 3 -->
     
     <script>
         function buildTree(data) {
             const svg = document.getElementById("tree");
             const filteredData = data.filter(p => p.Generation <= 3);
-            const width = 1800; // Wider to accommodate spacing
-            const height = 800; // Taller for staggering
+            const width = 2000; // Increased width for more spacing
+            const height = 800;
             const genHeight = height / 3;
 
             // Organize nodes by generation
@@ -41,40 +41,46 @@
                 nodes.push({ ...person, x, y: gen1Y });
             });
 
-            // Generation 2: Group couples with spacing between groups
+            // Generation 2: Group couples with spacing
             let gen2Y = genHeight + genHeight / 2;
             const coupleWidth = 150; // Width for husband + 2 wives
             const coupleSpacing = 100; // Space between couples
-            let currentX = 50; // Start with padding
+            let currentX = 50;
             const gen2Males = nodesByGen[1].filter(p => p.Sex === "M" && !p.PersonCode.includes("w"));
             gen2Males.forEach(male => {
-                // Husband
                 nodes.push({ ...male, x: currentX, y: gen2Y });
-                // Wife 1
                 const w1 = nodesByGen[1].find(p => p.PersonCode === `${male.PersonCode}w1`);
                 if (w1) nodes.push({ ...w1, x: currentX + 50, y: gen2Y });
-                // Wife 2
                 const w2 = nodesByGen[1].find(p => p.PersonCode === `${male.PersonCode}w2`);
                 if (w2) nodes.push({ ...w2, x: currentX + 100, y: gen2Y });
-                currentX += coupleWidth + coupleSpacing; // Move to next couple
+                currentX += coupleWidth + coupleSpacing;
             });
-            // Add Gen 2 females without husbands (e.g., Mary, Ellen)
             const gen2Extras = nodesByGen[1].filter(p => p.Sex === "F" && !p.PersonCode.includes("w"));
             gen2Extras.forEach((person, i) => {
                 nodes.push({ ...person, x: currentX + i * 100, y: gen2Y });
             });
 
-            // Generation 3: Spread out with slight staggering
-            const gen3BaseY = 2 * genHeight + genHeight / 4; // Start higher in Gen 3 band
-            const gen3Spacing = width / (nodesByGen[2].length + 1);
-            let gen3X = gen3Spacing;
-            nodesByGen[2].forEach((person, i) => {
-                const fatherCode = person.Goc ? person.Goc.replace("#", "") : null;
+            // Generation 3: Group by parent couples with spacing
+            const gen3BaseY = 2 * genHeight + genHeight / 4;
+            const gen3CoupleWidth = 150; // Width for child + 2 wives
+            const gen3CoupleSpacing = 100; // Space between unrelated couples
+            currentX = 50; // Reset X for Gen 3
+            const gen3Males = nodesByGen[2].filter(p => p.Sex === "M" && !p.PersonCode.includes("w"));
+            gen3Males.forEach((male, maleIndex) => {
+                const fatherCode = male.Goc ? male.Goc.replace("#", "") : null;
                 const mother = fatherCode ? nodes.find(n => n.PersonCode === `${fatherCode}w1`) : null;
-                const yOffset = mother ? (i % 3) * 40 : 0; // Stagger every 3 nodes
+                const yOffset = maleIndex % 3 * 40; // Stagger within groups
                 const y = gen3BaseY + yOffset;
-                nodes.push({ ...person, x: gen3X, y });
-                gen3X += gen3Spacing; // Wider spacing
+
+                // Male child
+                nodes.push({ ...male, x: currentX, y });
+                // Wife 1
+                const w1 = nodesByGen[2].find(p => p.PersonCode === `${male.PersonCode}w1`);
+                if (w1) nodes.push({ ...w1, x: currentX + 50, y });
+                // Wife 2
+                const w2 = nodesByGen[2].find(p => p.PersonCode === `${male.PersonCode}w2`);
+                if (w2) nodes.push({ ...w2, x: currentX + 100, y });
+                currentX += gen3CoupleWidth + gen3CoupleSpacing; // Space after each couple
             });
 
             // Draw links
