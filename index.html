@@ -8,10 +8,11 @@
     <style>
         body { font-family: Arial, sans-serif; }
         svg { border: 1px solid #ccc; }
-        .male { stroke: blue; stroke-width: 2px; fill: white; }
-        .female { stroke: pink; stroke-width: 2px; fill: white; }
+        .male { fill: lightblue; stroke: black; stroke-width: 1px; }
+        .female { fill: lightpink; stroke: black; stroke-width: 1px; }
         .link { stroke: black; stroke-width: 1.5px; }
-        text { font-size: 9px; text-anchor: middle; }
+        .textbox { fill: white; stroke: black; stroke-width: 1px; }
+        text { font-size: 9px; text-anchor: start; }
         .tab { display: inline-block; padding: 10px; cursor: pointer; background: #f0f0f0; margin: 5px; }
         .tab.active { background: #d0d0d0; }
         .tab-content { display: none; }
@@ -40,7 +41,7 @@
             const nodes = [];
             nodesByGen.forEach((gen, genIndex) => {
                 const y = genIndex * genHeight + genHeight / 2;
-                const coupleWidth = 150;
+                const coupleWidth = 250; // Increased for textbox space
                 const coupleSpacing = 100;
                 let currentX = 50;
                 const genMales = gen.filter(p => p.Sex === "M" && !p.BranchCode.includes("w"));
@@ -100,6 +101,7 @@
                 const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
                 g.setAttribute("transform", `translate(${node.x},${node.y})`);
 
+                // Shape
                 const shape = document.createElementNS("http://www.w3.org/2000/svg", node.Sex === "M" ? "rect" : "circle");
                 shape.setAttribute("class", node.Sex === "M" ? "male" : "female");
                 if (node.Sex === "M") {
@@ -112,13 +114,23 @@
                 }
                 g.appendChild(shape);
 
+                // Textbox
+                const textbox = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                textbox.setAttribute("class", "textbox");
+                textbox.setAttribute("x", 25); // Right of shape
+                textbox.setAttribute("y", -40); // Adjusted for text height
+                textbox.setAttribute("width", 150); // Wide enough for text
+                textbox.setAttribute("height", 80); // Tall enough for 7 lines
+                g.appendChild(textbox);
+
                 const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
                 const gocLink = node.Goc ? `<tspan x="0" dy="10"><a xlink:href="#node-${findGreatGreatGrandma(data, node.BranchCode)}" target="_self">Goc: ${node.Goc}</a></tspan>` : '';
                 text.innerHTML = `${node["Real Name"]}<tspan x="0" dy="10">ID: ${node.ID}</tspan><tspan x="0" dy="10">Branch: ${node.BranchCode}</tspan><tspan x="0" dy="10">Born: ${node.Birthyear}</tspan><tspan x="0" dy="10">Died: ${node["Death Date"]}</tspan><tspan x="0" dy="10">Lunar: ${node["Death Date (Vietnamese Lunar)"]}</tspan><tspan x="0" dy="10">Addr: ${node.Address}</tspan>${gocLink}`;
-                text.setAttribute("y", node.Sex === "M" ? -35 : -40);
+                text.setAttribute("x", 30); // Inside textbox, left-aligned
+                text.setAttribute("y", -35); // Top of textbox
                 g.appendChild(text);
 
-                g.setAttribute("id", `node-${node.BranchCode}`); // ID for linking
+                g.setAttribute("id", `node-${node.BranchCode}`);
                 svg.appendChild(g);
             });
         }
@@ -126,23 +138,22 @@
         function findGreatGreatGrandma(data, branchCode) {
             let current = data.find(p => p.BranchCode === branchCode);
             let steps = 0;
-            while (current && current.Goc && steps < 4) { // Up to great-great-grandma (4 steps back)
+            while (current && current.Goc && steps < 4) {
                 const fatherCode = current.Goc.replace("#", "");
                 current = data.find(p => p.BranchCode === fatherCode);
                 steps++;
             }
-            if (steps >= 2 && current) { // At least great-grandparent level
-                const motherCode = `${current.BranchCode}w1`; // Assume first wife
+            if (steps >= 2 && current) {
+                const motherCode = `${current.BranchCode}w1`;
                 return motherCode;
             }
-            return "man1w1"; // Default to Alice Turner if not found
+            return "man1w1";
         }
 
         function createTabs() {
             const tabsDiv = document.getElementById("tabs");
             const contentsDiv = document.getElementById("tab-contents");
             
-            // Tab 1: Gen 1-3
             const tab1 = document.createElement("div");
             tab1.className = "tab active";
             tab1.textContent = "Gen 1-3";
@@ -160,7 +171,6 @@
             contentsDiv.appendChild(content1);
             buildTree(datajs, "svg1", 1, 3);
 
-            // Tabs for Gen 3 males
             const gen3Males = datajs.filter(p => p.Generation === 3 && p.Sex === "M" && !p.BranchCode.includes("w"));
             gen3Males.forEach((male, index) => {
                 const tabId = `tab${index + 2}`;
