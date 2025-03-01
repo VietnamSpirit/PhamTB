@@ -3,69 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Family Tree</title>
-    <script src="data.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.3.0/raphael.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/treant-js/1.0/Treant.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/treant-js/1.0/Treant.css">
+    <title>Family Tree - SVG & Vanilla JS</title>
     <style>
         body { font-family: Arial, sans-serif; }
-        .tree-container { width: 100%; height: 600px; display: flex; justify-content: center; align-items: center; }
+        svg { border: 1px solid #ccc; }
+        .male { stroke: blue; stroke-width: 2px; fill: white; }
+        .female { stroke: pink; stroke-width: 2px; fill: white; }
+        .link { stroke: black; stroke-width: 1.5px; }
+        text { font-size: 10px; text-anchor: middle; }
+        .node-box { border: 1px solid #ccc; padding: 5px; background: white; }
     </style>
 </head>
 <body>
-    <h2 style="text-align: center;">Family Tree - First 3 Generations</h2>
-    <div id="tree" class="tree-container"></div>
-    
+    <h2>Family Tree - First 3 Generations</h2>
+    <svg id="tree" width="1200" height="600"></svg>
+    <script src="data.js"></script>
     <script>
-        function loadData() {
-            if (typeof datajs !== 'undefined') {
-                console.log("Data loaded successfully:", datajs);
-                let filteredData = datajs.filter(person => person.Generation <= 3);
-                console.log("Filtered Data:", filteredData);
-                buildTree(filteredData);
-            } else {
-                console.error("ERROR: data.js did not load correctly.");
-                document.getElementById("tree").innerText = "Failed to load data.";
-            }
-        }
-
         function buildTree(data) {
-            let nodes = {};
-            
-            data.forEach(person => {
-                nodes[person.PersonCode] = {
-                    text: { name: person["Real Name"] },
-                    HTMLclass: person.Sex === "M" ? "male" : "female"
-                };
+            const svg = document.getElementById("tree");
+            const filteredData = data.filter(p => p.Generation <= 3);
+            const width = 1200;
+            const height = 600;
+            const genHeight = height / 3; // Space for each generation
+
+            // Organize nodes by generation and calculate positions
+            const nodesByGen = [[], [], []]; // Gen 1, 2, 3
+            filteredData.forEach(person => {
+                nodesByGen[person.Generation - 1].push(person);
             });
-            
-            data.forEach(person => {
-                if (person.Goc) {
-                    let parentCode = person.Goc.replace('#', '');
-                    if (nodes[parentCode]) {
-                        nodes[person.PersonCode].parent = nodes[parentCode];
+
+            const nodes = [];
+            nodesByGen.forEach((gen, genIndex) => {
+                const y = genIndex * genHeight + genHeight / 2; // Center vertically in each generation band
+                const xSpacing = width / (gen.length + 1); // Evenly space nodes horizontally
+                gen.forEach((person, i) => {
+                    const x = (i + 1) * xSpacing;
+                    nodes.push({ ...person, x, y });
+                });
+            });
+
+            // Draw links (parent-child and spouse)
+            nodes.forEach(node => {
+                // Parent-child link
+                if (node.Goc) {
+                    const parent = nodes.find(p => `#${p.PersonCode}` === node.Goc);
+                    if (parent) {
+                        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                        line.setAttribute("x1", parent.x);
+                        line.setAttribute("y1", parent.y + 30); // Bottom of parent node
+                        line.setAttribute("x2", node.x);
+                        line.setAttribute("y2", node.y - 30); // Top of child node
+                        line.setAttribute("class", "link");
+                        svg.appendChild(line);
+                    }
+                }
+                // Spouse link (horizontal)
+                if (node.Sex === "M" && !node.PersonCode.includes("w")) {
+                    const spouse1 = nodes.find(s => s.PersonCode === `${node.PersonCode}w1`);
+                    const spouse2 = nodes.find(s => s.PersonCode === `${node.PersonCode}w2`);
+                    if (spouse1) {
+                        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                        line.setAttribute("x1", node.x + 20); // Right of male
+                        line.setAttribute("x2", spouse1.x - 20); // Left of spouse
+                        line.setAttribute("y1", node.y);
+                        line.setAttribute("y2", spouse1.y);
+                        line.setAttribute("class", "link");
+                        svg.appendChild(line);
+                    }
+                    if (spouse2) {
+                        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                        line.setAttribute("x1", spouse1 ? spouse1.x + 20 : node.x + 20);
+                        line.setAttribute("x2", spouse2.x - 20);
+                        line.setAttribute("y1", spouse2.y);
+                        line.setAttribute("y2", spouse2.y);
+                        line.setAttribute("class", "link");
+                        svg.appendChild(line);
                     }
                 }
             });
-            
-            let chartConfig = {
-                chart: {
-                    container: "#tree",
-                    levelSeparation: 30,
-                    siblingSeparation: 15,
-                    subTeeSeparation: 25,
-                    nodeAlign: "BOTTOM",
-                    connectors: { type: "step" },
-                    node: { HTMLclass: "node" }
-                },
-                nodeStructure: Object.values(nodes).find(n => !n.parent)
-            };
-            
-            new Treant(chartConfig);
+
+            // Draw nodes
+            nodes.forEach(node => {
+                const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                g.setAttribute("transform", `translate(${node.x},${node.y})`);
+
+                // Shape
+                const shape = document.createElementNS("http://www.w3.org/2000/svg", node.Sex === "M" ? "rect" : "circle");
+                shape.setAttribute("class", node.Sex === "M" ? "male" : "female");
+                if (node.Sex === "M") {
+                    shape.setAttribute("x", -20);
+                    shape.setAttribute("y", -20);
+                    shape.setAttribute("width", 40);
+                    shape.setAttribute("height", 40);
+                } else {
+                    shape.setAttribute("r", 20);
+                }
+                g.appendChild(shape);
+
+                // Text
+                const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                text.innerHTML = `${node["Real Name"]}<tspan x="0" dy="12">Born: ${node.Birthdate}</tspan><tspan x="0" dy="12">Died: ${node["Death Date"]}</tspan><tspan x="0" dy="12">ID: ${node.PersonCode}</tspan>`;
+                text.setAttribute("y", node.Sex === "M" ? -25 : -30); // Above shape
+                g.appendChild(text);
+
+                svg.appendChild(g);
+            });
         }
-        
-        window.onload = loadData;
+
+        window.onload = () => buildTree(datajs);
     </script>
 </body>
 </html>
