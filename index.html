@@ -26,7 +26,7 @@
             border-bottom: 1px solid black;
             z-index: 10;
             padding: 8px;
-            top: 220px; /* Adjusted to avoid overlap with lunar-info */
+            top: 350px; /* Adjusted to fit below grid */
         }
         body {
             padding: 0;
@@ -38,26 +38,23 @@
             align-items: center;
             background-color: #f0f0f0;
         }
-        .pos-root { border-color: yellow; border-width: 5px; }
-        .label:hover { background: #CCF; z-index: 10; }
-        .pos-ancestor { border-color: orange; border-width: 5px; }
-        .text-ancestor { color: orange; }
-        .pos-blood { border-color: red; border-width: 3px; }
-        .text-blood { color: red; }
-        .pos-descendant { border-color: olive; border-width: 5px; }
-        .text-descendant { color: olive; }
-        .pos-other { border-color: black; border-width: 1px; }
-        .text-other { color: black; }
-        .drawn-line { z-index: -1; border-width: 1px !important; }
-        .label.has-info {
-            background-image: url('info-icon.png');
-            background-repeat: no-repeat;
-            background-position: right top;
-            background-size: 10px 10px;
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* 2 equal columns */
+            gap: 20px; /* Space between columns */
+            position: fixed;
+            top: 10px;
+            width: 90%; /* Adjust width to fit content */
+            max-width: 1200px; /* Limit max width */
+            z-index: 5;
         }
-        .label:hover .info { display: block; }
-        #panel-bottom ul { margin-top: 2px; margin-bottom: 2px; }
-        #login-panel, #lunar-info, #subtree-input {
+        #lunar-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        #login-panel, #subtree-input {
             text-align: center;
             margin: 10px;
         }
@@ -67,7 +64,7 @@
             border: 2px solid #4682b4;
             border-radius: 8px;
             background-color: #e6f3fa;
-            width: 800px;
+            width: 500px; /* Adjusted width for cleaner look */
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             font-family: 'Arial', sans-serif;
             white-space: pre-wrap;
@@ -75,7 +72,7 @@
         #reminder {
             font-size: 16px;
             padding: 15px;
-            width: 800px;
+            width: 500px; /* Match lunar-date width */
             margin-bottom: 10px;
             color: #8b0000;
             background: linear-gradient(to bottom, #fdf6e3, #f9e8b8);
@@ -97,17 +94,6 @@
             background: radial-gradient(circle, rgba(255, 255, 255, 0.2), transparent);
             pointer-events: none;
         }
-        #lunar-info {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: fixed;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 5;
-        }
         button {
             padding: 8px 16px;
             background-color: #4CAF50;
@@ -120,18 +106,20 @@
     </style>
 </head>
 <body>
-    <div id="lunar-info">
-        <div id="reminder"></div>
-        <input type="text" id="lunar-date" readonly>
-    </div>
-    <div id="login-panel">
-        <p>Enter password to view the family tree:</p>
-        <input type="password" id="password-input">
-        <button onclick="checkPassword()">Submit</button>
-        <div id="subtree-input" style="display: none;">
-            <p>Or enter a Person ID for a subtree:</p>
-            <input type="number" id="id-input" placeholder="e.g., 1">
-            <button onclick="showSubtree()">Show Subtree</button>
+    <div class="grid-container">
+        <div id="lunar-info">
+            <div id="reminder"></div>
+            <input type="text" id="lunar-date" readonly>
+        </div>
+        <div id="login-panel">
+            <p>Enter password to view the family tree:</p>
+            <input type="password" id="password-input">
+            <button onclick="checkPassword()">Submit</button>
+            <div id="subtree-input" style="display: none;">
+                <p>Or enter a Person ID for a subtree:</p>
+                <input type="number" id="id-input" placeholder="e.g., 1">
+                <button onclick="showSubtree()">Show Subtree</button>
+            </div>
         </div>
     </div>
     <div id="control-panel" style="display: none;">
@@ -202,7 +190,7 @@
             }
         }
 
-        // Display today's normal and lunar date with full details, and check for commemorations
+        // Display today's normal and lunar date with values only, and check for commemorations
         const today = new Date();
         const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         const normalDate = `${months[today.getMonth()]} ${String(today.getDate()).padStart(2, '0')}, ${today.getFullYear()}`;
@@ -213,15 +201,15 @@
         if (lunarToday) {
             const [lunarDay, lunarMonth] = lunarToday['Ngày âm lịch'].split('/').slice(0, 2);
             lunarDateField.value = [
-                `Hôm nay: ${normalDate}`,
-                `Ngày âm lịch: ${lunarDay}/${lunarMonth}${lunarToday['Tháng nhuận'] === '1' ? ' (Nhuận)' : ''}`,
-                `Ngày trong tuần: ${lunarToday['Ngày trong tuần']}`,
-                `Ngày Can-Chi: ${lunarToday['Ngày Can-Chi']}`,
-                `Tháng Can-Chi: ${lunarToday['Tháng Can-Chi']}`,
-                `Năm Can-Chi: ${lunarToday['Năm Can-Chi']}`
+                `${normalDate}`,
+                `${lunarDay}/${lunarMonth}${lunarToday['Tháng nhuận'] === '1' ? ' (Nhuận)' : ''}`,
+                `${lunarToday['Ngày trong tuần']}`,
+                `${lunarToday['Ngày Can-Chi']}`,
+                `${lunarToday['Tháng Can-Chi']}`,
+                `${lunarToday['Năm Can-Chi']}`
             ].join('\n');
         } else {
-            lunarDateField.value = `Hôm nay: ${normalDate}\nNgày âm lịch không có trong bảng`;
+            lunarDateField.value = `${normalDate}\nNgày âm lịch không có trong bảng`;
         }
 
         function checkCommemorations() {
