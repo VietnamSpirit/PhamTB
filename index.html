@@ -66,15 +66,15 @@
             border: 2px solid #4682b4;
             border-radius: 8px;
             background-color: #e6f3fa;
-            width: 600px;
+            width: 800px; /* Expanded from 600px to 800px */
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             font-family: 'Arial', sans-serif;
-            white-space: pre-wrap; /* Allow wrapping and preserve line breaks */
+            white-space: pre-wrap;
         }
         #reminder {
             font-size: 16px;
             padding: 15px;
-            width: 600px;
+            width: 800px; /* Match lunar-date width */
             margin-bottom: 10px;
             color: #8b0000;
             background: linear-gradient(to bottom, #fdf6e3, #f9e8b8);
@@ -106,6 +106,7 @@
             left: 50%;
             transform: translateX(-50%);
             z-index: 5;
+            display: none; /* Hidden initially */
         }
         button {
             padding: 8px 16px;
