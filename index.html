@@ -26,6 +26,7 @@
             border-bottom: 1px solid black;
             z-index: 10;
             padding: 8px;
+            top: 220px; /* Adjusted to avoid overlap with lunar-info */
         }
         body {
             padding: 0;
@@ -66,7 +67,7 @@
             border: 2px solid #4682b4;
             border-radius: 8px;
             background-color: #e6f3fa;
-            width: 800px; /* Expanded from 600px to 800px */
+            width: 800px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             font-family: 'Arial', sans-serif;
             white-space: pre-wrap;
@@ -74,7 +75,7 @@
         #reminder {
             font-size: 16px;
             padding: 15px;
-            width: 800px; /* Match lunar-date width */
+            width: 800px;
             margin-bottom: 10px;
             color: #8b0000;
             background: linear-gradient(to bottom, #fdf6e3, #f9e8b8);
@@ -106,7 +107,6 @@
             left: 50%;
             transform: translateX(-50%);
             z-index: 5;
-            display: none; /* Hidden initially */
         }
         button {
             padding: 8px 16px;
@@ -120,6 +120,10 @@
     </style>
 </head>
 <body>
+    <div id="lunar-info">
+        <div id="reminder"></div>
+        <input type="text" id="lunar-date" readonly>
+    </div>
     <div id="login-panel">
         <p>Enter password to view the family tree:</p>
         <input type="password" id="password-input">
@@ -129,10 +133,6 @@
             <input type="number" id="id-input" placeholder="e.g., 1">
             <button onclick="showSubtree()">Show Subtree</button>
         </div>
-    </div>
-    <div id="lunar-info">
-        <div id="reminder"></div>
-        <input type="text" id="lunar-date" readonly>
     </div>
     <div id="control-panel" style="display: none;">
         <div id="panel-top">
@@ -169,7 +169,6 @@
             if (input === correctPassword) {
                 document.getElementById('login-panel').style.display = 'none';
                 document.getElementById('control-panel').style.display = 'block';
-                document.getElementById('lunar-info').style.display = 'block';
                 rootName = familyData[0]["Real Name"];
                 if (typeof showRootName === 'function' && typeof drawTree === 'function' && window.state) {
                     showRootName();
@@ -190,7 +189,6 @@
             if (person) {
                 document.getElementById('login-panel').style.display = 'none';
                 document.getElementById('control-panel').style.display = 'block';
-                document.getElementById('lunar-info').style.display = 'block';
                 rootName = person["Real Name"];
                 if (typeof showRootName === 'function' && typeof drawTree === 'function' && window.state) {
                     showRootName();
