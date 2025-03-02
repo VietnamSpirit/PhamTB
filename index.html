@@ -33,7 +33,7 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
             background-color: #f0f0f0;
         }
@@ -69,18 +69,19 @@
             width: 600px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             font-family: 'Arial', sans-serif;
+            white-space: pre-wrap; /* Allow wrapping and preserve line breaks */
         }
         #reminder {
             font-size: 16px;
             padding: 15px;
             width: 600px;
-            margin-top: 10px;
-            color: #8b0000; /* Dark red text */
-            background: linear-gradient(to bottom, #fdf6e3, #f9e8b8); /* Parchment gradient */
-            border: 3px double #8b4513; /* Double brown border */
+            margin-bottom: 10px;
+            color: #8b0000;
+            background: linear-gradient(to bottom, #fdf6e3, #f9e8b8);
+            border: 3px double #8b4513;
             border-radius: 12px;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), inset 0 0 10px rgba(139, 69, 19, 0.1); /* Outer shadow + inner glow */
-            font-family: 'Georgia', serif; /* Classic serif font */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), inset 0 0 10px rgba(139, 69, 19, 0.1);
+            font-family: 'Georgia', serif;
             white-space: pre-wrap;
             position: relative;
             overflow: hidden;
@@ -92,7 +93,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.2), transparent); /* Subtle texture */
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2), transparent);
             pointer-events: none;
         }
         #lunar-info {
@@ -101,9 +102,9 @@
             align-items: center;
             justify-content: center;
             position: fixed;
-            top: 50%;
+            top: 10px;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translateX(-50%);
             z-index: 5;
         }
         button {
@@ -118,10 +119,6 @@
     </style>
 </head>
 <body>
-    <div id="lunar-info">
-        <input type="text" id="lunar-date" readonly>
-        <div id="reminder"></div>
-    </div>
     <div id="login-panel">
         <p>Enter password to view the family tree:</p>
         <input type="password" id="password-input">
@@ -132,7 +129,10 @@
             <button onclick="showSubtree()">Show Subtree</button>
         </div>
     </div>
-
+    <div id="lunar-info">
+        <div id="reminder"></div>
+        <input type="text" id="lunar-date" readonly>
+    </div>
     <div id="control-panel" style="display: none;">
         <div id="panel-top">
             <span>Family tree of <b><span id="root-name"></span></b></span>
@@ -166,4 +166,107 @@
         function checkPassword() {
             const input = document.getElementById('password-input').value;
             if (input === correctPassword) {
-                document.getElementById('login
+                document.getElementById('login-panel').style.display = 'none';
+                document.getElementById('control-panel').style.display = 'block';
+                document.getElementById('lunar-info').style.display = 'block';
+                rootName = familyData[0]["Real Name"];
+                if (typeof showRootName === 'function' && typeof drawTree === 'function' && window.state) {
+                    showRootName();
+                    drawTree(window.state.divs, window.state.neighbours);
+                } else {
+                    console.error('Family tree functions not available. Check family.js.');
+                    document.body.innerHTML += '<p style="color:red;">Error: Family tree failed to load. Check console.</p>';
+                }
+            } else {
+                alert("Incorrect password!");
+                document.getElementById('subtree-input').style.display = 'block';
+            }
+        }
+
+        function showSubtree() {
+            const id = parseInt(document.getElementById('id-input').value);
+            const person = familyData.find(p => p.ID === id);
+            if (person) {
+                document.getElementById('login-panel').style.display = 'none';
+                document.getElementById('control-panel').style.display = 'block';
+                document.getElementById('lunar-info').style.display = 'block';
+                rootName = person["Real Name"];
+                if (typeof showRootName === 'function' && typeof drawTree === 'function' && window.state) {
+                    showRootName();
+                    drawTree(window.state.divs, window.state.neighbours);
+                } else {
+                    console.error('Family tree functions not available. Check family.js.');
+                    document.body.innerHTML += '<p style="color:red;">Error: Family tree failed to load. Check console.</p>';
+                }
+            } else {
+                alert("Invalid ID!");
+            }
+        }
+
+        // Display today's normal and lunar date with full details, and check for commemorations
+        const today = new Date();
+        const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        const normalDate = `${months[today.getMonth()]} ${String(today.getDate()).padStart(2, '0')}, ${today.getFullYear()}`;
+        const todaySolar = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
+        const lunarToday = lookupTable.find(entry => entry['Ngày dương lịch'] === todaySolar);
+        const lunarDateField = document.getElementById('lunar-date');
+
+        if (lunarToday) {
+            const [lunarDay, lunarMonth] = lunarToday['Ngày âm lịch'].split('/').slice(0, 2);
+            lunarDateField.value = [
+                `Hôm nay: ${normalDate}`,
+                `Ngày âm lịch: ${lunarDay}/${lunarMonth}${lunarToday['Tháng nhuận'] === '1' ? ' (Nhuận)' : ''}`,
+                `Ngày trong tuần: ${lunarToday['Ngày trong tuần']}`,
+                `Ngày Can-Chi: ${lunarToday['Ngày Can-Chi']}`,
+                `Tháng Can-Chi: ${lunarToday['Tháng Can-Chi']}`,
+                `Năm Can-Chi: ${lunarToday['Năm Can-Chi']}`
+            ].join('\n');
+        } else {
+            lunarDateField.value = `Hôm nay: ${normalDate}\nNgày âm lịch không có trong bảng`;
+        }
+
+        function checkCommemorations() {
+            console.log('Checking commemorations...');
+            console.log('Today Solar:', todaySolar);
+            console.log('Lunar Today:', lunarToday);
+
+            if (!lunarToday) {
+                console.log('No lunar date found for today');
+                return;
+            }
+
+            const todayDay = String(lunarToday['Ngày âm lịch'].split('/')[0]).padStart(2, '0');
+            const todayMonth = String(lunarToday['Ngày âm lịch'].split('/')[1]).padStart(2, '0');
+            const reminderDiv = document.getElementById('reminder');
+            let reminders = [];
+
+            console.log('Today Lunar Day:', todayDay, 'Today Lunar Month:', todayMonth);
+
+            familyData.forEach(person => {
+                if (person["Death Date (Vietnamese Lunar)"]) {
+                    const [lunarDay, lunarMonth] = person["Death Date (Vietnamese Lunar)"].split('/').map(s => s.trim().padStart(2, '0')).slice(0, 2);
+                    console.log(`Person: ${person["Real Name"]}, Death Date: ${lunarDay}/${lunarMonth}`);
+                    if (lunarDay === todayDay && lunarMonth === todayMonth) {
+                        const details = [
+                            `Kỷ niệm ${person["Real Name"]}`,
+                            `ID: ${person["ID"]}`,
+                            `Ngày sinh: ${person["Birthyear"]}`,
+                            `Ngày mất: ${person["Death Date (Vietnamese Lunar)"]}`,
+                            `Giới tính: ${person["Sex"] === "M" ? "Nam" : "Nữ"}`,
+                            `Địa chỉ: ${person["Address"]}`,
+                            `Ghi chú: ${person["Note"] || "Không có"}`,
+                            `Gốc: ${person["Gốc"] || "Không có"}`,
+                            `Thế hệ: ${person["Generation"]}`
+                        ].join('\n');
+                        reminders.push(details);
+                    }
+                }
+            });
+
+            console.log('Reminders found:', reminders);
+            reminderDiv.innerText = reminders.length > 0 ? reminders.join('\n\n') : 'Không có kỷ niệm hôm nay';
+        }
+        checkCommemorations();
+    </script>
+</body>
+</html>
