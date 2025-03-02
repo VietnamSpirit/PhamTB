@@ -140,7 +140,7 @@
         <div id="panel-bottom">
             <div id="info-pane-placeholder">
                 <i>Hover your mouse on a person with <img src="info-icon.png" height="12px"> for their information</i>
-                <br>See the <a target="_blank" href="https://github.com/daveagp/family-tree">source code</a> on GitHub
+                
             </div>
             <div id="info-pane" style="display: none">About <i><span id="info-pane-name"></span></i>:
                 <span id="info-pane-details"></span>
@@ -201,12 +201,12 @@
         if (lunarToday) {
             const [lunarDay, lunarMonth] = lunarToday['Ngày âm lịch'].split('/').slice(0, 2);
             lunarDateField.value = [
-                `${normalDate}`,
-                `${lunarDay}/${lunarMonth}${lunarToday['Tháng nhuận'] === '1' ? ' (Nhuận)' : ''}`,
-                `${lunarToday['Ngày trong tuần']}`,
-                `${lunarToday['Ngày Can-Chi']}`,
-                `${lunarToday['Tháng Can-Chi']}`,
-                `${lunarToday['Năm Can-Chi']}`
+                `${normalDate}`, 
+                ' tức ', `${lunarDay}/${lunarMonth}${lunarToday['Tháng nhuận'] === '1' ? ' (Nhuận)' : ''}`, 
+                ' ', `${lunarToday['Ngày trong tuần']}`, 
+                ' ngày ',`${lunarToday['Ngày Can-Chi']}`, 
+                ' tháng ',`${lunarToday['Tháng Can-Chi']}`, 
+                ' năm ',`${lunarToday['Năm Can-Chi']}`
             ].join('\n');
         } else {
             lunarDateField.value = `${normalDate}\nNgày âm lịch không có trong bảng`;
@@ -235,9 +235,9 @@
                     console.log(`Person: ${person["Real Name"]}, Death Date: ${lunarDay}/${lunarMonth}`);
                     if (lunarDay === todayDay && lunarMonth === todayMonth) {
                         const details = [
-                            `Kỷ niệm ${person["Real Name"]}`,
+                            `Ngày giỗ ${person["Real Name"]}`,
                             `ID: ${person["ID"]}`,
-                            `Ngày sinh: ${person["Birthyear"]}`,
+                            
                             `Ngày mất: ${person["Death Date (Vietnamese Lunar)"]}`,
                             `Giới tính: ${person["Sex"] === "M" ? "Nam" : "Nữ"}`,
                             `Địa chỉ: ${person["Address"]}`,
