@@ -94,6 +94,24 @@
             background: radial-gradient(circle, rgba(255, 255, 255, 0.2), transparent);
             pointer-events: none;
         }
+        #candle-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        #candle {
+            width: 100px; /* Adjust size as needed */
+            height: auto;
+            z-index: 2; /* Ensure candle is above canvas */
+        }
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1; /* Canvas behind candle */
+        }
         button {
             padding: 8px 16px;
             background-color: #4CAF50;
@@ -108,6 +126,10 @@
 <body>
     <div class="grid-container">
         <div id="lunar-info">
+            <div id="candle-container">
+                <img id="candle" class="candle" src="photos/web/0.png" alt="Candle Animation">
+                <canvas id="canvas"></canvas>
+            </div>
             <div id="reminder"></div>
             <input type="text" id="lunar-date" readonly>
         </div>
@@ -140,7 +162,7 @@
         <div id="panel-bottom">
             <div id="info-pane-placeholder">
                 <i>Hover your mouse on a person with <img src="info-icon.png" height="12px"> for their information</i>
-                
+                <br>See the <a target="_blank" href="https://github.com/daveagp/family-tree">source code</a> on GitHub
             </div>
             <div id="info-pane" style="display: none">About <i><span id="info-pane-name"></span></i>:
                 <span id="info-pane-details"></span>
@@ -190,7 +212,7 @@
             }
         }
 
-        // Display today's normal and lunar date with values only, and check for commemorations
+        // Display today's normal and lunar date with custom format, and check for commemorations
         const today = new Date();
         const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         const normalDate = `${months[today.getMonth()]} ${String(today.getDate()).padStart(2, '0')}, ${today.getFullYear()}`;
@@ -201,12 +223,13 @@
         if (lunarToday) {
             const [lunarDay, lunarMonth] = lunarToday['Ngày âm lịch'].split('/').slice(0, 2);
             lunarDateField.value = [
-                `${normalDate}`, 
-                ' tức ', `${lunarDay}/${lunarMonth}${lunarToday['Tháng nhuận'] === '1' ? ' (Nhuận)' : ''}`, 
-                ' ', `${lunarToday['Ngày trong tuần']}`, 
-                ' ngày ',`${lunarToday['Ngày Can-Chi']}`, 
-                ' tháng ',`${lunarToday['Tháng Can-Chi']}`, 
-                ' năm ',`${lunarToday['Năm Can-Chi']}`
+                `${normalDate}`,
+                'tức',
+                `${lunarDay}/${lunarMonth}${lunarToday['Tháng nhuận'] === '1' ? ' (Nhuận)' : ''}`,
+                `${lunarToday['Ngày trong tuần']}`,
+                `ngày ${lunarToday['Ngày Can-Chi']}`,
+                `tháng ${lunarToday['Tháng Can-Chi']}`,
+                `năm ${lunarToday['Năm Can-Chi']}`
             ].join('\n');
         } else {
             lunarDateField.value = `${normalDate}\nNgày âm lịch không có trong bảng`;
@@ -237,7 +260,6 @@
                         const details = [
                             `Ngày giỗ ${person["Real Name"]}`,
                             `ID: ${person["ID"]}`,
-                            
                             `Ngày mất: ${person["Death Date (Vietnamese Lunar)"]}`,
                             `Giới tính: ${person["Sex"] === "M" ? "Nam" : "Nữ"}`,
                             `Địa chỉ: ${person["Address"]}`,
@@ -251,9 +273,64 @@
             });
 
             console.log('Reminders found:', reminders);
-            reminderDiv.innerText = reminders.length > 0 ? reminders.join('\n\n') : 'Không có kỷ niệm hôm nay';
+            reminderDiv.innerText = reminders.length > 0 ? reminders.join('\n\n') : 'Không có ngày giỗ hôm nay';
         }
         checkCommemorations();
+
+        // Candle and particle animation script
+        let candleIndex = 0;
+        const candleFrames = [
+            "photos/web/0.png", "photos/web/1.png", "photos/web/2.png", "photos/web/3.png", 
+            "photos/web/4.png", "photos/web/5.png", "photos/web/6.png", "photos/web/7.png", 
+            "photos/web/8.png", "photos/web/2.png", "photos/web/1.png"
+        ];
+        function animateCandle() {
+            candleIndex = (candleIndex + 1) % candleFrames.length;
+            document.getElementById("candle").src = candleFrames[candleIndex];
+        }
+        setInterval(animateCandle, 200);
+
+        let canvas = document.getElementById("canvas");
+        let ctx = canvas.getContext("2d");
+        let W = window.innerWidth;
+        let H = window.innerHeight;
+        canvas.width = W;
+        canvas.height = H;
+
+        let particles = [];
+        for (let i = 0; i < 80; i++) {
+            particles.push({
+                x: Math.random() * W,
+                y: Math.random() * H,
+                r: Math.random() * 3 + 1,
+                d: Math.random() * 80
+            });
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, W, H);
+            ctx.fillStyle = "white";
+            ctx.beginPath();
+            for (let i = 0; i < particles.length; i++) {
+                let p = particles[i];
+                ctx.moveTo(p.x, p.y);
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2, true);
+            }
+            ctx.fill();
+            update();
+        }
+
+        function update() {
+            for (let i = 0; i < particles.length; i++) {
+                let p = particles[i];
+                p.y += Math.cos(p.d) + 1 + p.r / 2;
+                p.x += Math.sin(p.d) * 2;
+                if (p.x > W || p.x < 0 || p.y > H) {
+                    particles[i] = { x: Math.random() * W, y: -10, r: p.r, d: p.d };
+                }
+            }
+        }
+        setInterval(draw, 40);
     </script>
 </body>
 </html>
