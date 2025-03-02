@@ -6,7 +6,8 @@
     <script src="data.js" type="text/javascript"></script>
     <script src="family.js" type="text/javascript"></script>
     
-    <script src="https://unpkg.com/lunar-javascript@1.2.0/dist/lunar.js"></script>
+   <!-- <script src="https://unpkg.com/lunar-javascript@1.2.0/dist/lunar.js"></script> -->
+    <script src="amlich.js"></script>
     <style>
         /* Original styles preserved */
         .label {
@@ -108,7 +109,7 @@
         <div id="panel-bottom">
             <div id="info-pane-placeholder">
                 <i>Hover your mouse on a person with <img src="info-icon.png" height="12px"> for their information</i>
-                <br>See the <a target="_blank" href="https://github.com/daveagp/family-tree">source code</a> on GitHub
+                 
             </div>
             <div id="info-pane" style="display: none">About <i><span id="info-pane-name"></span></i>:
                 <span id="info-pane-details"></span>
@@ -117,15 +118,15 @@
     </div>
 
     <script>
-        const correctPassword = "Thuy"; // Change as needed
-        let familyData = datajs; // From data.js
-
+        const correctPassword = "Thuy";
+        let familyData = datajs;
+    
         function checkPassword() {
             const input = document.getElementById('password-input').value;
             if (input === correctPassword) {
                 document.getElementById('login-panel').style.display = 'none';
                 document.getElementById('control-panel').style.display = 'block';
-                rootName = familyData[0]["Real Name"]; // Default to first person (Henry Carter)
+                rootName = familyData[0]["Real Name"];
                 showRootName();
                 drawTree(window.state.divs, window.state.neighbours);
             } else {
@@ -133,7 +134,7 @@
                 document.getElementById('subtree-input').style.display = 'block';
             }
         }
-
+    
         function showSubtree() {
             const id = parseInt(document.getElementById('id-input').value);
             const person = familyData.find(p => p.ID === id);
@@ -147,28 +148,28 @@
                 alert("Invalid ID!");
             }
         }
-
-        // Display today's Vietnamese lunar date and check for commemorations
+    
+        // Display today's lunar date and check for commemorations
         const today = new Date();
-        const lunarToday = Lunar.fromYmd(today.getFullYear(), today.getMonth() + 1, today.getDate());
+        const lunarToday = computeDateToLunarDate(today.getDate(), today.getMonth() + 1, today.getFullYear(), 7); // Timezone 7 for Vietnam
         const lunarDateField = document.getElementById('lunar-date');
-        lunarDateField.value = `Today: ${lunarToday.getDay()}/${lunarToday.getMonth()}/${lunarToday.getYear()} (Lunar)`;
-
+        lunarDateField.value = `Today: ${lunarToday.lunarDay}/${lunarToday.lunarMonth}/${lunarToday.lunarYear} (Lunar${lunarToday.lunarLeap ? ' Leap' : ''})`;
+    
         function checkCommemorations() {
-            const todayDay = lunarToday.getDay().toString().padStart(2, '0');
-            const todayMonth = lunarToday.getMonth().toString().padStart(2, '0');
+            const todayDay = String(lunarToday.lunarDay).padStart(2, '0');
+            const todayMonth = String(lunarToday.lunarMonth).padStart(2, '0');
             const reminderDiv = document.getElementById('reminder');
             let reminders = [];
-
+    
             familyData.forEach(person => {
                 if (person["Death Date (Vietnamese Lunar)"]) {
-                    const [lunarDay, lunarMonth, lunarYear] = person["Death Date (Vietnamese Lunar)"].split('/').map(s => s.trim().padStart(2, '0')).slice(0, 2).concat(['']);
+                    const [lunarDay, lunarMonth] = person["Death Date (Vietnamese Lunar)"].split('/').map(s => s.trim().padStart(2, '0')).slice(0, 2);
                     if (lunarDay === todayDay && lunarMonth === todayMonth) {
                         reminders.push(`Commemorate ${person["Real Name"]} (Died: ${person["Death Date (Vietnamese Lunar)"]})`);
                     }
                 }
             });
-
+    
             reminderDiv.innerText = reminders.length > 0 ? reminders.join('\n') : '';
         }
         checkCommemorations();
