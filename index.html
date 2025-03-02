@@ -27,7 +27,16 @@
             z-index: 10;
             padding: 8px;
         }
-        body { padding: 0; margin: 0; }
+        body {
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f0;
+        }
         .pos-root { border-color: yellow; border-width: 5px; }
         .label:hover { background: #CCF; z-index: 10; }
         .pos-ancestor { border-color: orange; border-width: 5px; }
@@ -51,15 +60,52 @@
             text-align: center;
             margin: 10px;
         }
-        #lunar-date, #reminder {
+        #lunar-date {
             font-size: 18px;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            background-color: #fff;
-            width: 400px;
+            padding: 10px;
+            border: 2px solid #4682b4;
+            border-radius: 8px;
+            background-color: #e6f3fa;
+            width: 600px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            font-family: 'Arial', sans-serif;
         }
-        #reminder { color: #d9534f; }
+        #reminder {
+            font-size: 16px;
+            padding: 15px;
+            width: 600px;
+            margin-top: 10px;
+            color: #8b0000; /* Dark red text */
+            background: linear-gradient(to bottom, #fdf6e3, #f9e8b8); /* Parchment gradient */
+            border: 3px double #8b4513; /* Double brown border */
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), inset 0 0 10px rgba(139, 69, 19, 0.1); /* Outer shadow + inner glow */
+            font-family: 'Georgia', serif; /* Classic serif font */
+            white-space: pre-wrap;
+            position: relative;
+            overflow: hidden;
+        }
+        #reminder::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2), transparent); /* Subtle texture */
+            pointer-events: none;
+        }
+        #lunar-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+        }
         button {
             padding: 8px 16px;
             background-color: #4CAF50;
@@ -86,6 +132,7 @@
             <button onclick="showSubtree()">Show Subtree</button>
         </div>
     </div>
+
     <div id="control-panel" style="display: none;">
         <div id="panel-top">
             <span>Family tree of <b><span id="root-name"></span></b></span>
@@ -119,66 +166,4 @@
         function checkPassword() {
             const input = document.getElementById('password-input').value;
             if (input === correctPassword) {
-                document.getElementById('login-panel').style.display = 'none';
-                document.getElementById('control-panel').style.display = 'block';
-                rootName = familyData[0]["Real Name"];
-                showRootName();
-                drawTree(window.state.divs, window.state.neighbours);
-            } else {
-                alert("Incorrect password!");
-                document.getElementById('subtree-input').style.display = 'block';
-            }
-        }
-
-        function showSubtree() {
-            const id = parseInt(document.getElementById('id-input').value);
-            const person = familyData.find(p => p.ID === id);
-            if (person) {
-                document.getElementById('login-panel').style.display = 'none';
-                document.getElementById('control-panel').style.display = 'block';
-                rootName = person["Real Name"];
-                showRootName();
-                drawTree(window.state.divs, window.state.neighbours);
-            } else {
-                alert("Invalid ID!");
-            }
-        }
-
-        // Display today's normal and lunar date, and check for commemorations
-        const today = new Date();
-        const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        const normalDate = `${months[today.getMonth()]} ${String(today.getDate()).padStart(2, '0')}, ${today.getFullYear()}`;
-        const todaySolar = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
-        const lunarToday = lookupTable.find(entry => entry['Ngày dương lịch'] === todaySolar);
-        const lunarDateField = document.getElementById('lunar-date');
-        
-        if (lunarToday) {
-            const [lunarDay, lunarMonth] = lunarToday['Ngày âm lịch'].split('/').slice(0, 2);
-            lunarDateField.value = `Hôm nay: ${normalDate} / Ngày ${lunarDay} tháng ${lunarMonth} âm lịch${lunarToday['Tháng nhuận'] === '1' ? ' (Nhuận)' : ''}`;
-        } else {
-            lunarDateField.value = `Hôm nay: ${normalDate} / Ngày âm lịch không có trong bảng`;
-        }
-
-        function checkCommemorations() {
-            if (!lunarToday) return; // No lunar date found for today
-            const todayDay = String(lunarToday['Ngày âm lịch'].split('/')[0]).padStart(2, '0');
-            const todayMonth = String(lunarToday['Ngày âm lịch'].split('/')[1]).padStart(2, '0');
-            const reminderDiv = document.getElementById('reminder');
-            let reminders = [];
-
-            familyData.forEach(person => {
-                if (person["Death Date (Vietnamese Lunar)"]) {
-                    const [lunarDay, lunarMonth] = person["Death Date (Vietnamese Lunar)"].split('/').map(s => s.trim().padStart(2, '0')).slice(0, 2);
-                    // Match only day and month, ignoring year
-                    if (lunarDay === todayDay && lunarMonth === todayMonth) {
-                        reminders.push(`Kỷ niệm ${person["Real Name"]} (Mất: Ngày ${lunarDay} tháng ${lunarMonth} âm lịch)`);
-                    }
-                }
-            });
-
-            reminderDiv.innerText = reminders.length > 0 ? reminders.join('\n') : '';
-        }
-        checkCommemorations();
-    </script>
-</body>
-</html>
+                document.getElementById('login
