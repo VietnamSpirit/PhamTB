@@ -1,145 +1,118 @@
-// amlich.js (adapted from https://github.com/vanng822/amlich/blob/master/amlich.js)
-function INT(d) { return Math.floor(d); }
+// lunarSolar.js - Adapted from https://github.com/quangvinh86/SolarLunarCalendar/blob/master/LunarSolar.py
+function INT(d) {
+    return Math.floor(d);
+}
 
-function jdFromDate(dd, mm, yy) {
-    var a = INT((14 - mm) / 12);
-    var y = yy + 4800 - a;
-    var m = mm + 12 * a - 3;
-    var jd = dd + INT((153 * m + 2) / 5) + 365 * y + INT(y / 4) - INT(y / 100) + INT(y / 400) - 32045;
+function degreeToRadian(degree) {
+    return Math.PI * degree / 180;
+}
+
+function newMoon(k) {
+    const timeJulian = k / 1236.85;
+    const timeJulian2 = timeJulian * timeJulian;
+    const timeJulian3 = timeJulian2 * timeJulian;
+    const degreeRad = Math.PI / 180;
+
+    let julianDay1 = 2415020.75933 + 29.53058868 * k + 0.0001178 * timeJulian2 - 0.000000155 * timeJulian3;
+    julianDay1 += 0.00033 * Math.sin(degreeToRadian(166.56 + 132.87 * timeJulian - 0.009173 * timeJulian2));
+
+    const meanNewMoon = 359.2242 + 29.10535608 * k - 0.0000333 * timeJulian2 - 0.00000347 * timeJulian3;
+    const sunMeanAnomaly = 306.0253 + 385.81691806 * k + 0.0107306 * timeJulian2 + 0.00001236 * timeJulian3;
+    const moonMeanAnomaly = 21.2964 + 390.67050646 * k - 0.0016528 * timeJulian2 - 0.00000239 * timeJulian3;
+
+    let moonArgLat = (0.1734 - 0.000393 * timeJulian) * Math.sin(degreeToRadian * meanNewMoon) + 0.0021 * Math.sin(degreeToRadian * 2 * meanNewMoon);
+    moonArgLat -= 0.4068 * Math.sin(degreeToRadian * sunMeanAnomaly) + 0.0161 * Math.sin(degreeToRadian * 2 * sunMeanAnomaly);
+    moonArgLat -= 0.0004 * Math.sin(degreeToRadian * 3 * sunMeanAnomaly);
+    moonArgLat += 0.0104 * Math.sin(degreeToRadian * 2 * moonMeanAnomaly) - 0.0051 * Math.sin(degreeToRadian * (meanNewMoon + sunMeanAnomaly));
+    moonArgLat -= 0.0074 * Math.sin(degreeToRadian * (meanNewMoon - sunMeanAnomaly)) + 0.0004 * Math.sin(degreeToRadian * (2 * moonMeanAnomaly + meanNewMoon));
+    moonArgLat -= 0.0004 * Math.sin(degreeToRadian * (2 * moonMeanAnomaly - meanNewMoon)) - 0.0006 * Math.sin(degreeToRadian * (2 * moonMeanAnomaly + sunMeanAnomaly));
+    moonArgLat += 0.0010 * Math.sin(degreeToRadian * (2 * moonMeanAnomaly - sunMeanAnomaly)) + 0.0005 * Math.sin(degreeToRadian * (2 * sunMeanAnomaly + meanNewMoon));
+
+    const deltat = (timeJulian < -11) ?
+        (0.001 + 0.000839 * timeJulian + 0.0002261 * timeJulian2 - 0.00000845 * timeJulian3 - 0.000000081 * timeJulian * timeJulian3) :
+        (-0.000278 + 0.000265 * timeJulian + 0.000262 * timeJulian2);
+
+    return julianDay1 + moonArgLat - deltat;
+}
+
+function julianDayFromDate(dd, mm, yy) {
+    const a = INT((14 - mm) / 12);
+    const y = yy + 4800 - a;
+    const m = mm + 12 * a - 3;
+    let jd = dd + INT((153 * m + 2) / 5) + 365 * y + INT(y / 4) - INT(y / 100) + INT(y / 400) - 32045;
     if (jd < 2299161) {
         jd = dd + INT((153 * m + 2) / 5) + 365 * y + INT(y / 4) - 32083;
     }
     return jd;
 }
 
-function jdToDate(jd) {
-    var a, b, c, d, e, m, day, month, year;
-    if (jd > 2299160) {
-        a = jd + 32044;
-        b = INT((4 * a + 3) / 146097);
-        c = a - INT((b * 146097) / 4);
-    } else {
-        b = 0;
-        c = jd + 32082;
-    }
-    d = INT((4 * c + 3) / 1461);
-    e = c - INT((1461 * d) / 4);
-    m = INT((5 * e + 2) / 153);
-    day = e - INT((153 * m + 2) / 5) + 1;
-    month = m + 3 - 12 * INT(m / 10);
-    year = b * 100 + d - 4800 + INT(m / 10);
-    return [day, month, year];
-}
-
-function NewMoon(k) {
-    var T = k / 1236.85;
-    var T2 = T * T;
-    var T3 = T2 * T;
-    var dr = Math.PI / 180;
-    var Jd1 = 2415020.75933 + 29.53058868 * k + 0.0001178 * T2 - 0.000000155 * T3;
-    Jd1 = Jd1 + 0.00033 * Math.sin((166.56 + 132.87 * T - 0.009173 * T2) * dr);
-    var M = 359.2242 + 29.10535608 * k - 0.0000333 * T2 - 0.00000347 * T3;
-    var Mpr = 306.0253 + 385.81691806 * k + 0.0107306 * T2 + 0.00001236 * T3;
-    var F = 21.2964 + 390.67050646 * k - 0.0016528 * T2 - 0.00000239 * T3;
-    var C1 = (0.1734 - 0.000393 * T) * Math.sin(M * dr) + 0.0021 * Math.sin(2 * dr * M);
-    C1 = C1 - 0.4068 * Math.sin(Mpr * dr) + 0.0161 * Math.sin(dr * 2 * Mpr);
-    C1 = C1 - 0.0004 * Math.sin(dr * 3 * Mpr);
-    C1 = C1 + 0.0104 * Math.sin(dr * 2 * F) - 0.0051 * Math.sin(dr * (M + Mpr));
-    C1 = C1 - 0.0074 * Math.sin(dr * (M - Mpr)) + 0.0004 * Math.sin(dr * (2 * F + M));
-    C1 = C1 - 0.0004 * Math.sin(dr * (2 * F - M)) - 0.0006 * Math.sin(dr * (2 * F + Mpr));
-    C1 = C1 + 0.0010 * Math.sin(dr * (2 * F - Mpr)) + 0.0005 * Math.sin(dr * (2 * Mpr + M));
-    var deltat = (T < -11) ? 0.001 + 0.000839 * T + 0.0002261 * T2 - 0.00000845 * T3 - 0.000000081 * T * T3 : 0.000278 * T + 0.000265 * T2 + 0.000262 * T3;
-    return Jd1 + C1 - deltat;
-}
-
-function SunLongitude(jdn) {
-    var T = (jdn - 2451545.0) / 36525;
-    var T2 = T * T;
-    var dr = Math.PI / 180;
-    var M = 357.52910 + 35999.05030 * T - 0.0001559 * T2 - 0.00000048 * T * T2;
-    var L0 = 280.46645 + 36000.76983 * T + 0.0003032 * T2;
-    var DL = (1.914600 - 0.004817 * T - 0.000014 * T2) * Math.sin(dr * M);
-    DL = DL + (0.019993 - 0.000101 * T) * Math.sin(dr * 2 * M) + 0.000290 * Math.sin(dr * 3 * M);
-    var L = L0 + DL;
-    L = L - 360 * INT(L / 360);
-    return L;
-}
-
-function getSunLongitude(dayNumber, timeZone) {
-    return INT(SunLongitude(dayNumber - 0.5 - timeZone / 24) / Math.PI * 6);
-}
-
 function getNewMoonDay(k, timeZone) {
-    return INT(NewMoon(k) + 0.5 + timeZone / 24);
+    return INT(newMoon(k) + 0.5 + timeZone / 24);
 }
 
 function getLunarMonth11(yy, timeZone) {
-    var off = jdFromDate(31, 12, yy) - 2415021;
-    var k = INT(off / 29.530588853);
-    var nm = getNewMoonDay(k, timeZone);
-    var sunLong = getSunLongitude(nm, timeZone);
+    const off = julianDayFromDate(31, 12, yy) - 2415021;
+    let k = INT(off / 29.530588853);
+    let nm = getNewMoonDay(k, timeZone);
+    const sunLong = getSunLongitude(nm, timeZone);
     if (sunLong >= 9) {
         nm = getNewMoonDay(k - 1, timeZone);
     }
     return nm;
 }
 
+function getSunLongitude(jdn, timeZone) {
+    const T = (jdn - 2451545.0 - timeZone / 24) / 36525;
+    const T2 = T * T;
+    const dr = Math.PI / 180;
+    const M = 357.52910 + 35999.05030 * T - 0.0001559 * T2 - 0.00000048 * T * T2;
+    let L0 = 280.46645 + 36000.76983 * T + 0.0003032 * T2;
+    let DL = (1.914600 - 0.004817 * T - 0.000014 * T2) * Math.sin(dr * M);
+    DL += (0.019993 - 0.000101 * T) * Math.sin(dr * 2 * M) + 0.000290 * Math.sin(dr * 3 * M);
+    let L = L0 + DL;
+    L = L * dr;
+    L = L - Math.PI * 2 * INT(L / (Math.PI * 2));
+    return INT(L / Math.PI * 6);
+}
+
 function getLeapMonthOffset(a11, timeZone) {
-    var k = INT((a11 - 2415021.076998695) / 29.530588853 + 0.5);
-    var last = 0;
-    var i = 1;
-    var arc = getSunLongitude(getNewMoonDay(k + i, timeZone), timeZone);
+    const k = INT((a11 - 2415021.076998695) / 29.530588853 + 0.5);
+    let last = 0;
+    let i = 1;
+    let arc = getSunLongitude(getNewMoonDay(k + i, timeZone), timeZone);
     do {
         last = arc;
         i += 1;
         arc = getSunLongitude(getNewMoonDay(k + i, timeZone), timeZone);
-    } while (arc != last && i < 14);
+    } while (arc !== last && i < 14);
     return i - 1;
 }
 
-function computeDateToLunarDate(dd, mm, yy, timeZone) {
-    var jd = jdFromDate(dd, mm, yy);
-    var k = INT((jd - 2415021.076998695) / 29.530588853);
-    var d11 = getLunarMonth11(yy, timeZone);
-    var nm;
-    if (d11 > jd) {
-        nm = getLunarMonth11(yy - 1, timeZone);
+function convertSolar2Lunar(dd, mm, yy, timeZone) {
+    const dayNumber = julianDayFromDate(dd, mm, yy);
+    let k = INT((dayNumber - 2415021.076998695) / 29.530588853);
+    let monthStart = getNewMoonDay(k + 1, timeZone);
+    if (monthStart > dayNumber) {
+        monthStart = getNewMoonDay(k, timeZone);
+    }
+    let a11 = getLunarMonth11(yy, timeZone);
+    let b11 = a11;
+    if (a11 >= monthStart) {
+        k = INT((a11 - 2415021.076998695) / 29.530588853);
+        b11 = getLunarMonth11(yy - 1, timeZone);
     } else {
-        nm = d11;
-        d11 = getLunarMonth11(yy + 1, timeZone);
+        k = INT((dayNumber - 2415021.076998695) / 29.530588853);
+        a11 = getLunarMonth11(yy + 1, timeZone);
     }
-    var off = jd - nm;
-    var leap_off = getLeapMonthOffset(nm, timeZone);
-    var leap = (off >= leap_off);
-    var month_start = nm;
-    var i = 0;
-    while (jd > month_start) {
-        i += 1;
-        month_start = getNewMoonDay(k + i, timeZone);
-    }
-    month_start = getNewMoonDay(k + i - 1, timeZone);
-    var lunarDay = jd - month_start + 1;
-    var lunarMonth = i;
-    var lunarYear = yy;
-    if (nm != d11) {
-        if (leap) {
-            lunarMonth = (i <= leap_off) ? i : i - 1;
-            lunarYear = yy;
-        } else {
-            lunarMonth = i;
-            lunarYear = yy;
-        }
-    } else {
-        lunarMonth = i + 11;
-        lunarYear = yy - 1;
-    }
-    if (nm == d11 && leap_off < i) {
-        leap = true;
-    } else {
-        leap = false;
-    }
-    return { lunarDay: lunarDay, lunarMonth: lunarMonth, lunarYear: lunarYear, lunarLeap: leap };
+    const off = monthStart - b11;
+    const leapOff = getLeapMonthOffset(b11, timeZone);
+    const leapMonth = leapOff >= off ? 1 : 0;
+    let lunarMonth = off + 1;
+    if (a11 === b11) lunarMonth += 11;
+    if (leapMonth && lunarMonth > leapOff) lunarMonth -= 1;
+    const lunarDay = dayNumber - monthStart + 1;
+    const lunarYear = (a11 >= monthStart) ? yy : yy + 1;
+    return { lunarDay, lunarMonth, lunarYear, lunarLeap: leapMonth };
 }
 
-// Export for browser use (no Node.js module.exports)
-window.computeDateToLunarDate = computeDateToLunarDate;
+window.convertSolar2Lunar = convertSolar2Lunar;
