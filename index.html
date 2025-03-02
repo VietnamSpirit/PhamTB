@@ -3,13 +3,10 @@
 <head>
     <meta http-equiv="content-type" content="text/html" charset="utf-8" />
     <title>Family Tree</title>
-    <script src="data.js" type="text/javascript"></script>
     <script src="family.js" type="text/javascript"></script>
-    
-   <!-- <script src="https://unpkg.com/lunar-javascript@1.2.0/dist/lunar.js"></script> -->
-    <script src="amlich.js"></script>
+    <script src="lookupTable.js"></script>
+    <script src="data.js"></script>
     <style>
-        /* Original styles preserved */
         .label {
             font-family: 'Arial', 'sans-serif';
             text-align: center;
@@ -50,8 +47,6 @@
         }
         .label:hover .info { display: block; }
         #panel-bottom ul { margin-top: 2px; margin-bottom: 2px; }
-
-        /* New styles for custom elements */
         #login-panel, #lunar-info, #subtree-input {
             text-align: center;
             margin: 10px;
@@ -62,7 +57,7 @@
             border: 1px solid #ccc;
             border-radius: 4px;
             background-color: #fff;
-            width: 300px;
+            width: 400px;
         }
         #reminder { color: #d9534f; }
         button {
@@ -77,6 +72,10 @@
     </style>
 </head>
 <body>
+    <div id="lunar-info">
+        <input type="text" id="lunar-date" readonly>
+        <div id="reminder"></div>
+    </div>
     <div id="login-panel">
         <p>Enter password to view the family tree:</p>
         <input type="password" id="password-input">
@@ -86,10 +85,6 @@
             <input type="number" id="id-input" placeholder="e.g., 1">
             <button onclick="showSubtree()">Show Subtree</button>
         </div>
-    </div>
-    <div id="lunar-info">
-        <input type="text" id="lunar-date" readonly>
-        <div id="reminder"></div>
     </div>
     <div id="control-panel" style="display: none;">
         <div id="panel-top">
@@ -109,7 +104,7 @@
         <div id="panel-bottom">
             <div id="info-pane-placeholder">
                 <i>Hover your mouse on a person with <img src="info-icon.png" height="12px"> for their information</i>
-                 
+                <br>See the <a target="_blank" href="https://github.com/daveagp/family-tree">source code</a> on GitHub
             </div>
             <div id="info-pane" style="display: none">About <i><span id="info-pane-name"></span></i>:
                 <span id="info-pane-details"></span>
@@ -120,7 +115,7 @@
     <script>
         const correctPassword = "Thuy";
         let familyData = datajs;
-    
+
         function checkPassword() {
             const input = document.getElementById('password-input').value;
             if (input === correctPassword) {
@@ -134,7 +129,7 @@
                 document.getElementById('subtree-input').style.display = 'block';
             }
         }
-    
+
         function showSubtree() {
             const id = parseInt(document.getElementById('id-input').value);
             const person = familyData.find(p => p.ID === id);
@@ -148,28 +143,39 @@
                 alert("Invalid ID!");
             }
         }
-    
-        // Display today's lunar date and check for commemorations
+
+        // Display today's normal and lunar date, and check for commemorations
         const today = new Date();
-        const lunarToday = computeDateToLunarDate(today.getDate(), today.getMonth() + 1, today.getFullYear(), 7); // Timezone 7 for Vietnam
+        const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        const normalDate = `${months[today.getMonth()]} ${String(today.getDate()).padStart(2, '0')}, ${today.getFullYear()}`;
+        const todaySolar = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
+        const lunarToday = lookupTable.find(entry => entry['Ngày dương lịch'] === todaySolar);
         const lunarDateField = document.getElementById('lunar-date');
-        lunarDateField.value = `Today: ${lunarToday.lunarDay}/${lunarToday.lunarMonth}/${lunarToday.lunarYear} (Lunar${lunarToday.lunarLeap ? ' Leap' : ''})`;
-    
+        
+        if (lunarToday) {
+            const [lunarDay, lunarMonth] = lunarToday['Ngày âm lịch'].split('/').slice(0, 2);
+            lunarDateField.value = `Hôm nay: ${normalDate} / Ngày ${lunarDay} tháng ${lunarMonth} âm lịch${lunarToday['Tháng nhuận'] === '1' ? ' (Nhuận)' : ''}`;
+        } else {
+            lunarDateField.value = `Hôm nay: ${normalDate} / Ngày âm lịch không có trong bảng`;
+        }
+
         function checkCommemorations() {
-            const todayDay = String(lunarToday.lunarDay).padStart(2, '0');
-            const todayMonth = String(lunarToday.lunarMonth).padStart(2, '0');
+            if (!lunarToday) return; // No lunar date found for today
+            const todayDay = String(lunarToday['Ngày âm lịch'].split('/')[0]).padStart(2, '0');
+            const todayMonth = String(lunarToday['Ngày âm lịch'].split('/')[1]).padStart(2, '0');
             const reminderDiv = document.getElementById('reminder');
             let reminders = [];
-    
+
             familyData.forEach(person => {
                 if (person["Death Date (Vietnamese Lunar)"]) {
                     const [lunarDay, lunarMonth] = person["Death Date (Vietnamese Lunar)"].split('/').map(s => s.trim().padStart(2, '0')).slice(0, 2);
+                    // Match only day and month, ignoring year
                     if (lunarDay === todayDay && lunarMonth === todayMonth) {
-                        reminders.push(`Commemorate ${person["Real Name"]} (Died: ${person["Death Date (Vietnamese Lunar)"]})`);
+                        reminders.push(`Kỷ niệm ${person["Real Name"]} (Mất: Ngày ${lunarDay} tháng ${lunarMonth} âm lịch)`);
                     }
                 }
             });
-    
+
             reminderDiv.innerText = reminders.length > 0 ? reminders.join('\n') : '';
         }
         checkCommemorations();
