@@ -68,12 +68,22 @@
             background-color: black;
             padding: 10px;
             border-radius: 8px;
+            width: 100%; /* Ensure it fills its grid cell */
+            box-sizing: border-box;
+        }
+        #lunar-info p, #lunar-info h2 {
+            color: white; /* Visible on black background */
+            margin: 0 0 10px 0;
+            text-align: center;
+            white-space: normal; /* Wrap text */
+            word-wrap: break-word; /* Break long words if needed */
+            width: 100%; /* Full width within container */
         }
         #login-panel, #subtree-input {
             text-align: center;
             margin: 10px;
         }
-        #reminder {
+        #reminder, #vi-thien-toi-lac {
             font-size: 16px;
             padding: 15px;
             width: 100%; /* Full width within parent */
@@ -85,12 +95,11 @@
             border-radius: 12px;
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), inset 0 0 10px rgba(139, 69, 19, 0.1);
             font-family: 'Georgia', serif;
-            white-space: pre-wrap;
-            position: relative;
-            overflow: hidden;
+            white-space: normal; /* Wrap text */
             box-sizing: border-box;
+            text-align: center; /* Center text like reminder */
         }
-        #reminder::before {
+        #reminder::before, #vi-thien-toi-lac::before {
             content: '';
             position: absolute;
             top: 0;
@@ -112,6 +121,12 @@
             width: 100px;
             height: auto;
             max-width: 100%; /* Responsive image scaling */
+        }
+        #ban-image {
+            width: 100%; /* Match reminder width */
+            max-width: 500px; /* Same cap as reminder */
+            height: auto;
+            margin-bottom: 10px;
         }
         #canvas {
             position: absolute;
@@ -142,10 +157,13 @@
                 font-size: 16px; /* Slightly smaller text */
                 padding: 8px;
             }
-            #reminder {
+            #reminder, #vi-thien-toi-lac {
                 font-size: 14px;
                 padding: 10px;
                 width: 90%; /* Slightly less than full width */
+            }
+            #ban-image {
+                width: 90%; /* Match reminder on mobile */
             }
             .candle {
                 width: 80px; /* Smaller candles on mobile */
@@ -163,7 +181,8 @@
 <body>
     <div class="grid-container">
         <div id="lunar-info">
-            <p><h2>Nhớ tổ tiên</h2></p>
+            <h2>Nhớ tổ tiên</h2>
+            <div id="vi-thien-toi-lac">Vi Thiện Tối Lạc</div>
             <div id="candle-container">
                 <img id="candle-left" class="candle" src="photos/web/0.png" alt="Candle Animation Left">
                 <img class="candle" src="photos/web/bathuong.png" alt="bat huong">
@@ -171,7 +190,7 @@
                 <canvas id="canvas"></canvas>
             </div>
             <div>
-                <img class="candle" src="photos/web/ban.jpg" alt="ban">
+                <img id="ban-image" src="photos/web/ban.jpg" alt="ban">
             </div>
             <div id="reminder"></div>
         </div>
