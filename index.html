@@ -26,7 +26,7 @@
             border-bottom: 1px solid black;
             z-index: 10;
             padding: 8px;
-            top: 350px; /* Adjusted to fit below grid */
+            top: 450px; /* Adjusted to fit below lunar-date and grid */
         }
         body {
             padding: 0;
@@ -38,14 +38,31 @@
             align-items: center;
             background-color: #f0f0f0;
         }
+        #lunar-date {
+            font-size: 18px;
+            padding: 10px;
+            border: 2px solid #4682b4;
+            border-radius: 8px;
+            background-color: #e6f3fa;
+            width: 100%; /* Full page width */
+            max-width: 100%; /* Ensure it spans the page */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            font-family: 'Arial', sans-serif;
+            white-space: pre-wrap;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10;
+            box-sizing: border-box; /* Include padding/border in width */
+        }
         .grid-container {
             display: grid;
-            grid-template-columns: 1fr 1fr; /* 2 equal columns */
-            gap: 20px; /* Space between columns */
+            grid-template-columns: 2fr 1fr; /* 2 unequal columns */
+            gap: 20px;
             position: fixed;
-            top: 10px;
-            width: 90%; /* Adjust width to fit content */
-            max-width: 1200px; /* Limit max width */
+            top: 150px; /* Moved down to fit lunar-date */
+            width: 90%;
+            max-width: 1200px;
             z-index: 5;
         }
         #lunar-info {
@@ -53,24 +70,13 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background-color: black; /* Black background for left column */
-            padding: 10px; /* Add padding to separate content from edges */
-            border-radius: 8px; /* Optional: soften edges */
+            background-color: black;
+            padding: 10px;
+            border-radius: 8px;
         }
         #login-panel, #subtree-input {
             text-align: center;
             margin: 10px;
-        }
-        #lunar-date {
-            font-size: 18px;
-            padding: 10px;
-            border: 2px solid #4682b4;
-            border-radius: 8px;
-            background-color: #e6f3fa;
-            width: 500px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            font-family: 'Arial', sans-serif;
-            white-space: pre-wrap;
         }
         #reminder {
             font-size: 16px;
@@ -101,11 +107,11 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 20px; /* Space between two candles */
+            gap: 20px;
             margin-bottom: 10px;
         }
         .candle {
-            width: 100px; /* Adjust size as needed */
+            width: 100px;
             height: auto;
         }
         #canvas {
@@ -126,16 +132,16 @@
     </style>
 </head>
 <body>
+    <input type="text" id="lunar-date" readonly>
     <div class="grid-container">
         <div id="lunar-info">
             <div id="candle-container">
-                <img id="candle" class="candle" src="photos/web/0.png" alt="Candle Animation">                
-                <img class="candle" src="photos/web/bathuong.png" alt=" ">
-                <img id="candle" class="candle" src="photos/web/0.png" alt="Candle Animation"> 
+                <img id="candle-left" class="candle" src="photos/web/0.png" alt="Candle Animation Left">
+                <img class="candle" src="photos/web/bathuong.png" alt="Static Candle">
+                <img id="candle-right" class="candle" src="photos/web/0.png" alt="Candle Animation Right">
                 <canvas id="canvas"></canvas>
             </div>
             <div id="reminder"></div>
-            <input type="text" id="lunar-date" readonly>
         </div>
         <div id="login-panel">
             <p>Enter password to view the family tree:</p>
@@ -239,6 +245,7 @@
             lunarDateField.value = `${normalDate}\nNgày âm lịch không có trong bảng`;
         }
 
+        // Check for all commemorations (no limit to number of matches)
         function checkCommemorations() {
             console.log('Checking commemorations...');
             console.log('Today Solar:', todaySolar);
@@ -281,7 +288,20 @@
         }
         checkCommemorations();
 
-        // Particle animation script (removed candle animation)
+        // Candle and particle animation script
+        let candleIndex = 0;
+        const candleFrames = [
+            "photos/web/0.png", "photos/web/1.png", "photos/web/2.png", "photos/web/3.png", 
+            "photos/web/4.png", "photos/web/5.png", "photos/web/6.png", "photos/web/7.png", 
+            "photos/web/8.png", "photos/web/2.png", "photos/web/1.png"
+        ];
+        function animateCandle() {
+            candleIndex = (candleIndex + 1) % candleFrames.length;
+            document.getElementById("candle-left").src = candleFrames[candleIndex];
+            document.getElementById("candle-right").src = candleFrames[candleIndex];
+        }
+        setInterval(animateCandle, 200);
+
         let canvas = document.getElementById("canvas");
         let ctx = canvas.getContext("2d");
         let W = window.innerWidth;
