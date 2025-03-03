@@ -87,6 +87,8 @@
         #login-panel, #subtree-input {
             text-align: center;
             margin: 10px;
+            position: relative; /* Ensure it’s in the flow */
+            z-index: 10; /* Above other elements but below lunar-date */
         }
         #vi-thien-toi-lac {
             font-size: 18px;
@@ -181,6 +183,14 @@
             margin: 5px auto;
         }
         button:hover { background-color: #45a049; }
+        input[type="password"] {
+            padding: 8px;
+            font-size: 16px;
+            width: 100%;
+            max-width: 200px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
 
         /* Mobile-friendly adjustments */
         @media (max-width: 768px) {
@@ -250,11 +260,11 @@
             <img src="photos/web/Paypal.png" alt="PayPal Donation QR Code">
             <div id="login-panel">
                 <p>Enter password to view the family tree:</p>
-                <input type="password" id="password-input">
+                <input type="password" id="password-input" onkeydown="if (event.key === 'Enter') checkPassword()">
                 <button onclick="checkPassword()">Submit</button>
                 <div id="subtree-input" style="display: none;">
                     <p>Or enter a Person ID for a subtree:</p>
-                    <input type="number" id="id-input" placeholder="e.g., 1">
+                    <input type="number" id="id-input" placeholder="e.g., 1" onkeydown="if (event.key === 'Enter') showSubtree()">
                     <button onclick="showSubtree()">Show Subtree</button>
                 </div>
             </div>
@@ -291,7 +301,6 @@
         function checkPassword() {
             const input = document.getElementById('password-input').value;
             if (input === correctPassword) {
-                // Redirect to giapha.html instead of showing control-panel
                 window.location.href = "giapha.html";
             } else {
                 alert("Incorrect password!");
@@ -302,7 +311,6 @@
         function showSubtree() {
             const id = parseInt(document.getElementById('id-input').value);
             if (id && datajs.some(p => p.ID === id)) {
-                // Redirect to giapha.html with specific ID
                 window.location.href = `giapha.html?id=${id}`;
             } else {
                 alert("Invalid ID!");
