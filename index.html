@@ -131,6 +131,15 @@
             object-fit: cover; /* Maintain aspect ratio */
             margin-bottom: 10px;
         }
+        #donation-box {
+            margin: 10px 0;
+            text-align: center;
+        }
+        #donation-box img {
+            width: 100%;
+            max-width: 150px; /* Reasonable size for QR code */
+            height: auto;
+        }
         #canvas {
             position: absolute;
             top: 0;
@@ -171,6 +180,9 @@
                 max-width: 270px; /* Slightly smaller cap for mobile */
                 max-height: calc(50% * 270px); /* Half height on mobile */
             }
+            #donation-box img {
+                max-width: 120px; /* Smaller QR code on mobile */
+            }
             .candle {
                 width: 80px; /* Smaller candles on mobile */
             }
@@ -204,6 +216,10 @@
             <input type="text" id="lunar-date" readonly>
             <p>Enter password to view the family tree:</p>
             <input type="password" id="password-input">
+            <div id="donation-box">
+                <p>Support via PayPal:</p>
+                <img src="photos/web/qrcode.png" alt="PayPal Donation QR Code">
+            </div>
             <button onclick="checkPassword()">Submit</button>
             <div id="subtree-input" style="display: none;">
                 <p>Or enter a Person ID for a subtree:</p>
@@ -326,10 +342,13 @@
                     const [lunarDay, lunarMonth] = person["Death Date (Vietnamese Lunar)"].split('/').map(s => s.trim().padStart(2, '0')).slice(0, 2);
                     console.log(`Person: ${person["Real Name"]}, Death Date: ${lunarDay}/${lunarMonth}`);
                     if (lunarDay === todayDay && lunarMonth === todayMonth) {
-                        // Filter out photo paths from "Note" if present
+                        // Include "Note" but exclude photo paths
                         let note = person["Note"] || "Không có";
                         if (note.includes("Photos/")) {
-                            note = "Không có"; // Replace photo path with default text
+                            // Remove photo path and keep remaining text
+                            note = note.replace(/Photos\/[^|\s]+/g, '').trim();
+                            // If note is empty after removing photo path, set to actual content or default
+                            note = note || (person["Note"] && person["Note"].replace(/Photos\/[^|\s]+/g, '').trim()) || "Không có";
                         }
                         const details = [
                             `Ngày giỗ ${person["Real Name"]}`,
