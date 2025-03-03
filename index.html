@@ -43,16 +43,17 @@
             border: 2px solid #4682b4;
             border-radius: 8px;
             background-color: #e6f3fa;
-            width: 25%; /* Adjust width as needed */
+            width: 25%; /* Base width */
             max-width: 300px; /* Cap for larger screens */
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             font-family: 'Arial', sans-serif;
             white-space: normal; /* Wrap text */
             word-wrap: break-word; /* Break long words */
+            overflow-wrap: break-word; /* Ensure wrapping on all browsers */
             box-sizing: border-box;
-            /* position: absolute;
+            position: absolute;
             top: 10px;
-            right: 10px;*/
+            right: 10px;
             z-index: 15; /* Above other elements */
         }
         .grid-container {
@@ -100,7 +101,7 @@
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), inset 0 0 10px rgba(139, 69, 19, 0.1);
             font-family: 'Georgia', serif;
             text-align: center; /* Center text like reminder */
-            }
+        }
         #reminder, #vi-thien-toi-lac {
             font-size: 16px;
             padding: 15px;
@@ -224,6 +225,7 @@
     </style>
 </head>
 <body>
+    <input type="text" id="lunar-date" readonly>
     <div class="grid-container">
         <div id="lunar-info">
             <h2>Nhớ tổ tiên</h2>
@@ -240,17 +242,12 @@
             <div id="reminder"></div>
         </div>
         <div id="donation-box">
-            <div>
-                <input type="text" id="lunar-date" readonly> 
-
-            </div>
             <h1>Ky Trong Vo Song Fundraising 2025</h1>
             <p>Quỹ bảo tồn văn hoá lịch sử hai làng Kỳ Trọng và Vô Song. Dự án do cá nhân tổ chức nhằm hỗ trợ hoạt động cung cấp tư liệu văn hoá lịch sử và hỗ trợ khuyến học cho con cháu Kỳ Trọng Vô Song </p>
             <p>Support via Bank transfer:</p>
             <img src="photos/web/qrcode.png" alt="PayPal Donation QR Code">
             <p>Support via PayPal, Card:</p>
             <img src="photos/web/Paypal.png" alt="PayPal Donation QR Code">
-        
             <div id="login-panel">
                 <p>Enter password to view the family tree:</p>
                 <input type="password" id="password-input">
@@ -290,21 +287,12 @@
 
     <script>
         const correctPassword = "Thuy";
-        let familyData = datajs;
 
         function checkPassword() {
             const input = document.getElementById('password-input').value;
             if (input === correctPassword) {
-                document.getElementById('login-panel').style.display = 'none';
-                document.getElementById('control-panel').style.display = 'block';
-                rootName = familyData[0]["Real Name"];
-                if (typeof showRootName === 'function' && typeof drawTree === 'function' && window.state) {
-                    showRootName();
-                    drawTree(window.state.divs, window.state.neighbours);
-                } else {
-                    console.error('Family tree functions not available. Check family.js.');
-                    document.body.innerHTML += '<p style="color:red;">Error: Family tree failed to load. Check console.</p>';
-                }
+                // Redirect to giapha.html instead of showing control-panel
+                window.location.href = "giapha.html";
             } else {
                 alert("Incorrect password!");
                 document.getElementById('subtree-input').style.display = 'block';
@@ -313,18 +301,9 @@
 
         function showSubtree() {
             const id = parseInt(document.getElementById('id-input').value);
-            const person = familyData.find(p => p.ID === id);
-            if (person) {
-                document.getElementById('login-panel').style.display = 'none';
-                document.getElementById('control-panel').style.display = 'block';
-                rootName = person["Real Name"];
-                if (typeof showRootName === 'function' && typeof drawTree === 'function' && window.state) {
-                    showRootName();
-                    drawTree(window.state.divs, window.state.neighbours);
-                } else {
-                    console.error('Family tree functions not available. Check family.js.');
-                    document.body.innerHTML += '<p style="color:red;">Error: Family tree failed to load. Check console.</p>';
-                }
+            if (id && datajs.some(p => p.ID === id)) {
+                // Redirect to giapha.html with specific ID
+                window.location.href = `giapha.html?id=${id}`;
             } else {
                 alert("Invalid ID!");
             }
@@ -371,17 +350,14 @@
 
             console.log('Today Lunar Day:', todayDay, 'Today Lunar Month:', todayMonth);
 
-            familyData.forEach(person => {
+            datajs.forEach(person => {
                 if (person["Death Date (Vietnamese Lunar)"]) {
                     const [lunarDay, lunarMonth] = person["Death Date (Vietnamese Lunar)"].split('/').map(s => s.trim().padStart(2, '0')).slice(0, 2);
                     console.log(`Person: ${person["Real Name"]}, Death Date: ${lunarDay}/${lunarMonth}`);
                     if (lunarDay === todayDay && lunarMonth === todayMonth) {
-                        // Include "Note" but exclude photo paths
                         let note = person["Note"] || "Không có";
                         if (note.includes("Photos/")) {
-                            // Remove photo path and keep remaining text
                             note = note.replace(/Photos\/[^|\s]+/g, '').trim();
-                            // If note is empty after removing photo path, set to actual content or default
                             note = note || (person["Note"] && person["Note"].replace(/Photos\/[^|\s]+/g, '').trim()) || "Không có";
                         }
                         const details = [
@@ -390,7 +366,7 @@
                             `Ngày mất: ${person["Death Date (Vietnamese Lunar)"]}`,
                             `Giới tính: ${person["Sex"] === "M" ? "Nam" : "Nữ"}`,
                             `Địa chỉ: ${person["Address"]}`,
-                            `Ghi chú: ${note}`, // Include "Note" without photo paths
+                            `Ghi chú: ${note}`,
                             `Gốc: ${person["Gốc"] || "Không có"}`,
                             `Thế hệ: ${person["Generation"]}`
                         ].join('\n');

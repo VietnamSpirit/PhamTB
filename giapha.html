@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html" charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Tree - Giapha</title>
+    <script src="family.js" type="text/javascript"></script>
+    <script src="data.js"></script>
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+            font-family: 'Arial', sans-serif;
+        }
+        #nav-bar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: #4682b4;
+            padding: 10px;
+            z-index: 20;
+            text-align: center;
+        }
+        #nav-bar a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            padding: 10px 20px;
+        }
+        #nav-bar a:hover {
+            background: #357abd;
+            border-radius: 4px;
+        }
+        #tree-container {
+            margin-top: 60px; /* Space for nav-bar */
+            text-align: center;
+        }
+        #subtree-form {
+            margin: 20px auto;
+            text-align: center;
+        }
+        #subtree-form input[type="number"] {
+            padding: 5px;
+            font-size: 16px;
+            width: 100px;
+        }
+        #subtree-form button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        #subtree-form button:hover {
+            background-color: #45a049;
+        }
+        #subtree-instructions {
+            font-style: italic;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="nav-bar">
+        <a href="index.html">Home</a>
+    </div>
+    <div id="tree-container">
+        <div id="subtree-form">
+            <input type="number" id="person-id" placeholder="Person ID" min="0">
+            <button onclick="loadSubtree()">Load Subtree</button>
+            <p id="subtree-instructions">Enter a Person ID to view a subtree of four generations only.</p>
+        </div>
+        <div id="tree"></div>
+    </div>
+
+    <script>
+        // Load the biggest tree by default (root ID 0 or first entry)
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            if (id && datajs.some(p => p.ID === parseInt(id))) {
+                loadSubtree(id);
+            } else {
+                loadFullTree();
+            }
+        };
+
+        function loadFullTree() {
+            const rootId = 0; // Assuming ID 0 is the root of the biggest tree
+            if (typeof drawTree === 'function' && window.state) {
+                const rootPerson = datajs.find(p => p.ID === rootId) || datajs[0]; // Fallback to first entry
+                rootName = rootPerson["Real Name"];
+                document.getElementById('tree').innerHTML = ''; // Clear previous tree
+                drawTree(window.state.divs, window.state.neighbours, rootId, Infinity); // Biggest tree
+            } else {
+                console.error('Family tree functions not available. Check family.js.');
+                document.getElementById('tree').innerHTML = '<p style="color:red;">Error: Family tree failed to load.</p>';
+            }
+        }
+
+        function loadSubtree(id = null) {
+            const personId = id || parseInt(document.getElementById('person-id').value);
+            if (!personId || !datajs.some(p => p.ID === personId)) {
+                alert("Invalid Person ID!");
+                return;
+            }
+            const person = datajs.find(p => p.ID === personId);
+            rootName = person["Real Name"];
+            if (typeof drawTree === 'function' && window.state) {
+                document.getElementById('tree').innerHTML = ''; // Clear previous tree
+                drawTree(window.state.divs, window.state.neighbours, personId, 3); // 4 generations (0-3)
+            } else {
+                console.error('Family tree functions not available. Check family.js.');
+                document.getElementById('tree').innerHTML = '<p style="color:red;">Error: Family tree failed to load.</p>';
+            }
+        }
+    </script>
+</body>
+</html>
