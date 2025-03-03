@@ -20,13 +20,12 @@
         .label img { max-width: 70px; }
         .lifespan { font-size: 10pt; white-space: nowrap; }
         #control-panel {
-            position: fixed;
             width: 100%;
             background: #f7f7f7;
             border-bottom: 1px solid black;
             z-index: 10;
             padding: 8px;
-            top: 450px; /* Adjusted to fit below lunar-date and grid */
+            box-sizing: border-box;
         }
         body {
             padding: 0;
@@ -34,8 +33,6 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
             background-color: #f0f0f0;
         }
         #lunar-date {
@@ -45,25 +42,20 @@
             border-radius: 8px;
             background-color: #e6f3fa;
             width: 100%;
-            max-width: 100%;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             font-family: 'Arial', sans-serif;
             white-space: pre-wrap;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 10;
             box-sizing: border-box;
+            margin-bottom: 10px; /* Reduced gap */
         }
         .grid-container {
             display: grid;
             grid-template-columns: 2fr 1fr; /* 2 unequal columns */
             gap: 20px;
-            position: fixed;
-            top: 150px; /* Moved down to fit lunar-date */
             width: 90%;
             max-width: 1200px;
             z-index: 5;
+            margin-bottom: 20px; /* Space before control-panel */
         }
         #lunar-info {
             display: flex;
@@ -274,7 +266,7 @@
                             `Ngày mất: ${person["Death Date (Vietnamese Lunar)"]}`,
                             `Giới tính: ${person["Sex"] === "M" ? "Nam" : "Nữ"}`,
                             `Địa chỉ: ${person["Address"]}`,
-                            // Excluding "Note" as it may contain photo paths; add back if needed without photos
+                            // Excluding "Note" as it may contain photo paths
                             `Gốc: ${person["Gốc"] || "Không có"}`,
                             `Thế hệ: ${person["Generation"]}`
                         ].join('\n');
