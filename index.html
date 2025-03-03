@@ -50,9 +50,9 @@
             white-space: normal; /* Wrap text */
             word-wrap: break-word; /* Break long words */
             box-sizing: border-box;
-            position: absolute;
+            /* position: absolute;
             top: 10px;
-            right: 10px;
+            right: 10px;*/
             z-index: 15; /* Above other elements */
         }
         .grid-container {
@@ -228,20 +228,21 @@
         </div>
         <div id="donation-box">
             <input type="text" id="lunar-date" readonly>
-            <p>Quỹ văn hoá lịch sử Kỳ Trọng Vô Song nhằm hỗ trợ hoạt động cung cấp tư liệu văn hoá lịch sử và hỗ trợ khuyến học cho con cháu Kỳ Trọng Vô Song </p>
+            <p>Ky Trong Vo Song Fundraising. Quỹ bảo tồn văn hoá lịch sử hai làng Kỳ Trọng và Vô Song. Dự án do cá nhân tổ chức nhằm hỗ trợ hoạt động cung cấp tư liệu văn hoá lịch sử và hỗ trợ khuyến học cho con cháu Kỳ Trọng Vô Song </p>
             <p>Support via Bank transfer:</p>
             <img src="photos/web/qrcode.png" alt="PayPal Donation QR Code">
             <p>Support via PayPal, Card:</p>
             <img src="photos/web/Paypal.png" alt="PayPal Donation QR Code">
-        </div>
-        <div id="login-panel">
-            <p>Enter password to view the family tree:</p>
-            <input type="password" id="password-input">
-            <button onclick="checkPassword()">Submit</button>
-            <div id="subtree-input" style="display: none;">
-                <p>Or enter a Person ID for a subtree:</p>
-                <input type="number" id="id-input" placeholder="e.g., 1">
-                <button onclick="showSubtree()">Show Subtree</button>
+        
+            <div id="login-panel">
+                <p>Enter password to view the family tree:</p>
+                <input type="password" id="password-input">
+                <button onclick="checkPassword()">Submit</button>
+                <div id="subtree-input" style="display: none;">
+                    <p>Or enter a Person ID for a subtree:</p>
+                    <input type="number" id="id-input" placeholder="e.g., 1">
+                    <button onclick="showSubtree()">Show Subtree</button>
+                </div>
             </div>
         </div>
     </div>
