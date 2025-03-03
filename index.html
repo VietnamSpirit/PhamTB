@@ -47,7 +47,8 @@
             max-width: 100%;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             font-family: 'Arial', sans-serif;
-            white-space: pre-wrap;
+            white-space: normal; /* Wrap text */
+            word-wrap: break-word; /* Break long words */
             box-sizing: border-box;
             margin-bottom: 10px;
         }
@@ -87,7 +88,7 @@
             font-size: 16px;
             padding: 15px;
             width: 100%; /* Full width within parent */
-            max-width: 500px; /* Cap for larger screens */
+            max-width: 200px; /* Reduced cap for reminder */
             margin-bottom: 10px;
             color: #8b0000;
             background: linear-gradient(to bottom, #fdf6e3, #f9e8b8);
@@ -124,8 +125,10 @@
         }
         #ban-image {
             width: 100%; /* Match reminder width */
-            max-width: 500px; /* Same cap as reminder */
+            max-width: 200px; /* Same cap as reminder */
             height: auto;
+            max-height: calc(50% * 200px); /* Half height based on width */
+            object-fit: cover; /* Maintain aspect ratio */
             margin-bottom: 10px;
         }
         #canvas {
@@ -161,9 +164,12 @@
                 font-size: 14px;
                 padding: 10px;
                 width: 90%; /* Slightly less than full width */
+                max-width: 180px; /* Adjusted for mobile */
             }
             #ban-image {
                 width: 90%; /* Match reminder on mobile */
+                max-width: 180px; /* Adjusted for mobile */
+                max-height: calc(50% * 180px); /* Half height on mobile */
             }
             .candle {
                 width: 80px; /* Smaller candles on mobile */
@@ -182,7 +188,7 @@
     <div class="grid-container">
         <div id="lunar-info">
             <h2>Nhớ tổ tiên</h2>
-            <div id="vi-thien-toi-lac">Vi Thiện Tối Lạc</div>
+            <div id="vi-thien-toi-lac">VI THIỆN TỐI LẠC</div>
             <div id="candle-container">
                 <img id="candle-left" class="candle" src="photos/web/0.png" alt="Candle Animation Left">
                 <img class="candle" src="photos/web/bathuong.png" alt="bat huong">
