@@ -41,7 +41,7 @@
             border: 2px solid #4682b4;
             border-radius: 8px;
             background-color: #e6f3fa;
-            width: 100%;
+            width: 20%;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             font-family: 'Arial', sans-serif;
             white-space: pre-wrap;
@@ -73,7 +73,7 @@
         #reminder {
             font-size: 16px;
             padding: 15px;
-            width: 200px;
+            width: 15%;
             margin-bottom: 10px;
             color: #8b0000;
             background: linear-gradient(to bottom, #fdf6e3, #f9e8b8);
@@ -124,7 +124,7 @@
     </style>
 </head>
 <body>
-    <input type="text" id="lunar-date" readonly>
+    
     <div class="grid-container">
         <div id="lunar-info">
             <div id="candle-container">
@@ -135,12 +135,13 @@
                 
             </div>
             <div>
-                <img width=300px  src="photos/web/ban.jpg" alt="ban">
+                <img width=30%  src="photos/web/ban.jpg" alt="ban">
             </div>
 
             <div id="reminder"></div>
         </div>
         <div id="login-panel">
+            <input type="text" id="lunar-date" readonly>
             <p>Enter password to view the family tree:</p>
             <input type="password" id="password-input">
             <button onclick="checkPassword()">Submit</button>
