@@ -44,7 +44,7 @@
             border-radius: 8px;
             background-color: #e6f3fa;
             width: 100%; /* Full width within parent */
-            max-width: 100%;
+            max-width: 100%; /* No fixed max-width to allow wrapping */
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             font-family: 'Arial', sans-serif;
             white-space: normal; /* Wrap text */
@@ -88,7 +88,7 @@
             font-size: 16px;
             padding: 15px;
             width: 100%; /* Full width within parent */
-            max-width: 200px; /* Reduced cap for reminder */
+            max-width: 200px; /* Cap for larger screens */
             margin-bottom: 10px;
             color: #8b0000;
             background: linear-gradient(to bottom, #fdf6e3, #f9e8b8);
@@ -124,10 +124,10 @@
             max-width: 100%; /* Responsive image scaling */
         }
         #ban-image {
-            width: 100%; /* Match reminder width */
-            max-width: 200px; /* Same cap as reminder */
+            width: 100%; /* Independent width */
+            max-width: 300px; /* Fixed cap, not matching reminder */
             height: auto;
-            max-height: calc(50% * 200px); /* Half height based on width */
+            max-height: calc(50% * 300px); /* Half height based on width */
             object-fit: cover; /* Maintain aspect ratio */
             margin-bottom: 10px;
         }
@@ -167,9 +167,9 @@
                 max-width: 180px; /* Adjusted for mobile */
             }
             #ban-image {
-                width: 90%; /* Match reminder on mobile */
-                max-width: 180px; /* Adjusted for mobile */
-                max-height: calc(50% * 180px); /* Half height on mobile */
+                width: 90%; /* Independent on mobile */
+                max-width: 270px; /* Slightly smaller cap for mobile */
+                max-height: calc(50% * 270px); /* Half height on mobile */
             }
             .candle {
                 width: 80px; /* Smaller candles on mobile */
@@ -303,7 +303,7 @@
             lunarDateField.value = `${normalDate}\nNgày âm lịch không có trong bảng`;
         }
 
-        // Check for all commemorations (no limit to number of matches, excluding photo-related fields)
+        // Check for all commemorations (no limit to number of matches, including "Note" but excluding photo paths)
         function checkCommemorations() {
             console.log('Checking commemorations...');
             console.log('Today Solar:', todaySolar);
@@ -326,13 +326,18 @@
                     const [lunarDay, lunarMonth] = person["Death Date (Vietnamese Lunar)"].split('/').map(s => s.trim().padStart(2, '0')).slice(0, 2);
                     console.log(`Person: ${person["Real Name"]}, Death Date: ${lunarDay}/${lunarMonth}`);
                     if (lunarDay === todayDay && lunarMonth === todayMonth) {
+                        // Filter out photo paths from "Note" if present
+                        let note = person["Note"] || "Không có";
+                        if (note.includes("Photos/")) {
+                            note = "Không có"; // Replace photo path with default text
+                        }
                         const details = [
                             `Ngày giỗ ${person["Real Name"]}`,
                             `ID: ${person["ID"]}`,
                             `Ngày mất: ${person["Death Date (Vietnamese Lunar)"]}`,
                             `Giới tính: ${person["Sex"] === "M" ? "Nam" : "Nữ"}`,
                             `Địa chỉ: ${person["Address"]}`,
-                            // Excluding "Note" as it may contain photo paths
+                            `Ghi chú: ${note}`, // Include "Note" without photo paths
                             `Gốc: ${person["Gốc"] || "Không có"}`,
                             `Thế hệ: ${person["Generation"]}`
                         ].join('\n');
