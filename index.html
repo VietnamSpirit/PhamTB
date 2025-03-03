@@ -38,19 +38,22 @@
             overflow-x: hidden; /* Prevent horizontal scroll */
         }
         #lunar-date {
-            font-size: 16px;
+            font-size: 18px;
             padding: 10px;
             border: 2px solid #4682b4;
             border-radius: 8px;
             background-color: #e6f3fa;
-            width: 100%; /* Full width within parent */
-            max-width: 100%; /* No fixed max-width to allow wrapping */
-            /*box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+            width: 25%; /* Adjust width as needed */
+            max-width: 300px; /* Cap for larger screens */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             font-family: 'Arial', sans-serif;
             white-space: normal; /* Wrap text */
             word-wrap: break-word; /* Break long words */
             box-sizing: border-box;
-            margin-bottom: 10px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 15; /* Above other elements */
         }
         .grid-container {
             display: grid;
@@ -59,7 +62,7 @@
             width: 90%;
             max-width: 1200px;
             z-index: 5;
-            margin-bottom: 20px;
+            margin: 60px auto 20px auto; /* Space for lunar-date at top */
         }
         #lunar-info {
             display: flex;
@@ -123,13 +126,18 @@
             height: auto;
             max-width: 100%; /* Responsive image scaling */
         }
+        #ban-container {
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            width: 100%; /* Full width of parent */
+            margin-bottom: 10px;
+        }
         #ban-image {
             width: 100%; /* Independent width */
             max-width: 300px; /* Fixed cap, not matching reminder */
             height: auto;
             max-height: calc(50% * 300px); /* Half height based on width */
             object-fit: cover; /* Maintain aspect ratio */
-            margin-bottom: 10px;
         }
         #donation-box {
             margin: 10px 0;
@@ -164,10 +172,15 @@
             .grid-container {
                 grid-template-columns: 1fr; /* Stack columns on mobile */
                 gap: 10px;
+                margin-top: 80px; /* Adjust for lunar-date */
             }
             #lunar-date {
                 font-size: 16px; /* Slightly smaller text */
                 padding: 8px;
+                width: 90%; /* Full width on mobile */
+                max-width: 250px;
+                right: 5px;
+                top: 5px;
             }
             #reminder, #vi-thien-toi-lac {
                 font-size: 14px;
@@ -197,6 +210,7 @@
     </style>
 </head>
 <body>
+    <input type="text" id="lunar-date" readonly>
     <div class="grid-container">
         <div id="lunar-info">
             <h2>Nhớ tổ tiên</h2>
@@ -207,19 +221,18 @@
                 <img id="candle-right" class="candle" src="photos/web/0.png" alt="Candle Animation Right">
                 <canvas id="canvas"></canvas>
             </div>
-            <div>
+            <div id="ban-container">
                 <img id="ban-image" src="photos/web/ban.jpg" alt="ban">
             </div>
             <div id="reminder"></div>
         </div>
         <div id="login-panel">
-            <input type="text" id="lunar-date" readonly>
-            <p>Enter password to view the family tree:</p>
-            <input type="password" id="password-input">
             <div id="donation-box">
                 <p>Support via PayPal:</p>
                 <img src="photos/web/qrcode.png" alt="PayPal Donation QR Code">
             </div>
+            <p>Enter password to view the family tree:</p>
+            <input type="password" id="password-input">
             <button onclick="checkPassword()">Submit</button>
             <div id="subtree-input" style="display: none;">
                 <p>Or enter a Person ID for a subtree:</p>
