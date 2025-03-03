@@ -50,7 +50,7 @@
         }
         .grid-container {
             display: grid;
-            grid-template-columns: 2fr 1fr; /* 2 unequal columns */
+            grid-template-columns: 3fr 1fr; /* 2 unequal columns */
             gap: 20px;
             width: 90%;
             max-width: 1200px;
@@ -129,9 +129,10 @@
         <div id="lunar-info">
             <div id="candle-container">
                 <img id="candle-left" class="candle" src="photos/web/0.png" alt="Candle Animation Left">
-                <img class="candle" src="photos/web/bathuong.png" alt="Static Candle">
+                <img class="candle" src="photos/web/bathuong.png" alt="bat huong">
                 <img id="candle-right" class="candle" src="photos/web/0.png" alt="Candle Animation Right">
                 <canvas id="canvas"></canvas>
+                <img class="candle" src="photos/web/ban.jpg" alt="ban">
             </div>
             <div id="reminder"></div>
         </div>
@@ -225,7 +226,7 @@
         if (lunarToday) {
             const [lunarDay, lunarMonth] = lunarToday['Ngày âm lịch'].split('/').slice(0, 2);
             lunarDateField.value = [
-                `${normalDate}`,
+                'Hôm nay ',`${normalDate}`,
                 ' tức mùng',
                 `${lunarDay}/${lunarMonth}${lunarToday['Tháng nhuận'] === '1' ? ' (Nhuận)' : ''}`,
                 ' ', `${lunarToday['Ngày trong tuần']}`,
