@@ -176,7 +176,9 @@
         }
 
         function loadSubtree(id = null) {
-            const personId = id || parseInt(document.getElementById('person-id').value);
+            
+            const personId = id || parseInt(document.getElementById('person-id').value) || parseInt(document.getElementById('person-id-form').value);
+            console.log('personId:', personId); // Debug output
             if (!personId || !datajs.some(p => p.ID === personId)) {
                 alert("Invalid Person ID!");
                 return;
