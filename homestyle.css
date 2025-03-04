@@ -43,27 +43,7 @@ body {
     box-sizing: border-box;
     resize: none; /* Prevent resizing */
 }
-/*#lunar-date {
-    font-size: 16px;
-    padding: 10px;
-    border: 2px solid #4682b4;
-    border-radius: 8px;
-    background-color: #e6f3fa;
-    width: 100%; /*25%;250px /* Base width */
-    height:200px;
-    max-width: 300px; /* Cap for larger screens */
-    min-height: 150px; /* Ensure enough height for multiline text */
-    /*box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
-    font-family: 'Arial', sans-serif;
-    white-space: pre-wrap; /* Preserve line breaks and wrap text */
-    overflow-y: auto; /* Scroll if content exceeds height */
-   /* resize: none;  Prevent manual resizing */
-   /* box-sizing: border-box;
-     position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 15; /* Above other elements */
-}
+
 .grid-container {
     display: grid;
     grid-template-columns: 3fr 1fr; /* Flexible unequal columns */
