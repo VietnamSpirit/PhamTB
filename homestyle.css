@@ -58,7 +58,7 @@ body {
     /* margin: 60px auto 20px auto; /* Space for lunar-date at top */
 }
 #lunar-info {
-    display:flex /*flex;*/
+    display:flex; /*flex;*/
     flex-direction: column;
     align-items: center;
     justify-content: center;
