@@ -55,7 +55,7 @@ body {
     width: 90%;
     max-width: 1200px;
     z-index: 5;
-    margin: 60px auto 20px auto; /* Space for lunar-date at top */
+    /* margin: 60px auto 20px auto; /* Space for lunar-date at top */
 }
 #lunar-info {
     display: flex;
