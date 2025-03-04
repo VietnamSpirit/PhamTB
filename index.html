@@ -45,11 +45,12 @@
             background-color: #e6f3fa;
             width: 25%; /* Base width */
             max-width: 300px; /* Cap for larger screens */
+            min-height: 150px; /* Ensure enough height for multiline text */
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             font-family: 'Arial', sans-serif;
-            white-space: normal; /* Wrap text */
-            word-wrap: break-word; /* Break long words */
-            overflow-wrap: break-word; /* Ensure wrapping on all browsers */
+            white-space: pre-wrap; /* Preserve line breaks and wrap text */
+            overflow-y: auto; /* Scroll if content exceeds height */
+            resize: none; /* Prevent manual resizing */
             box-sizing: border-box;
             position: absolute;
             top: 10px;
@@ -256,7 +257,7 @@
         </div>
        
         <div>
-            <input type="text" id="lunar-date" readonly>
+            <textarea id="lunar-date" readonly></textarea>
         </div>
         <div id="donation-box">
             <h1>Ky Trong Vo Song Fundraising 2025</h1>
@@ -265,6 +266,8 @@
             <img src="photos/web/qrcode.png" alt="PayPal Donation QR Code">
             <p>Support via PayPal, Card:</p>
             <img src="photos/web/Paypal.png" alt="PayPal Donation QR Code">
+            <p><a href="giapha.html">Click here to go to Gia Pha - Bấm vào đây để xem gia phả</a></p>
+        
             <div id="login-panel">
                 <p>Enter password to view the family tree:</p>
                 <input type="password" id="password-input" onkeydown="if (event.key === 'Enter') checkPassword()">
@@ -334,18 +337,17 @@
         const todaySolar = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
         const lunarToday = lookupTable.find(entry => entry['Ngày dương lịch'] === todaySolar);
         const lunarDateField = document.getElementById('lunar-date');
-
         if (lunarToday) {
             const [lunarDay, lunarMonth] = lunarToday['Ngày âm lịch'].split('/').slice(0, 2);
             lunarDateField.value = [
-                'Hôm nay ',`${normalDate}`,
+                'Hôm nay ', `${normalDate}`,
                 ' tức mùng ',
                 `${lunarDay}/${lunarMonth}${lunarToday['Tháng nhuận'] === '1' ? ' (Nhuận)' : ''}`,
                 ' ', `${lunarToday['Ngày trong tuần']}`,
                 ` ngày ${lunarToday['Ngày Can-Chi']}`,
                 ` tháng ${lunarToday['Tháng Can-Chi']}`,
                 ` năm ${lunarToday['Năm Can-Chi']}`
-            ].join('\n');
+            ].join('\n'); // Use \n for line breaks
         } else {
             lunarDateField.value = `${normalDate}\nNgày âm lịch không có trong bảng`;
         }
