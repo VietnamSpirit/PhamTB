@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const [lunarDay, lunarMonth] = lunarToday['Ngày âm lịch'].split('/').slice(0, 2);
             lunarDateField.value = [
                 `Hôm nay ${normalDate}`,
-                `tức mùng ${lunarDay}/${lunarMonth}${lunarToday['Tháng nhuận'] === '1' ? ' (Nhuận)' : ''}`,
+                `tức âm lịch mùng ${lunarDay}/${lunarMonth}${lunarToday['Tháng nhuận'] === '1' ? ' (Nhuận)' : ''}`,
                 `${lunarToday['Ngày trong tuần']}`,
                 `ngày ${lunarToday['Ngày Can-Chi']}`,
                 `tháng ${lunarToday['Tháng Can-Chi']}`,
