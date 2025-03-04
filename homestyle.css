@@ -34,7 +34,7 @@ body {
     border-radius: 8px;
     background-color: #e6f3fa;
     width: 200px; /*25%; /* Base width */
-    height:500px
+    height:500px;
     max-width: 300px; /* Cap for larger screens */
     min-height: 150px; /* Ensure enough height for multiline text */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
