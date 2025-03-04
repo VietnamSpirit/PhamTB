@@ -37,13 +37,13 @@ body {
     height:250px;
     max-width: 300px; /* Cap for larger screens */
     min-height: 150px; /* Ensure enough height for multiline text */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /*box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
     font-family: 'Arial', sans-serif;
     white-space: pre-wrap; /* Preserve line breaks and wrap text */
     overflow-y: auto; /* Scroll if content exceeds height */
-    resize: none; /* Prevent manual resizing */
-    box-sizing: border-box;
-    /* position: absolute;
+   /* resize: none;  Prevent manual resizing */
+   /* box-sizing: border-box;
+     position: absolute;
     top: 10px;
     right: 10px;
     z-index: 15; /* Above other elements */
