@@ -28,13 +28,13 @@ body {
     overflow-x: hidden; /* Prevent horizontal scroll */
 }
 #lunar-date {
-    font-size: 18px;
+    font-size: 16px;
     padding: 10px;
     border: 2px solid #4682b4;
     border-radius: 8px;
     background-color: #e6f3fa;
-    width: 250px; /*25%; /* Base width */
-    height:250px;
+    width: 100%; /*25%;250px /* Base width */
+    height:200px;
     max-width: 300px; /* Cap for larger screens */
     min-height: 150px; /* Ensure enough height for multiline text */
     /*box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
