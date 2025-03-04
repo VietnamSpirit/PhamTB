@@ -34,6 +34,7 @@ body {
     border-radius: 8px;
     background-color: #e6f3fa;
     width: auto; /*25%; /* Base width */
+    height:fit-content
     max-width: 300px; /* Cap for larger screens */
     min-height: 150px; /* Ensure enough height for multiline text */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -95,7 +96,7 @@ body {
     font-family: 'Georgia', serif;
     text-align: center; /* Center text like reminder */
 }
-#reminder, #vi-thien-toi-lac {
+#reminder {
     font-size: 16px;
     padding: 15px;
     width: 100%; /* Full width within parent */
@@ -111,7 +112,7 @@ body {
     box-sizing: border-box;
     text-align: center; /* Center text like reminder */
 }
-#reminder::before, #vi-thien-toi-lac::before {
+#reminder::before {
     content: '';
     position: absolute;
     top: 0;
