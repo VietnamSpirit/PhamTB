@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const lunarToday = lookupTable.find(entry => entry['Ngày dương lịch'] === todaySolar);
     const lunarDateField = document.getElementById('lunar-date');
 
-    if (lunarToday) {
+    /*if (lunarToday) {
         const [lunarDay, lunarMonth] = lunarToday['Ngày âm lịch'].split('/').slice(0, 2);
         lunarDateField.value = [
             'Hôm nay ', `${normalDate}`,
@@ -21,7 +21,20 @@ document.addEventListener('DOMContentLoaded', function() {
         ].join('\n');
     } else {
         lunarDateField.value = `${normalDate}\nNgày âm lịch không có trong bảng`;
-    }
+    }*/
+        if (lunarToday) {
+            const [lunarDay, lunarMonth] = lunarToday['Ngày âm lịch'].split('/').slice(0, 2);
+            lunarDateField.value = [
+                `Hôm nay ${normalDate}`,
+                `tức mùng ${lunarDay}/${lunarMonth}${lunarToday['Tháng nhuận'] === '1' ? ' (Nhuận)' : ''}`,
+                `${lunarToday['Ngày trong tuần']}`,
+                `ngày ${lunarToday['Ngày Can-Chi']}`,
+                `tháng ${lunarToday['Tháng Can-Chi']}`,
+                `năm ${lunarToday['Năm Can-Chi']}`
+            ].join('\n');
+        } else {
+            lunarDateField.value = `${normalDate}\nNgày âm lịch không có trong bảng`;
+        }
 
     // Commemoration logic
     function checkCommemorations() {
