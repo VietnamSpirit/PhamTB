@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 `ngày ${lunarToday['Ngày Can-Chi']}`,
                 `tháng ${lunarToday['Tháng Can-Chi']}`,
                 `năm ${lunarToday['Năm Can-Chi']}`
-            ]/*.join('\n');*/
+            ]/*.join('\n'); /*cai nay can khi de ben doc xuong dong tung field */
         } else {
             lunarDateField.value = `${normalDate}\nNgày âm lịch không có trong bảng`;
         }
