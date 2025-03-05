@@ -132,6 +132,12 @@ body {
     max-height: calc(50% * 300px); /* Half height based on width */
     object-fit: cover; /* Maintain aspect ratio */
 }
+#donation-box a {
+    position: relative;
+    z-index: 10; /* Ensure it’s above other elements */
+    display: inline-block; /* Prevent layout issues */
+    pointer-events: auto; /* Ensure clickable */
+}
 #donation-box p {
     margin-bottom: 5px; /* Reduce default margin */
 }
