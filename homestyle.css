@@ -29,12 +29,12 @@ body {
 }
 #lunar-date {
     text-align: center;
-    font-size: 14px;
+    font-size: 16px;
     padding: 10px;
     border: 2px solid #4682b4;
     border-radius: 8px;
     background-color: #e6f3fa;
-    width: 100%;
+    width: 680px;
     height: auto; /*140px;
     /*max-width: 400px; /* Increased from 300px for more space */
     /*min-height: 100px;*/
@@ -176,7 +176,7 @@ input[type="password"] {
         margin-top: 80px; /* Adjust for lunar-date */
     }
     #lunar-date {
-        font-size: 14px; /* Slightly smaller text */
+        font-size: 16px; /* Slightly smaller text */
         padding: 8px;
         width: 100%; /* Full width on mobile */
         /*max-width: 250px;*/
