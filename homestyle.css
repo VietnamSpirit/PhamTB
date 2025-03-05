@@ -132,6 +132,12 @@ body {
     max-height: calc(50% * 300px); /* Half height based on width */
     object-fit: cover; /* Maintain aspect ratio */
 }
+#donation-box p {
+    margin-bottom: 5px; /* Reduce default margin */
+}
+#donation-box form {
+    margin-top: 0; /* Remove top margin */
+} 
 #donation-box {
     margin: 10px 0;
     text-align: center;
