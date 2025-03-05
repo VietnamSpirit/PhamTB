@@ -26,11 +26,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const [lunarDay, lunarMonth] = lunarToday['Ngày âm lịch'].split('/').slice(0, 2);
             lunarDateField.value = [
                 `Hôm nay ${normalDate}`,
-                `tức âm lịch mùng ${lunarDay}/${lunarMonth}${lunarToday['Tháng nhuận'] === '1' ? ' (Nhuận)' : ''}`,
+                ` tức âm lịch mùng ${lunarDay}/${lunarMonth}${lunarToday['Tháng nhuận'] === '1' ? ' (Nhuận)' : ''}`,
                 /*`${lunarToday['Ngày trong tuần']}`,*/
-                `ngày ${lunarToday['Ngày Can-Chi']}`,
-                `tháng ${lunarToday['Tháng Can-Chi']}`,
-                `năm ${lunarToday['Năm Can-Chi']}`
+                ` ngày ${lunarToday['Ngày Can-Chi']}`,
+                ` tháng ${lunarToday['Tháng Can-Chi']}`,
+                ` năm ${lunarToday['Năm Can-Chi']}`
             ]/*.join('\n'); /*cai nay can khi de ben doc xuong dong tung field */
         } else {
             lunarDateField.value = `${normalDate}\nNgày âm lịch không có trong bảng`;
