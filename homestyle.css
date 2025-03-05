@@ -173,7 +173,7 @@ input[type="password"] {
     .grid-container {
         grid-template-columns: 1fr; /* Stack columns on mobile */
         gap: 10px;
-        margin-top: 80px; /* Adjust for lunar-date */
+        /*margin-top: 80px; /* Adjust for lunar-date */
     }
     #lunar-date {
         font-size: 16px; /* Slightly smaller text */
