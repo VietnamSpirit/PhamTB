@@ -35,9 +35,9 @@ body {
     border-radius: 8px;
     background-color: #e6f3fa;
     width: 100%;
-    height: 140px;
-    max-width: 400px; /* Increased from 300px for more space */
-    min-height: 100px;
+    height: auto; /*140px;
+    /*max-width: 400px; /* Increased from 300px for more space */
+    /*min-height: 100px;*/
     font-family: 'Arial', sans-serif;
     white-space: pre-wrap;
     overflow-y: auto;
