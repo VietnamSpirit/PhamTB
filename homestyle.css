@@ -176,12 +176,12 @@ input[type="password"] {
         margin-top: 80px; /* Adjust for lunar-date */
     }
     #lunar-date {
-        font-size: 16px; /* Slightly smaller text */
+        font-size: 14px; /* Slightly smaller text */
         padding: 8px;
-        width: 90%; /* Full width on mobile */
-        max-width: 250px;
-        right: 5px;
-        top: 5px;
+        width: 100%; /* Full width on mobile */
+        /*max-width: 250px;*/
+        /*right: 5px;
+        top: 5px;*/
     }
     #reminder, #vi-thien-toi-lac {
         font-size: 14px;
