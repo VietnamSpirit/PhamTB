@@ -35,7 +35,8 @@ body {
     border-radius: 8px;
     background-color: #e6f3fa;
     width: 680px;
-    height: auto; /*140px;
+    height: auto; /*140px;*/
+    position: absolute;
     /*max-width: 400px; /* Increased from 300px for more space */
     /*min-height: 100px;*/
     font-family: 'Arial', sans-serif;
