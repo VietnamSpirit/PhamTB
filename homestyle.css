@@ -187,6 +187,56 @@ input[type="password"] {
     box-sizing: border-box;
     margin-bottom: 10px;
 }
+/* Navbar */
+.navbar {
+    width: 100%;
+    background-color: #333;
+    padding: 10px;
+    text-align: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    padding: 14px 20px;
+    display: inline-block;
+}
+
+.navbar a:hover {
+    background-color: #555;
+}
+.footer {
+    width: 100%;
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+}
+/* Sidebar 
+.sidebar {
+    width: 200px;
+    padding: 15px;
+    background-color: #f4f4f4;
+    position: fixed;
+    left: 0;
+    top: 50px;
+    height: 100%;
+}
+
+/* Main Content 
+.content {
+    margin-top: 60px;
+    margin-left: 220px;
+    padding: 20px;
+    width: 60%;
+}
+*/
+/* Footer */
 
 /* Mobile-friendly adjustments */
 @media (max-width: 768px) {
@@ -227,4 +277,34 @@ input[type="password"] {
     #lunar-info, #login-panel {
         padding: 5px; /* Reduce padding */
     }
+    /* Navbar */
+.navbar {
+    width: 100%;
+    background-color: #333;
+    padding: 10px;
+    text-align: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    padding: 14px 20px;
+    display: inline-block;
+}
+
+.navbar a:hover {
+    background-color: #555;
+}
+.footer {
+    width: 100%;
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+}
 }

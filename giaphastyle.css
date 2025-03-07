@@ -1,0 +1,161 @@
+/*<style>*/
+        
+        body {
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+            font-family: 'Arial', sans-serif;
+        }
+        #nav-bar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: #011e36;
+            padding: 10px;
+            z-index: 20;
+            text-align: center;
+        }
+        #nav-bar a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            padding: 10px 20px;
+        }
+        #nav-bar a:hover {
+            background: #357abd;
+            border-radius: 4px;
+        }
+        #tree-container {
+            margin-top: 60px; /* Space for nav-bar */
+            text-align: center;
+        }
+        #subtree-form {
+            margin: 20px auto;
+            text-align: center;
+        }
+        #subtree-form input[type="number"] {
+            padding: 5px;
+            font-size: 16px;
+            width: 100px;
+        }
+        #subtree-form button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        #subtree-form button:hover {
+            background-color: #45a049;
+        }
+        #subtree-instructions {
+            font-style: italic;
+            margin: 10px 0;
+        }
+        #login-panel {
+            text-align: center;
+            margin: 20px auto;
+            max-width: 300px;
+        }
+        input[type="password"], input[type="number"] {
+            padding: 8px;
+            font-size: 16px;
+            width: 100%;
+            max-width: 200px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover { background-color: #45a049; }
+        #tree-content { display: none; } /* Hidden until password is correct */
+
+        /* Mobile-friendly adjustments */
+        @media (max-width: 768px) {
+            body {
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+            font-family: 'Arial', sans-serif;
+        }
+        #nav-bar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: #000e1a;
+            padding: 10px;
+            z-index: 20;
+            text-align: center;
+        }
+        #nav-bar a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            padding: 10px 20px;
+        }
+        #nav-bar a:hover {
+            background: #357abd;
+            border-radius: 4px;
+        }
+        #tree-container {
+            margin-top: 60px; /* Space for nav-bar */
+            text-align: center;
+        }
+        #subtree-form {
+            margin: 20px auto;
+            text-align: center;
+        }
+        #subtree-form input[type="number"] {
+            padding: 5px;
+            font-size: 16px;
+            width: 100px;
+        }
+        #subtree-form button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        #subtree-form button:hover {
+            background-color: #45a049;
+        }
+        #subtree-instructions {
+            font-style: italic;
+            margin: 10px 0;
+        }
+        #login-panel {
+            text-align: center;
+            margin: 20px auto;
+            max-width: 300px;
+        }
+        input[type="password"], input[type="number"] {
+            padding: 8px;
+            font-size: 16px;
+            width: 100%;
+            max-width: 200px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover { background-color: #45a049; }
+        #tree-content { display: none; } /* Hidden until password is correct */
+            }
+/* </style>

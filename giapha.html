@@ -4,178 +4,23 @@
     <meta http-equiv="content-type" content="text/html" charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Family Tree - Gia Phả</title>
+
+    <!-- <script> copy vao file js </script>-->
+   
     <script src="family.js" type="text/javascript"></script>
     <script src="data.js"></script>
+    <script src="giaphascript.js"></script>   
+    <!-- <style> copy vao file css </style>-->
     <link rel="stylesheet" href="homestyle.css">
-    <style>
-        
-        body {
-            padding: 0;
-            margin: 0;
-            min-height: 100vh;
-            background-color: #f0f0f0;
-            font-family: 'Arial', sans-serif;
-        }
-        #nav-bar {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: #011e36;
-            padding: 10px;
-            z-index: 20;
-            text-align: center;
-        }
-        #nav-bar a {
-            color: white;
-            text-decoration: none;
-            font-size: 18px;
-            padding: 10px 20px;
-        }
-        #nav-bar a:hover {
-            background: #357abd;
-            border-radius: 4px;
-        }
-        #tree-container {
-            margin-top: 60px; /* Space for nav-bar */
-            text-align: center;
-        }
-        #subtree-form {
-            margin: 20px auto;
-            text-align: center;
-        }
-        #subtree-form input[type="number"] {
-            padding: 5px;
-            font-size: 16px;
-            width: 100px;
-        }
-        #subtree-form button {
-            padding: 8px 16px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-        #subtree-form button:hover {
-            background-color: #45a049;
-        }
-        #subtree-instructions {
-            font-style: italic;
-            margin: 10px 0;
-        }
-        #login-panel {
-            text-align: center;
-            margin: 20px auto;
-            max-width: 300px;
-        }
-        input[type="password"], input[type="number"] {
-            padding: 8px;
-            font-size: 16px;
-            width: 100%;
-            max-width: 200px;
-            margin-bottom: 10px;
-        }
-        button {
-            padding: 8px 16px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover { background-color: #45a049; }
-        #tree-content { display: none; } /* Hidden until password is correct */
-
-        /* Mobile-friendly adjustments */
-        @media (max-width: 768px) {
-            body {
-            padding: 0;
-            margin: 0;
-            min-height: 100vh;
-            background-color: #f0f0f0;
-            font-family: 'Arial', sans-serif;
-        }
-        #nav-bar {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: #000e1a;
-            padding: 10px;
-            z-index: 20;
-            text-align: center;
-        }
-        #nav-bar a {
-            color: white;
-            text-decoration: none;
-            font-size: 18px;
-            padding: 10px 20px;
-        }
-        #nav-bar a:hover {
-            background: #357abd;
-            border-radius: 4px;
-        }
-        #tree-container {
-            margin-top: 60px; /* Space for nav-bar */
-            text-align: center;
-        }
-        #subtree-form {
-            margin: 20px auto;
-            text-align: center;
-        }
-        #subtree-form input[type="number"] {
-            padding: 5px;
-            font-size: 16px;
-            width: 100px;
-        }
-        #subtree-form button {
-            padding: 8px 16px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-        #subtree-form button:hover {
-            background-color: #45a049;
-        }
-        #subtree-instructions {
-            font-style: italic;
-            margin: 10px 0;
-        }
-        #login-panel {
-            text-align: center;
-            margin: 20px auto;
-            max-width: 300px;
-        }
-        input[type="password"], input[type="number"] {
-            padding: 8px;
-            font-size: 16px;
-            width: 100%;
-            max-width: 200px;
-            margin-bottom: 10px;
-        }
-        button {
-            padding: 8px 16px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover { background-color: #45a049; }
-        #tree-content { display: none; } /* Hidden until password is correct */
-            }
-    </style>
+    <link rel="stylesheet" href="giaphastyle.css">
+    <!-- debug -->
      <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate">
      <meta http-equiv="pragma" content="no-cache">
      <meta http-equiv="expires" content="0">
 </head>
 <body>
     <div id="nav-bar">
-        <a href="index.html">Home- Trở về trang chủ</a>
-        <a href="#contact">Contact us (gửi lời nhắn) </a>
+        
     </div>
     
     <div> <h3>Enter password to view the family tree</h3></div>
@@ -225,70 +70,13 @@
         </div>
     </div>
 <div id="contact">
-    <iframe src="https://forms.gle/FTaWx8NtKmeEcCeCA" width="500px" height="600px"></iframe>
+    <iframe src="https://forms.gle/FTaWx8NtKmeEcCeCA" width="500px" height="650px"></iframe>
 
 </div>
      
+<div id="footer"></div>
+
+
     
-
-
-
-    <script>
-        const correctPassword = "Thuy";
-
-        function checkPassword() {
-            const input = document.getElementById('password-input').value;
-            if (input === correctPassword) {
-                document.getElementById('login-panel').style.display = 'none';
-                document.getElementById('tree-content').style.display = 'block';
-                window.onload(); // Trigger tree loading
-            } else {
-                alert("Incorrect password!");
-                document.getElementById('subtree-input').style.display = 'block';
-            }
-        }
-        // Load the biggest tree by default (root ID 0 or first entry)
-        window.onload = function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const id = urlParams.get('id');
-            if (id && datajs.some(p => p.ID === parseInt(id))) {
-                loadSubtree(id);
-            } else {
-                loadFullTree();
-            }
-        };
-
-        function loadFullTree() {
-            const rootId = 0; // Assuming ID 0 is the root of the biggest tree
-            if (typeof drawTree === 'function' && window.state) {
-                const rootPerson = datajs.find(p => p.ID === rootId) || datajs[0]; // Fallback to first entry
-                rootName = rootPerson["Real Name"];
-                document.getElementById('tree').innerHTML = ''; // Clear previous tree
-                drawTree(window.state.divs, window.state.neighbours, rootId, Infinity); // Biggest tree
-            } else {
-                console.error('Family tree functions not available. Check family.js.');
-                document.getElementById('tree').innerHTML = '<p style="color:red;">Error: Family tree failed to load.</p>';
-            }
-        }
-
-        function loadSubtree(id = null) {
-            
-            const personId = id || parseInt(document.getElementById('person-id').value) || parseInt(document.getElementById('person-id-form').value);
-            console.log('personId:', personId); // Debug output
-            if (!personId || !datajs.some(p => p.ID === personId)) {
-                alert("Invalid Person ID!");
-                return;
-            }
-            const person = datajs.find(p => p.ID === personId);
-            rootName = person["Real Name"];
-            if (typeof drawTree === 'function' && window.state) {
-                document.getElementById('tree').innerHTML = ''; // Clear previous tree
-                drawTree(window.state.divs, window.state.neighbours, personId, 3); // 4 generations (0-3)
-            } else {
-                console.error('Family tree functions not available. Check family.js.');
-                document.getElementById('tree').innerHTML = '<p style="color:red;">Error: Family tree failed to load.</p>';
-            }
-        }
-    </script>
 </body>
 </html>
