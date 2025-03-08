@@ -397,3 +397,47 @@ body {
     }
     /* Rest of existing rules */
 }
+
+/* Add these after .donation-column styles */
+.about-content, .contact-content {
+    padding: 10px;
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.about-content img, .contact-content iframe {
+    width: 100%;
+    max-width: 150px; /* For about page images */
+    height: auto;
+    margin: 10px 0;
+}
+
+.contact-content iframe {
+    max-width: 500px; /* Match original iframe width */
+    height: 650px;
+}
+
+/* Update media queries */
+@media (max-width: 768px) {
+    /* Existing rules */
+    .about-content, .contact-content {
+        padding: 5px;
+    }
+    .about-content img {
+        max-width: 120px;
+    }
+    .contact-content iframe {
+        height: 500px;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Existing rules */
+    .about-content img {
+        max-width: 100px;
+    }
+    .contact-content iframe {
+        height: 400px;
+    }
+}
