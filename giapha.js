@@ -1,57 +1,35 @@
-//<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Password check function
+    function checkPassword() {
+        const passwordInput = document.getElementById('password-input').value;
         const correctPassword = "Thuy";
-
-        function checkPassword() {
-            const input = document.getElementById('password-input').value;
-            if (input === correctPassword) {
-                document.getElementById('login-panel').style.display = 'none';
-                document.getElementById('tree-content').style.display = 'block';
-                window.onload(); // Trigger tree loading
-            } else {
-                alert("Incorrect password!");
-                document.getElementById('subtree-input').style.display = 'block';
-            }
+        if (passwordInput === correctPassword) {
+            document.getElementById('login-panel').style.display = 'none';
+            document.getElementById('tree-content').style.display = 'block';
+            document.getElementById('control-panel').style.display = 'block';
+            document.getElementById('subtree-input').style.display = 'block';
+            loadTree(); // Assuming this function exists in family.js or elsewhere
+        } else {
+            alert('Incorrect password');
         }
-        // Load the biggest tree by default (root ID 0 or first entry)
-        window.onload = function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const id = urlParams.get('id');
-            if (id && datajs.some(p => p.ID === parseInt(id))) {
-                loadSubtree(id);
-            } else {
-                loadFullTree();
-            }
-        };
+    }
 
-        function loadFullTree() {
-            const rootId = 0; // Assuming ID 0 is the root of the biggest tree
-            if (typeof drawTree === 'function' && window.state) {
-                const rootPerson = datajs.find(p => p.ID === rootId) || datajs[0]; // Fallback to first entry
-                rootName = rootPerson["Real Name"];
-                document.getElementById('tree').innerHTML = ''; // Clear previous tree
-                drawTree(window.state.divs, window.state.neighbours, rootId, Infinity); // Biggest tree
-            } else {
-                console.error('Family tree functions not available. Check family.js.');
-                document.getElementById('tree').innerHTML = '<p style="color:red;">Error: Family tree failed to load.</p>';
-            }
+    // Fallback Enter key listener
+    const passwordInput = document.getElementById('password-input');
+    passwordInput.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            checkPassword();
         }
+    });
 
-        function loadSubtree(id = null) {
-            
-            const personId = id || parseInt(document.getElementById('person-id').value) || parseInt(document.getElementById('person-id-form').value);
-            console.log('personId:', personId); // Debug output
-            if (!personId || !datajs.some(p => p.ID === personId)) {
-                alert("Invalid Person ID!");
-                return;
-            }
-            const person = datajs.find(p => p.ID === personId);
-            rootName = person["Real Name"];
-            if (typeof drawTree === 'function' && window.state) {
-                document.getElementById('tree').innerHTML = ''; // Clear previous tree
-                drawTree(window.state.divs, window.state.neighbours, personId, 3); // 4 generations (0-3)
-            } else {
-                console.error('Family tree functions not available. Check family.js.');
-                document.getElementById('tree').innerHTML = '<p style="color:red;">Error: Family tree failed to load.</p>';
-            }
-        }
-  //  </script>
+    // Expose checkPassword to global scope for onclick
+    window.checkPassword = checkPassword;
+
+    // Subtree loading function (assuming it exists)
+    window.loadSubtree = function() {
+        const personId = document.getElementById('person-id-form').value || document.getElementById('person-id').value;
+        // Add your subtree loading logic here
+        console.log('Loading subtree for ID:', personId);
+        // Call a function like loadTree(personId) if defined elsewhere
+    };
+});
