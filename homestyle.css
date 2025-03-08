@@ -63,7 +63,7 @@ body {
     display: grid;
     grid-template-columns: 3fr 1fr;
     gap: 20px;
-    width: 100%; /* Stretch fully */
+    width: 100%; /* Stretch fully 
     max-width: 1400px; /* Increased for wider content */
     margin: 0 auto 20px auto;
 }
@@ -86,14 +86,6 @@ body {
     resize: none;
 }
 
-.grid-container {
-    display: grid;
-    grid-template-columns: 3fr 1fr;
-    gap: 20px;
-    width: 90%;
-    max-width: 1200px;
-    margin: 0 auto 20px auto;
-}
 
 #lunar-info {
     display: flex;
