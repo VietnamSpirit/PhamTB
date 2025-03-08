@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             })
             .catch(err => console.error("Error loading navbar:", err));
-        fetch('homefooter.html')
+        fetch('footer.html')
             .then(r => r.text())
             .then(text => {
                 const footer = document.getElementById('footer');
