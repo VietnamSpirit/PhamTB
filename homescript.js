@@ -71,9 +71,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Candle animation
     let candleIndex = 0;
     const candleFrames = [
-        "photos/web/0.png", "photos/web/1.png", "photos/web/2.png", "photos/web/3.png",
-        "photos/web/4.png", "photos/web/5.png", "photos/web/6.png", "photos/web/7.png",
-        "photos/web/8.png", "photos/web/2.png", "photos/web/1.png"
+        "Photos/web/0.png", "Photos/web/1.png", "Photos/web/2.png", "Photos/web/3.png",
+        "Photos/web/4.png", "Photos/web/5.png", "Photos/web/6.png", "Photos/web/7.png",
+        "Photos/web/8.png", "Photos/web/2.png", "Photos/web/1.png"
     ];
     function animateCandle() {
         candleIndex = (candleIndex + 1) % candleFrames.length;
