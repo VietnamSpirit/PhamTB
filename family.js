@@ -518,6 +518,8 @@ function validateTreeStructure(neighbours) {
 }
 function errorOut(error) { console.log(error); alert(error); throw error; }
 
+// [Your full family.js code up to the end of updateHash() remains unchanged]
+
 // New function for PersonID mapping
 function getPersonNameById(id) {
     console.log("Looking for person with PersonID:", id);
@@ -539,7 +541,9 @@ function initializeFamilyTree() {
     const divs = makeDivs(entries, neighbours);
     window.state = { entries, divs, neighbours };
     readHash();
-    // Don’t draw here; wait for password
+    // Signal that initialization is complete
+    console.log("Family tree initialization complete");
+    window.dispatchEvent(new Event('familyTreeInitialized'));
 }
 
 // Expose functions globally
