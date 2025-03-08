@@ -518,9 +518,45 @@ function validateTreeStructure(neighbours) {
 }
 function errorOut(error) { console.log(error); alert(error); throw error; }
 
-// [Your full family.js code up to the end of updateHash() remains unchanged]
+// Moved redraw() up to avoid ReferenceError
+function redraw() {
+    Array.from(document.getElementsByClassName('drawn-line')).forEach(div => div.parentNode.removeChild(div));
+    ["root", "ancestor", "blood", "descendant", "other"].forEach(kind => {
+        Array.from(document.getElementsByClassName("pos-" + kind)).forEach(el => el.classList.remove("pos-" + kind));
+    });
+    drawTree(window.state.divs, window.state.neighbours);
+    updateHash();
+}
 
-// New function for PersonID mapping
+function imageLoadNotify() {
+    if (imageTracker.allCreated && imageTracker.numDone === imageTracker.numCreated) redraw();
+}
+
+function changeRoot(person) { 
+    rootName = person; 
+    showRootName(); 
+    redraw(); 
+}
+
+function updateHash() { 
+    window.location.hash = '#' + encodeURIComponent(rootName) + ':' + document.getElementById('detail-picker').value; 
+}
+
+function showRootName() {
+    document.title = displayName(rootName) + "'s Family Tree";
+    document.getElementById('root-name').innerText = displayName(rootName);
+}
+
+function readHash() {
+    if (window.location.hash.startsWith('#')) {
+        const [name, detail] = window.location.hash.substr(1).split(':');
+        rootName = decodeURIComponent(name);
+        document.getElementById('detail-picker').value = detail;
+    }
+    setVarsFromDetailOption();
+    showRootName();
+}
+
 function getPersonNameById(id) {
     console.log("Looking for person with PersonID:", id);
     const numericId = String(id); // Ensure string comparison
@@ -533,7 +569,6 @@ function getPersonNameById(id) {
     return null;
 }
 
-// Initialization function
 function initializeFamilyTree() {
     const entries = getEntries();
     const neighbours = getNeighbours(entries);
@@ -541,7 +576,6 @@ function initializeFamilyTree() {
     const divs = makeDivs(entries, neighbours);
     window.state = { entries, divs, neighbours };
     readHash();
-    // Signal that initialization is complete
     console.log("Family tree initialization complete");
     window.dispatchEvent(new Event('familyTreeInitialized'));
 }
@@ -557,29 +591,4 @@ if (document.readyState === "complete" || document.readyState === "interactive")
     initializeFamilyTree();
 } else {
     window.addEventListener('load', initializeFamilyTree);
-}
-
-function imageLoadNotify() {
-    if (imageTracker.allCreated && imageTracker.numDone === imageTracker.numCreated) redraw();
-}
-function changeRoot(person) { 
-    rootName = person; 
-    showRootName(); 
-    redraw(); 
-}
-function updateHash() { 
-    window.location.hash = '#' + encodeURIComponent(rootName) + ':' + document.getElementById('detail-picker').value; 
-}
-function showRootName() {
-    document.title = displayName(rootName) + "'s Family Tree";
-    document.getElementById('root-name').innerText = displayName(rootName);
-}
-function readHash() {
-    if (window.location.hash.startsWith('#')) {
-        const [name, detail] = window.location.hash.substr(1).split(':');
-        rootName = decodeURIComponent(name);
-        document.getElementById('detail-picker').value = detail;
-    }
-    setVarsFromDetailOption();
-    showRootName();
 }
