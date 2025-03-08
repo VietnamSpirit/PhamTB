@@ -37,7 +37,7 @@ body {
 }
 
 .sidebar {
-    width: 0; /* Minimize since it's empty, or remove entirely */
+    width: 0;
     padding: 0;
     background-color: #f4f4f4;
     position: fixed;
@@ -50,8 +50,8 @@ body {
 }
 
 .main-content {
-    margin-left: 0; /* No sidebar, full width */
-    width: 100%; /* Full width */
+    margin-left: 0;
+    width: 100%;
     padding: 20px;
     box-sizing: border-box;
     position: relative;
@@ -66,9 +66,9 @@ body {
     border-radius: 8px;
     background-color: #e6f3fa;
     width: 100%;
-    max-width: 300px; /* Match image width */
+    max-width: 300px;
     min-height: 150px;
-    margin: 10px auto; /* Center under image */
+    margin: 10px auto;
     font-family: 'Arial', sans-serif;
     white-space: pre-wrap;
     word-wrap: break-word;
@@ -165,22 +165,34 @@ body {
 
 #donation-box img {
     width: 100%;
-    max-width: 300px; /* Consistent with lunar-date */
+    max-width: 300px;
     height: auto;
 }
 
 .donation-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two equal columns */
+    gap: 20px;
     margin: 20px 0;
     text-align: center;
+    width: 90%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.donation-section iframe {
-    max-width: 100%;
-    width: 500px;
+.contact-column, .donation-column {
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.contact-column iframe {
+    width: 100%;
     height: 650px;
+    border: none;
 }
 
-.donation-section img {
+.donation-column img {
     width: 100%;
     max-width: 150px;
     height: auto;
@@ -229,7 +241,7 @@ body {
     #lunar-date {
         font-size: 14px;
         padding: 8px;
-        max-width: 270px; /* Match mobile image */
+        max-width: 270px;
     }
 
     .grid-container {
@@ -269,12 +281,16 @@ body {
         max-width: 270px;
     }
 
-    .donation-section iframe {
-        width: 100%;
-        height: 500px;
+    .donation-section {
+        grid-template-columns: 1fr; /* Stack on mobile */
+        gap: 15px;
     }
 
-    .donation-section img {
+    .contact-column iframe {
+        height: 500px; /* Reduced for mobile */
+    }
+
+    .donation-column img {
         max-width: 120px;
     }
 
@@ -319,7 +335,7 @@ body {
         max-width: 200px;
     }
 
-    .donation-section img {
+    .donation-column img {
         max-width: 100px;
     }
 
