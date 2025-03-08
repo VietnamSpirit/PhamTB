@@ -1,13 +1,27 @@
-//<script>
-        // Function to load HTML into elements
-        function loadSection(id, file) {
-            fetch(file)
-                .then(response => response.text())
-                .then(data => document.getElementById(id).innerHTML = data);
-        }
-
-        // Load sections dynamically
-        loadSection("navbar", "homenavbar.html");
-        //loadSection("sidebar", "sidebar.html");
-        loadSection("footer", "footer.html");
-//    </script>
+document.addEventListener('DOMContentLoaded', function() {
+        console.log("loadingmenu.js: DOMContentLoaded fired");
+        fetch('homenavbar.html')
+            .then(r => r.text())
+            .then(text => {
+                const navbar = document.getElementById('navbar');
+                if (navbar) {
+                    navbar.innerHTML = text;
+                    console.log("Navbar loaded");
+                } else {
+                    console.error("Navbar element not found");
+                }
+            })
+            .catch(err => console.error("Error loading navbar:", err));
+        fetch('homefooter.html')
+            .then(r => r.text())
+            .then(text => {
+                const footer = document.getElementById('footer');
+                if (footer) {
+                    footer.innerHTML = text;
+                    console.log("Footer loaded");
+                } else {
+                    console.error("Footer element not found");
+                }
+            })
+            .catch(err => console.error("Error loading footer:", err));
+    });

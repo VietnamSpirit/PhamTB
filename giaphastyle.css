@@ -1,4 +1,4 @@
-/*<style>*/
+/*<style>
         
         body {
             padding: 0;
@@ -26,6 +26,7 @@
             background: #357abd;
             border-radius: 4px;
         }
+            */
         #tree-container {
             margin-top: 60px; /* Space for nav-bar */
             text-align: center;
@@ -78,8 +79,9 @@
         button:hover { background-color: #45a049; }
         #tree-content { display: none; } /* Hidden until password is correct */
 
-        /* Mobile-friendly adjustments */
+       
         @media (max-width: 768px) {
+             /* Mobile-friendly adjustments 
             body {
             padding: 0;
             margin: 0;
@@ -106,6 +108,7 @@
             background: #357abd;
             border-radius: 4px;
         }
+            */
         #tree-container {
             margin-top: 60px; /* Space for nav-bar */
             text-align: center;

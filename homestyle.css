@@ -1,29 +1,3 @@
-body, html {
-    
-    align-items: center;
-    
-}
-
-.label {
-    font-family: 'Arial', 'sans-serif';
-    text-align: center;
-    position: absolute;
-    background-color: white;
-    border: 2px solid black;
-    border-radius: 6px;
-    padding: 5px;
-    cursor: pointer;
-}
-.label img { max-width: 70px; }
-.lifespan { font-size: 10pt; white-space: nowrap; }
-#control-panel {
-    width: 100%;
-    background: #f7f7f7;
-    border-bottom: 1px solid black;
-    z-index: 10;
-    padding: 8px;
-    box-sizing: border-box;
-}
 body {
     padding: 0;
     margin: 0;
@@ -31,68 +5,156 @@ body {
     display: flex;
     flex-direction: column;
     background-color: #f0f0f0;
-    overflow-x: hidden; /* Prevent horizontal scroll */
+    overflow-x: hidden;
 }
+
+.navbar {
+    width: 100%;
+    background-color: #333;
+    padding: 10px;
+    text-align: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    padding: 14px 20px;
+    display: inline-block;
+}
+
+.navbar a:hover {
+    background-color: #555;
+}
+
+.container {
+    display: flex;
+    margin-top: 60px;
+    min-height: calc(100vh - 60px - 40px); /* Adjusted for footer */
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.sidebar {
+    width: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    position: fixed;
+    top: 60px;
+    left: 0;
+    height: calc(100% - 60px);
+    box-sizing: border-box;
+    z-index: 10;
+    overflow-y: auto;
+}
+
+.main-content {
+    margin-left: 0;
+    width: 100%; /* Full width since sidebar is hidden */
+    padding: 20px;
+    box-sizing: border-box;
+    min-height: calc(100vh - 60px - 40px); /* Match container */
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    gap: 20px;
+    width: 100%; /* Stretch fully */
+    max-width: 1400px; /* Increased for wider content */
+    margin: 0 auto 20px auto;
+}
+
 #lunar-date {
-    /*align-items: center;*/
     text-align: center;
     font-size: 16px;
     padding: 10px;
     border: 2px solid #4682b4;
     border-radius: 8px;
     background-color: #e6f3fa;
-    width: 680px;
-    height: auto; /*140px;*/
-    position: absolute;
-    /*max-width: 400px; /* Increased from 300px for more space */
-    /*min-height: 100px;*/
+    width: 100%;
+    max-width: 300px;
+    min-height: 150px;
+    margin: 10px auto;
     font-family: 'Arial', sans-serif;
-    /*white-space: pre-wrap;
-    overflow-y: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
     box-sizing: border-box;
-    resize: none; /* Prevent resizing */
+    resize: none;
 }
 
 .grid-container {
     display: grid;
-    grid-template-columns: 3fr 1fr; /* Flexible unequal columns */
-    gap: 2vw; /* Responsive gap */
+    grid-template-columns: 3fr 1fr;
+    gap: 20px;
     width: 90%;
     max-width: 1200px;
-    z-index: 5;
-     margin: 60px auto 20px auto; /* Space for lunar-date at top */
+    margin: 0 auto 20px auto;
 }
+
 #lunar-info {
-    display:flex; /*flex;*/
+    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     background-color: black;
     padding: 10px;
     border-radius: 8px;
-    width: 100%; /* Ensure it fills its grid cell */
+    width: 100%;
     box-sizing: border-box;
+    position: relative;
 }
-#lunar-info p, #lunar-info h2 {
-    color: white; /* Visible on black background */
-    margin: 0 0 10px 0;
-    text-align: center;
-    white-space: normal; /* Wrap text */
-    word-wrap: break-word; /* Break long words if needed */
-    width: 100%; /* Full width within container */
+
+#candle-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    position: relative;
 }
-#login-panel, #subtree-input {
-    text-align: center;
-    margin: 10px;
-    position: relative; /* Ensure it’s in the flow */
-    z-index: 10; /* Above other elements but below lunar-date */
+
+#canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.candle {
+    width: 100px;
+    height: auto;
+    max-width: 100%;
+    position: relative;
+    z-index: 2;
+}
+
+#ban-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+#ban-image {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    max-height: calc(50% * 300px);
+    object-fit: cover;
 }
 
 #reminder {
     font-size: 16px;
     padding: 15px;
-    width: 100%; /* Full width within parent */
-    max-width: 200px; /* Cap for larger screens */
+    width: 100%;
+    max-width: 200px;
     margin-bottom: 10px;
     color: #8b0000;
     background: linear-gradient(to bottom, #fdf6e3, #f9e8b8);
@@ -100,213 +162,113 @@ body {
     border-radius: 12px;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), inset 0 0 10px rgba(139, 69, 19, 0.1);
     font-family: 'Georgia', serif;
-    white-space: normal; /* Wrap text */
+    white-space: normal;
     box-sizing: border-box;
-    text-align: center; /* Center text like reminder */
+    text-align: center;
 }
-#reminder::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
+
+#donation-box {
+    margin: 20px 0;
+    text-align: center;
+    padding-bottom: 20px;
+}
+
+#donation-box img {
     width: 100%;
-    height: 100%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.2), transparent);
-    pointer-events: none;
+    max-width: 300px;
+    height: auto;
 }
-#candle-container {
+
+.donation-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 20px 0;
+    text-align: center;
+    width: 100%; /* Full width */
+    max-width: 1400px; /* Match grid-container */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.contact-column, .donation-column {
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.contact-column iframe {
+    width: 100%;
+    height: 650px;
+    border: none;
+}
+
+.donation-column img {
+    width: 100%;
+    max-width: 150px;
+    height: auto;
+    margin: 10px 0;
+}
+
+.footer {
+    width: 100%;
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 20px;
-    margin-bottom: 10px;
-    flex-wrap: wrap; /* Wrap on small screens */
-}
-.candle {
-    width: 100px;
-    height: auto;
-    max-width: 100%; /* Responsive image scaling */
-}
-#ban-container {
-    display: flex;
-    justify-content: center; /* Center horizontally */
-    width: 100%; /* Full width of parent */
-    margin-bottom: 10px;
-}
-#ban-image {
-    width: 100%; /* Independent width */
-    max-width: 300px; /* Fixed cap, not matching reminder */
-    height: auto;
-    max-height: calc(50% * 300px); /* Half height based on width */
-    object-fit: cover; /* Maintain aspect ratio */
-}
-#donation-box a {
-    position: relative;
-    z-index: 10; /* Ensure it’s above other elements */
-    display: inline-block; /* Prevent layout issues */
-    pointer-events: auto; /* Ensure clickable */
-}
-#donation-box p {
-    margin-bottom: 5px; /* Reduce default margin */
-}
-#donation-box form {
-    margin-top: 0; /* Remove top margin */
-} 
-#donation-box {
-    margin: 10px 0;
-    text-align: center;
-}
-#donation-box img {
-    width: 100%;
-    max-width: 150px; /* Reasonable size for QR code */
-    height: auto;
-}
-#canvas {
-    position:relative;
-    /*position: absolute;
-    top: 0;
-    left: 0;*/
-    z-index: 1; /* Canvas behind candles */
-}
-button {
-    padding: 8px 16px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    width: 100%; /* Full width on mobile */
-    max-width: 200px; /* Cap for larger screens */
-    margin: 5px auto;
-}
-button:hover { background-color: #45a049; }
-input[type="password"] {
-    padding: 8px;
-    font-size: 16px;
-    width: 100%;
-    max-width: 200px;
-    box-sizing: border-box;
-    margin-bottom: 10px;
-}
-/* Navbar */
-.navbar {
-    width: 100%;
-    background-color: #333;
-    padding: 10px;
-    text-align: center;
-    position: fixed;
-    top: 0;
-    left: 0;
+    margin-top: auto;
 }
 
-.navbar a {
-    color: white;
-    text-decoration: none;
-    padding: 14px 20px;
-    display: inline-block;
-}
-
-.navbar a:hover {
-    background-color: #555;
-}
-.footer {
-    align-items: center;
-    width: 100%;
-    background-color: #333;
-    color: white;
-    text-align: center;
-    padding: 10px;
-    /*position: fixed;*/
-    bottom: 0;
-}
-/* Sidebar 
-.sidebar {
-    width: 200px;
-    padding: 15px;
-    background-color: #f4f4f4;
-    position: fixed;
-    left: 0;
-    top: 50px;
-    height: 100%;
-}
-
-/* Main Content 
-.content {
-    margin-top: 60px;
-    margin-left: 220px;
-    padding: 20px;
-    width: 60%;
-}
-*/
-/* Footer */
-
-/* Mobile-friendly adjustments */
+/* Media Queries */
 @media (max-width: 768px) {
-    .grid-container {
-        grid-template-columns: 1fr; /* Stack columns on mobile */
-        gap: 10px;
-        /*margin-top: 80px; /* Adjust for lunar-date */
+    .navbar {
+        padding: 5px;
     }
-    #lunar-date {
-        font-size: 16px; /* Slightly smaller text */
-        padding: 8px;
-        width: 100%; /* Full width on mobile */
-        /*max-width: 250px;*/
-        /*right: 5px;
-        top: 5px;*/
-    }
-    #reminder, #vi-thien-toi-lac {
+    .navbar a {
+        padding: 10px 15px;
         font-size: 14px;
+    }
+    .container {
+        flex-direction: column;
+        margin-top: 50px;
+        min-height: calc(100vh - 50px - 16px); /* Adjusted for footer */
+    }
+    .main-content {
         padding: 10px;
-        width: 90%; /* Slightly less than full width */
-        max-width: 180px; /* Adjusted for mobile */
     }
-    #ban-image {
-        width: 90%; /* Independent on mobile */
-        max-width: 270px; /* Slightly smaller cap for mobile */
-        max-height: calc(50% * 270px); /* Half height on mobile */
+    .grid-container {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        max-width: 100%; /* Full width on mobile */
     }
-    #donation-box img {
-        max-width: 120px; /* Smaller QR code on mobile */
+    .donation-section {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        max-width: 100%;
+    }
+    .contact-column iframe {
+        height: 500px;
+    }
+}
+
+/*@media (max-width: 768px) {
+    .navbar a {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+    .container {
+        margin-top: 40px;
+        min-height: calc(100vh - 40px - 12px);
+    }
+    .main-content {
+        padding: 5px;
     }
     .candle {
-        width: 80px; /* Smaller candles on mobile */
+        width: 60px;
     }
-    button {
-        padding: 6px 12px;
-        font-size: 14px;
+    .donation-column img {
+        max-width: 100px;
     }
-    #lunar-info, #login-panel {
-        padding: 5px; /* Reduce padding */
-    }
-    /* Navbar */
-.navbar {
-    width: 100%;
-    background-color: #333;
-    padding: 10px;
-    text-align: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-}
-
-.navbar a {
-    color: white;
-    text-decoration: none;
-    padding: 14px 20px;
-    display: inline-block;
-}
-
-.navbar a:hover {
-    background-color: #555;
-}
-.footer {
-    width: 100%;
-    background-color: #333;
-    color: white;
-    text-align: center;
-    padding: 10px;
-    position: fixed;
-    bottom: 0;
-}
 }

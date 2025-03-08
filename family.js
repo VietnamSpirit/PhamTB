@@ -2,9 +2,9 @@
 'use strict';
 
 // Override these settings
-var defaultRootName = 'Henry Carter'; // Default root from your data
-var lineHeight = 280; // Adjusted for your data
-var photoDir = 'photos/'; // Should end with slash
+var defaultRootName = 'Phạm Nam'; // Matches your data
+var lineHeight = 280;
+var photoDir = 'Photos/giapha/'; // Matches your path
 
 // Rendering settings that user can change
 var includeAll = false;
@@ -20,8 +20,9 @@ function isUnion(name) { return name.includes(' + '); }
 
 // Process JSON data from data.js
 function getEntries() {
+    console.log("getEntries: Starting");
     const entries = {};
-    const unions = new Map(); // Track unions to avoid duplicates
+    const unions = new Map();
 
     datajs.forEach(person => {
         const name = person["Real Name"];
@@ -34,22 +35,25 @@ function getEntries() {
             entries[name].push(`l: ${birth}-${death}`);
         }
 
-        // Add notes
-        if (person["Note"]) {
-            entries[name].push(`n: ${person["Note"]}`);
-        }
+        // Add address and notes
         if (person["Address"]) {
             entries[name].push(`n: Address: ${person["Address"]}`);
         }
+        if (person["Note"]) {
+            entries[name].push(`n: ${person["Note"]}`);
+        }
+        if (person["Photo"]) {
+            entries[name].push(`p: ${person["Photo"]}`);
+        }
 
         // Handle parent-child relationships (unions)
-        if (person["Goc"]) {
-            const parentId = person["Goc"].replace('#', '');
+        if (person["Gốc"] && person["Gốc"] !== null) {
+            const parentId = person["Gốc"].replace('#', '');
             const parent = datajs.find(p => p["BranchCode"] === parentId);
             if (parent) {
                 const parentName = parent["Real Name"];
                 let spouse = datajs.find(p => p["BranchCode"].startsWith(parentId + 'w') && p["Generation"] === parent["Generation"]);
-                if (!spouse) spouse = { "Real Name": "?" }; // Placeholder spouse
+                if (!spouse) spouse = { "Real Name": "?" };
                 const unionName = `${parentName} + ${spouse["Real Name"]}`;
                 if (!entries[unionName]) {
                     entries[unionName] = [];
@@ -62,13 +66,13 @@ function getEntries() {
         }
     });
 
-    // Add children to unions
     unions.forEach((children, unionName) => {
         if (children.length > 0) {
             entries[unionName].push(`c: ${children.join(', ')}`);
         }
     });
 
+    console.log("getEntries: Completed with", Object.keys(entries).length, "entries");
     return entries;
 }
 
@@ -95,7 +99,7 @@ function getNeighbours(entries) {
     return result;
 }
 
-// [Rest of the original functions unchanged up to processFamilyTxt]
+// Utility functions
 function getUnion(person, neighbours, side) {
     const result = [];
     for (let name of neighbours[person]) {
@@ -299,7 +303,7 @@ function makeDiv(name, entries, neighbours) {
                 photoDiv = document.createElement("img");
                 imageTracker.numCreated++;
                 photoDiv.onload = photoDiv.onerror = photoLoadCallback;
-                photoDiv.src = photoDir + data.substring(3);
+                photoDiv.src = data.substring(3); // Use path directly
                 photoDiv.style.width = "70px";
                 photoDiv = document.createElement("div").appendChild(photoDiv);
             }
@@ -424,133 +428,4 @@ function traverse(name, pred, neighbours, divs, layout, mode, flags = { ancestor
     };
     if (isPerson(name)) {
         if (mode === "setPeopleClasses") divs[name].classList.add(posClass);
-        const leftUnion = getLeftUnion(name, neighbours);
-        recur(leftUnion, { ancestor: false, blood: flags.ancestor || flags.blood });
-        const rightUnion = getRightUnion(name, neighbours);
-        recur(rightUnion, { ancestor: false, blood: flags.ancestor || flags.blood });
-        const aboveUnion = getAboveUnion(name, neighbours);
-        recur(aboveUnion, { blood: false, descendant: false });
-    } else {
-        const [p1, p2] = name.split(' + ');
-        recur(p1, { blood: false, descendant: false });
-        recur(p2, { blood: false, descendant: false });
-        getChildren(name, neighbours).forEach(child => recur(child, { ancestor: false, blood: flags.ancestor || flags.blood }));
-    }
-}
-function setPeopleClasses(rootName, neighbours, divs) { traverse(rootName, null, neighbours, divs, null, "setPeopleClasses"); }
-function drawConnections(rootName, neighbours, divs, layout) { traverse(rootName, null, neighbours, divs, layout, "drawConnections"); }
-function drawTree(divs, neighbours) {
-    if (!divs[rootName]) throw "Selected name not found in data: " + rootName;
-    setPeopleClasses(rootName, neighbours, divs);
-    const layout = computeLayout(neighbours, divs);
-    const box = boundingBox(layout, divs);
-    shift(layout, { x: 0, y: 0.5 * lineHeight - box.bottomLeft.y + document.getElementById('control-panel').offsetHeight });
-    drawConnections(rootName, neighbours, divs, layout);
-    for (const name of Object.keys(neighbours)) {
-        if (isPerson(name)) {
-            if (layout[name]) {
-                placeDiv(divs[name], layout[name].x, layout[name].y);
-            } else {
-                hideDiv(divs[name]);
-                divs[name].style.top = '100px';
-                divs[name].style.left = '100px';
-            }
-        }
-    }
-    scrollToElement(divs[rootName]);
-    updateTreeInformation(layout, divs);
-}
-function updateTreeInformation(layout, divs) {
-    const infodiv = document.getElementById('tree-information');
-    let ancestors = 0, descendants = 0, blood = 0, others = 0;
-    for (const [person, div] of Object.entries(divs)) {
-        if (!layout[person]) continue;
-        if (div.classList.contains('pos-ancestor')) ancestors++;
-        if (div.classList.contains('pos-descendant')) descendants++;
-        if (div.classList.contains('pos-blood')) blood++;
-        if (div.classList.contains('pos-other')) others++;
-    }
-    const counts = [];
-    const process = (number, description, textClass) => {
-        if (number > 0) counts.push(`<span class="${textClass}">${number} ${description}</span>`);
-    };
-    process(descendants, "descendants", "text-descendant");
-    process(ancestors, "ancestors", "text-ancestor");
-    process(blood, "blood relatives", "text-blood");
-    process(others, "others", "text-other");
-    infodiv.innerHTML = `Showing ${counts.join(counts.length > 1 ? counts.length === 2 ? " and " : ", " : "")} (total ${ancestors + blood + descendants + others + 1}).`;
-}
-function setVarsFromDetailOption() {
-    const choice = document.getElementById('detail-picker').value;
-    includeAll = choice === 'Everyone';
-    downLimit = choice === 'Everyone' ? Infinity : Number(choice);
-}
-function updateDetail() {
-    setVarsFromDetailOption();
-    redraw();
-    document.activeElement.blur();
-}
-function validateTreeStructure(neighbours) {
-    const parent = {};
-    const buildConnectedComponent = (curr, prev, component) => {
-        if (parent[curr]) {
-            let loop = [curr, prev], unroll = prev;
-            while (unroll !== curr) {
-                if (unroll === null) throw "Internal validation error (file a bug!)";
-                unroll = parent[unroll];
-                loop.push(unroll);
-            }
-            throw "Loop detected: " + loop;
-        }
-        parent[curr] = prev;
-        component[curr] = true;
-        neighbours[curr].forEach(x => { if (x !== prev) buildConnectedComponent(x, curr, component); });
-    };
-    const components = [];
-    for (const name of Object.keys(neighbours)) {
-        if (!parent[name]) {
-            const component = {};
-            buildConnectedComponent(name, null, component);
-            components.push([name, component]);
-        }
-    }
-    if (components.length > 1) throw "Multiple connected components: " + components.map(([n, c]) => `${Object.keys(c).length} connected to ${n}`).join(' | ');
-}
-function errorOut(error) { console.log(error); alert(error); throw error; }
-
-// Replace asyncLoadTextFile with direct processing
-window.onload = function() {
-    const entries = getEntries();
-    const neighbours = getNeighbours(entries);
-    validateTreeStructure(neighbours);
-    const divs = makeDivs(entries, neighbours);
-    window.state = { entries, divs, neighbours };
-    readHash();
-    // drawTree is called after password check
-};
-function imageLoadNotify() {
-    if (imageTracker.allCreated && imageTracker.numDone === imageTracker.numCreated) redraw();
-}
-function redraw() {
-    Array.from(document.getElementsByClassName('drawn-line')).forEach(div => div.parentNode.removeChild(div));
-    ["root", "ancestor", "blood", "descendant", "other"].forEach(kind => {
-        Array.from(document.getElementsByClassName("pos-" + kind)).forEach(el => el.classList.remove("pos-" + kind));
-    });
-    drawTree(window.state.divs, window.state.neighbours);
-    updateHash();
-}
-function changeRoot(person) { rootName = person; showRootName(); redraw(); }
-function updateHash() { window.location.hash = '#' + encodeURIComponent(rootName) + ':' + document.getElementById('detail-picker').value; }
-function showRootName() {
-    document.title = displayName(rootName) + "'s Family Tree";
-    document.getElementById('root-name').innerText = displayName(rootName);
-}
-function readHash() {
-    if (window.location.hash.startsWith('#')) {
-        const [name, detail] = window.location.hash.substr(1).split(':');
-        rootName = decodeURIComponent(name);
-        document.getElementById('detail-picker').value = detail;
-    }
-    setVarsFromDetailOption();
-    showRootName();
-}
+        const leftUnion = getLeftUnion(name, neighbour
