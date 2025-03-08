@@ -33,7 +33,9 @@ body {
 .container {
     display: flex;
     margin-top: 60px;
-    min-height: calc(100vh - 60px);
+    min-height: calc(100vh - 60px - 40px); /* Adjusted for footer */
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .sidebar {
@@ -51,11 +53,19 @@ body {
 
 .main-content {
     margin-left: 0;
-    width: 100%;
+    width: 100%; /* Full width since sidebar is hidden */
     padding: 20px;
     box-sizing: border-box;
-    position: relative;
-    min-height: calc(100vh - 60px);
+    min-height: calc(100vh - 60px - 40px); /* Match container */
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    gap: 20px;
+    width: 100%; /* Stretch fully */
+    max-width: 1400px; /* Increased for wider content */
+    margin: 0 auto 20px auto;
 }
 
 #lunar-date {
@@ -171,12 +181,12 @@ body {
 
 .donation-section {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Two equal columns */
+    grid-template-columns: 1fr 1fr;
     gap: 20px;
     margin: 20px 0;
     text-align: center;
-    width: 90%;
-    max-width: 1200px;
+    width: 100%; /* Full width */
+    max-width: 1400px; /* Match grid-container */
     margin-left: auto;
     margin-right: auto;
 }
@@ -216,228 +226,49 @@ body {
     .navbar {
         padding: 5px;
     }
-
     .navbar a {
         padding: 10px 15px;
         font-size: 14px;
     }
-
     .container {
         flex-direction: column;
         margin-top: 50px;
+        min-height: calc(100vh - 50px - 16px); /* Adjusted for footer */
     }
-
-    .sidebar {
-        width: 0;
-        padding: 0;
-    }
-
     .main-content {
-        margin-left: 0;
-        width: 100%;
         padding: 10px;
     }
-
-    #lunar-date {
-        font-size: 14px;
-        padding: 8px;
-        max-width: 270px;
-    }
-
     .grid-container {
         grid-template-columns: 1fr;
         gap: 15px;
+        max-width: 100%; /* Full width on mobile */
     }
-
-    #lunar-info {
-        padding: 5px;
-    }
-
-    #candle-container {
-        gap: 10px;
-    }
-
-    .candle {
-        width: 80px;
-    }
-
-    #ban-image {
-        width: 90%;
-        max-width: 270px;
-        max-height: calc(50% * 270px);
-    }
-
-    #reminder {
-        font-size: 14px;
-        padding: 10px;
-        max-width: 180px;
-    }
-
-    #donation-box {
-        margin: 15px 0;
-    }
-
-    #donation-box img {
-        max-width: 270px;
-    }
-
     .donation-section {
-        grid-template-columns: 1fr; /* Stack on mobile */
+        grid-template-columns: 1fr;
         gap: 15px;
+        max-width: 100%;
     }
-
     .contact-column iframe {
-        height: 500px; /* Reduced for mobile */
-    }
-
-    .donation-column img {
-        max-width: 120px;
-    }
-
-    .footer {
-        padding: 8px;
-        font-size: 14px;
-    }
-}
-
-@media (max-width: 480px) {
-    .navbar a {
-        padding: 8px 10px;
-        font-size: 12px;
-    }
-
-    .container {
-        margin-top: 40px;
-    }
-
-    #lunar-date {
-        font-size: 12px;
-        padding: 6px;
-        max-width: 200px;
-    }
-
-    .candle {
-        width: 60px;
-    }
-
-    #ban-image {
-        max-width: 200px;
-        max-height: calc(50% * 200px);
-    }
-
-    #reminder {
-        font-size: 12px;
-        padding: 8px;
-        max-width: 160px;
-    }
-
-    #donation-box img {
-        max-width: 200px;
-    }
-
-    .donation-column img {
-        max-width: 100px;
-    }
-
-    .footer {
-        font-size: 12px;
-        padding: 6px;
-    }
-}
-
-/* Existing styles remain unchanged until .footer */
-.footer {
-    width: 100%;
-    background-color: #333;
-    color: white;
-    text-align: center;
-    padding: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: auto;
-}
-
-/* Add this new class */
-.content-container {
-    margin-top: 60px; /* Match navbar height */
-    padding: 20px;
-    min-height: calc(100vh - 60px - 40px); /* Account for navbar and footer */
-    box-sizing: border-box;
-}
-
-/* Update media queries */
-@media (max-width: 768px) {
-    /* Existing rules */
-    .navbar {
-        padding: 5px;
-    }
-    .navbar a {
-        padding: 10px 15px;
-        font-size: 14px;
-    }
-    .content-container {
-        margin-top: 50px; /* Match reduced navbar height */
-        padding: 10px;
-        min-height: calc(100vh - 50px - 16px); /* Adjust for footer */
-    }
-    /* Rest of existing rules */
-}
-
-@media (max-width: 480px) {
-    /* Existing rules */
-    .navbar a {
-        padding: 8px 10px;
-        font-size: 12px;
-    }
-    .content-container {
-        margin-top: 40px;
-        padding: 10px;
-        min-height: calc(100vh - 40px - 12px);
-    }
-    /* Rest of existing rules */
-}
-
-/* Add these after .donation-column styles */
-.about-content, .contact-content {
-    padding: 10px;
-    text-align: center;
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-.about-content img, .contact-content iframe {
-    width: 100%;
-    max-width: 150px; /* For about page images */
-    height: auto;
-    margin: 10px 0;
-}
-
-.contact-content iframe {
-    max-width: 500px; /* Match original iframe width */
-    height: 650px;
-}
-
-/* Update media queries */
-@media (max-width: 768px) {
-    /* Existing rules */
-    .about-content, .contact-content {
-        padding: 5px;
-    }
-    .about-content img {
-        max-width: 120px;
-    }
-    .contact-content iframe {
         height: 500px;
     }
 }
 
 @media (max-width: 480px) {
-    /* Existing rules */
-    .about-content img {
-        max-width: 100px;
+    .navbar a {
+        padding: 8px 10px;
+        font-size: 12px;
     }
-    .contact-content iframe {
-        height: 400px;
+    .container {
+        margin-top: 40px;
+        min-height: calc(100vh - 40px - 12px);
+    }
+    .main-content {
+        padding: 5px;
+    }
+    .candle {
+        width: 60px;
+    }
+    .donation-column img {
+        max-width: 100px;
     }
 }
