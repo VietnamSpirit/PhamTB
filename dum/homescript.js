@@ -1,4 +1,3 @@
-// script.js
 document.addEventListener('DOMContentLoaded', function() {
     // Lunar date logic
     const today = new Date();
@@ -8,33 +7,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const lunarToday = lookupTable.find(entry => entry['Ngày dương lịch'] === todaySolar);
     const lunarDateField = document.getElementById('lunar-date');
 
-    /*if (lunarToday) {
+    if (lunarToday) {
         const [lunarDay, lunarMonth] = lunarToday['Ngày âm lịch'].split('/').slice(0, 2);
         lunarDateField.value = [
-            'Hôm nay ', `${normalDate}`,
-            ' tức mùng ',
-            `${lunarDay}/${lunarMonth}${lunarToday['Tháng nhuận'] === '1' ? ' (Nhuận)' : ''}`,
-            ' ', `${lunarToday['Ngày trong tuần']}`,
+            `Hôm nay ${normalDate}`,
+            ` tức âm lịch mùng ${lunarDay}/${lunarMonth}${lunarToday['Tháng nhuận'] === '1' ? ' (Nhuận)' : ''}`,
             ` ngày ${lunarToday['Ngày Can-Chi']}`,
             ` tháng ${lunarToday['Tháng Can-Chi']}`,
             ` năm ${lunarToday['Năm Can-Chi']}`
         ].join('\n');
     } else {
         lunarDateField.value = `${normalDate}\nNgày âm lịch không có trong bảng`;
-    }*/
-        if (lunarToday) {
-            const [lunarDay, lunarMonth] = lunarToday['Ngày âm lịch'].split('/').slice(0, 2);
-            lunarDateField.value = [
-                `Hôm nay ${normalDate}`,
-                ` tức âm lịch mùng ${lunarDay}/${lunarMonth}${lunarToday['Tháng nhuận'] === '1' ? ' (Nhuận)' : ''}`,
-                /*`${lunarToday['Ngày trong tuần']}`,*/
-                ` ngày ${lunarToday['Ngày Can-Chi']}`,
-                ` tháng ${lunarToday['Tháng Can-Chi']}`,
-                ` năm ${lunarToday['Năm Can-Chi']}`
-            ]/*.join('\n'); /*cai nay can khi de ben doc xuong dong tung field */
-        } else {
-            lunarDateField.value = `${normalDate}\nNgày âm lịch không có trong bảng`;
-        }
+    }
 
     // Commemoration logic
     function checkCommemorations() {
@@ -84,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     checkCommemorations();
 
-    // Candle and particle animation
+    // Candle animation
     let candleIndex = 0;
     const candleFrames = [
         "photos/web/0.png", "photos/web/1.png", "photos/web/2.png", "photos/web/3.png",
@@ -98,25 +82,33 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     setInterval(animateCandle, 200);
 
+    // Snowflake effect
     let canvas = document.getElementById("canvas");
     let ctx = canvas.getContext("2d");
-    let W = window.innerWidth;
-    let H = window.innerHeight;
-    canvas.width = W;
-    canvas.height = H;
-
     let particles = [];
-    for (let i = 0; i < 80; i++) {
-        particles.push({
-            x: Math.random() * W,
-            y: Math.random() * H,
-            r: Math.random() * 3 + 1,
-            d: Math.random() * 80
-        });
+
+    function resizeCanvas() {
+        const lunarInfo = document.getElementById("lunar-info");
+        if (lunarInfo) {
+            canvas.width = lunarInfo.offsetWidth;
+            canvas.height = lunarInfo.offsetHeight;
+            particles = [];
+            for (let i = 0; i < 80; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    r: Math.random() * 3 + 1,
+                    d: Math.random() * 80
+                });
+            }
+        }
     }
 
+    resizeCanvas();
+    window.addEventListener('resize', debounce(resizeCanvas, 100));
+
     function draw() {
-        ctx.clearRect(0, 0, W, H);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = "white";
         ctx.beginPath();
         for (let i = 0; i < particles.length; i++) {
@@ -133,10 +125,20 @@ document.addEventListener('DOMContentLoaded', function() {
             let p = particles[i];
             p.y += Math.cos(p.d) + 1 + p.r / 2;
             p.x += Math.sin(p.d) * 2;
-            if (p.x > W || p.x < 0 || p.y > H) {
-                particles[i] = { x: Math.random() * W, y: -10, r: p.r, d: p.d };
+            if (p.x > canvas.width || p.x < 0 || p.y > canvas.height) {
+                particles[i] = { x: Math.random() * canvas.width, y: -10, r: p.r, d: p.d };
             }
         }
     }
+
     setInterval(draw, 40);
+
+    // Debounce function
+    function debounce(func, wait) {
+        let timeout;
+        return function() {
+            clearTimeout(timeout);
+            timeout = setTimeout(func, wait);
+        };
+    }
 });
