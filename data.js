@@ -1,4 +1,4 @@
-const datajs = [
+var datajs = [
     {
         "ID": 1,
         "BranchCode": "G1",
@@ -8,9 +8,10 @@ const datajs = [
         "Death Date (Vietnamese Lunar)": "6/2/1618 Âm lịch",
         "Sex": "M",
         "Address": "Đông Hà",
-        "Note": "Founder of the Phạm lineage | Photo: Photos/giapha/person_1.jpg",
+        "Note": "Founder of the Phạm lineage",
         "Gốc": null,
-        "Generation": 1
+        "Generation": 1,
+        "Photo": "Photos/giapha/person_1.jpg"
     },
     {
         "ID": 2,
@@ -21,9 +22,10 @@ const datajs = [
         "Death Date (Vietnamese Lunar)": "4/2/1621 Âm lịch",
         "Sex": "F",
         "Address": "Đông Hà",
-        "Note": "Wife of Phạm Nam | Photo: Photos/giapha/person_2.jpg",
+        "Note": "Wife of Phạm Nam",
         "Gốc": null,
-        "Generation": 1
+        "Generation": 1,
+        "Photo": "Photos/giapha/person_2.jpg"
     },
     {
         "ID": 3,
@@ -34,9 +36,10 @@ const datajs = [
         "Death Date (Vietnamese Lunar)": "6/2/1633 Âm lịch",
         "Sex": "M",
         "Address": "Đông Hà",
-        "Note": "Son 1 | Photo: Photos/giapha/person_3.jpg",
+        "Note": "Son 1",
         "Gốc": "#G1",
-        "Generation": 2
+        "Generation": 2,
+        "Photo": "Photos/giapha/person_3.jpg"
     },
     {
         "ID": 4,
@@ -73,9 +76,10 @@ const datajs = [
         "Death Date (Vietnamese Lunar)": "11/12/1636 Âm lịch",
         "Sex": "F",
         "Address": "Đông Hà",
-        "Note": "Daughter of Trần Nữ | Photo: Photos/giapha/person_6.jpg",
+        "Note": "Daughter of Trần Nữ",
         "Gốc": "#G1",
-        "Generation": 2
+        "Generation": 2,
+        "Photo": "Photos/giapha/person_6.jpg"
     },
     {
         "ID": 7,
@@ -125,9 +129,10 @@ const datajs = [
         "Death Date (Vietnamese Lunar)": "11/12/1648 Âm lịch",
         "Sex": "M",
         "Address": "Đông Hà",
-        "Note": "Son 1 | Photo: Photos/giapha/person_10.jpg",
+        "Note": "Son 1",
         "Gốc": "#G2Chi1",
-        "Generation": 3
+        "Generation": 3,
+        "Photo": "Photos/giapha/person_10.jpg"
     },
     {
         "ID": 11,
@@ -177,9 +182,10 @@ const datajs = [
         "Death Date (Vietnamese Lunar)": "11/12/1652 Âm lịch",
         "Sex": "F",
         "Address": "Đông Hà",
-        "Note": "Daughter of Nguyễn Nữ | Photo: Photos/giapha/person_14.jpg",
+        "Note": "Daughter of Nguyễn Nữ",
         "Gốc": "#G2Chi1",
-        "Generation": 3
+        "Generation": 3,
+        "Photo": "Photos/giapha/person_14.jpg"
     },
     {
         "ID": 15,
@@ -242,9 +248,10 @@ const datajs = [
         "Death Date (Vietnamese Lunar)": "11/12/1652 Âm lịch",
         "Sex": "M",
         "Address": "Đông Hà",
-        "Note": "Son 1 | Photo: Photos/giapha/person_19.jpg",
+        "Note": "Son 1",
         "Gốc": "#G2Chi3",
-        "Generation": 3
+        "Generation": 3,
+        "Photo": "Photos/giapha/person_19.jpg"
     },
     {
         "ID": 20,
@@ -398,9 +405,10 @@ const datajs = [
         "Death Date (Vietnamese Lunar)": "11/12/1663 Âm lịch",
         "Sex": "M",
         "Address": "Đông Hà",
-        "Note": "Son 1 | Photo: Photos/giapha/person_31.jpg",
+        "Note": "Son 1",
         "Gốc": "#G3Chi1Ng1",
-        "Generation": 4
+        "Generation": 4,
+        "Photo": "Photos/giapha/person_31.jpg"
     },
     {
         "ID": 32,
@@ -463,9 +471,10 @@ const datajs = [
         "Death Date (Vietnamese Lunar)": "11/12/1667 Âm lịch",
         "Sex": "F",
         "Address": "Đông Hà",
-        "Note": "Daughter of Phạm Nữ | Photo: Photos/giapha/person_36.jpg",
+        "Note": "Daughter of Phạm Nữ",
         "Gốc": "#G3Chi1Ng3",
-        "Generation": 4
+        "Generation": 4,
+        "Photo": "Photos/giapha/person_36.jpg"
     },
     {
         "ID": 37,
@@ -606,9 +615,10 @@ const datajs = [
         "Death Date (Vietnamese Lunar)": "11/12/1678 Âm lịch",
         "Sex": "M",
         "Address": "Đông Hà",
-        "Note": "Son 1 | Photo: Photos/giapha/person_47.jpg",
+        "Note": "Son 1",
         "Gốc": "#G4Chi3Ng3",
-        "Generation": 5
+        "Generation": 5,
+        "Photo": "Photos/giapha/person_47.jpg"
     },
     {
         "ID": 48,
@@ -684,9 +694,10 @@ const datajs = [
         "Death Date (Vietnamese Lunar)": "11/12/1684 Âm lịch",
         "Sex": "F",
         "Address": "Đông Hà",
-        "Note": "Daughter 1 | Photo: Photos/giapha/person_53.jpg",
+        "Note": "Daughter 1",
         "Gốc": "#G4Chi3Ng3",
-        "Generation": 5
+        "Generation": 5,
+        "Photo": "Photos/giapha/person_53.jpg"
     },
     {
         "ID": 54,
@@ -788,9 +799,10 @@ const datajs = [
         "Death Date (Vietnamese Lunar)": "11/12/1692 Âm lịch",
         "Sex": "F",
         "Address": "Đông Hà",
-        "Note": "Daughter of Hoàng Nữ | Photo: Photos/giapha/person_61.jpg",
+        "Note": "Daughter of Hoàng Nữ",
         "Gốc": "#G4Chi3Ng1Nh1",
-        "Generation": 5
+        "Generation": 5,
+        "Photo": "Photos/giapha/person_61.jpg"
     },
     {
         "ID": 62,
@@ -840,9 +852,10 @@ const datajs = [
         "Death Date (Vietnamese Lunar)": "11/12/1693 Âm lịch",
         "Sex": "M",
         "Address": "Đông Hà",
-        "Note": "Son 1 | Photo: Photos/giapha/person_65.jpg",
+        "Note": "Son 1",
         "Gốc": "#G5Chi3Ng3Nh1A1",
-        "Generation": 6
+        "Generation": 6,
+        "Photo": "Photos/giapha/person_65.jpg"
     },
     {
         "ID": 66,
@@ -866,9 +879,10 @@ const datajs = [
         "Death Date (Vietnamese Lunar)": "11/12/1695 Âm lịch",
         "Sex": "F",
         "Address": "Đông Hà",
-        "Note": "Daughter 1 | Photo: Photos/giapha/person_67.jpg",
+        "Note": "Daughter 1",
         "Gốc": "#G5Chi3Ng3Nh1A1",
-        "Generation": 6
+        "Generation": 6,
+        "Photo": "Photos/giapha/person_67.jpg"
     },
     {
         "ID": 68,
@@ -1087,9 +1101,10 @@ const datajs = [
         "Death Date (Vietnamese Lunar)": "11/12/1708 Âm lịch",
         "Sex": "M",
         "Address": "Đông Hà",
-        "Note": "Son 1 | Photo: Photos/giapha/person_84.jpg",
+        "Note": "Son 1",
         "Gốc": "#G6Chi3Ng3Nh1A1B1",
-        "Generation": 7
+        "Generation": 7,
+        "Photo": "Photos/giapha/person_84.jpg"
     },
     {
         "ID": 85,
@@ -1113,9 +1128,10 @@ const datajs = [
         "Death Date (Vietnamese Lunar)": "11/12/1710 Âm lịch",
         "Sex": "F",
         "Address": "Đông Hà",
-        "Note": "Daughter of Nguyễn Nữ | Photo: Photos/giapha/person_86.jpg",
+        "Note": "Daughter of Nguyễn Nữ",
         "Gốc": "#G6Chi3Ng3Nh1A1B1",
-        "Generation": 7
+        "Generation": 7,
+        "Photo": "Photos/giapha/person_86.jpg"
     },
     {
         "ID": 87,
@@ -1217,9 +1233,10 @@ const datajs = [
         "Death Date (Vietnamese Lunar)": "11/12/1853 Âm lịch",
         "Sex": "M",
         "Address": "Đông Hà",
-        "Note": "Son 1 | Photo: Photos/giapha/person_94.jpg",
+        "Note": "Son 1",
         "Gốc": "#G7Chi3Ng3Nh1A1B1",
-        "Generation": 16
+        "Generation": 16,
+        "Photo": "Photos/giapha/person_94.jpg"
     },
     {
         "ID": 95,
@@ -1256,9 +1273,10 @@ const datajs = [
         "Death Date (Vietnamese Lunar)": "11/12/1871 Âm lịch",
         "Sex": "F",
         "Address": "Đông Hà",
-        "Note": "Daughter of Nguyễn Nữ | Photo: Photos/giapha/person_97.jpg",
+        "Note": "Daughter of Nguyễn Nữ",
         "Gốc": "#G16Chi3Ng3Nh1A1B1C1",
-        "Generation": 17
+        "Generation": 17,
+        "Photo": "Photos/giapha/person_97.jpg"
     },
     {
         "ID": 98,
@@ -1299,4 +1317,4 @@ const datajs = [
         "Gốc": "#G17Chi3Ng3Nh1A1B1C1D1",
         "Generation": 18
     }
-];
+]
