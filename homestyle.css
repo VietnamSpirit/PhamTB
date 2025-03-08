@@ -162,9 +162,10 @@ body {
     height: auto;
 }
 #canvas {
-    position: absolute;
+    position:relative;
+    /*position: absolute;
     top: 0;
-    left: 0;
+    left: 0;*/
     z-index: 1; /* Canvas behind candles */
 }
 button {
