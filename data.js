@@ -11,7 +11,7 @@ var datajs = [
         "Note": "Founder of the Phạm lineage",
         "Gốc": null,
         "Generation": 1,
-        "Photo": "Photos/giapha/person_1.jpg"
+        "Photo": "Photos/giapha/person_1.png"
     },
     {
         "ID": 2,
