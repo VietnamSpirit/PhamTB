@@ -95,7 +95,7 @@ function getNeighbours(entries) {
     return result;
 }
 
-// [Rest of the original functions unchanged up to processFamilyTxt]
+// Utility functions
 function getUnion(person, neighbours, side) {
     const result = [];
     for (let name of neighbours[person]) {
@@ -518,29 +518,54 @@ function validateTreeStructure(neighbours) {
 }
 function errorOut(error) { console.log(error); alert(error); throw error; }
 
-// Replace asyncLoadTextFile with direct processing
-window.onload = function() {
+// New function for PersonID mapping
+function getPersonNameById(id) {
+    console.log("Looking for person with PersonID:", id);
+    const numericId = String(id); // Ensure string comparison
+    const person = datajs.find(p => String(p["PersonID"]) === numericId); // Use PersonID
+    if (person) {
+        console.log("Found person:", person["Real Name"]);
+        return person["Real Name"];
+    }
+    console.log("Person not found for PersonID:", id);
+    return null;
+}
+
+// Initialization function
+function initializeFamilyTree() {
     const entries = getEntries();
     const neighbours = getNeighbours(entries);
     validateTreeStructure(neighbours);
     const divs = makeDivs(entries, neighbours);
     window.state = { entries, divs, neighbours };
     readHash();
-    // drawTree is called after password check
-};
+    // Don’t draw here; wait for password
+}
+
+// Expose functions globally
+window.drawTree = drawTree;
+window.changeRoot = changeRoot;
+window.redraw = redraw;
+window.getPersonNameById = getPersonNameById;
+
+// Initialize on load without overriding other handlers
+if (document.readyState === "complete" || document.readyState === "interactive") {
+    initializeFamilyTree();
+} else {
+    window.addEventListener('load', initializeFamilyTree);
+}
+
 function imageLoadNotify() {
     if (imageTracker.allCreated && imageTracker.numDone === imageTracker.numCreated) redraw();
 }
-function redraw() {
-    Array.from(document.getElementsByClassName('drawn-line')).forEach(div => div.parentNode.removeChild(div));
-    ["root", "ancestor", "blood", "descendant", "other"].forEach(kind => {
-        Array.from(document.getElementsByClassName("pos-" + kind)).forEach(el => el.classList.remove("pos-" + kind));
-    });
-    drawTree(window.state.divs, window.state.neighbours);
-    updateHash();
+function changeRoot(person) { 
+    rootName = person; 
+    showRootName(); 
+    redraw(); 
 }
-function changeRoot(person) { rootName = person; showRootName(); redraw(); }
-function updateHash() { window.location.hash = '#' + encodeURIComponent(rootName) + ':' + document.getElementById('detail-picker').value; }
+function updateHash() { 
+    window.location.hash = '#' + encodeURIComponent(rootName) + ':' + document.getElementById('detail-picker').value; 
+}
 function showRootName() {
     document.title = displayName(rootName) + "'s Family Tree";
     document.getElementById('root-name').innerText = displayName(rootName);
