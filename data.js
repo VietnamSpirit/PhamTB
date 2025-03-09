@@ -5,7 +5,7 @@ var datajs = [
         "Real Name": "Phạm Nam",
         "Birthyear": 1549,
         "Death Date": "01/01/1619",
-        "Death Date (Vietnamese Lunar)": "6/2/1618 Âm lịch",
+        "Death Date (Vietnamese Lunar)": "10/2/1618 Âm lịch",
         "Sex": "M",
         "Address": "Đông Hà",
         "Note": "Founder of the Phạm lineage",
