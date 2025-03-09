@@ -9,11 +9,11 @@ var datajs = [
         "Sex": "M",
         "Address": "Đông Hà",
         "Note": "Founder of the Phạm lineage",
-        "Gốc": NaN,
+        "Gốc": "Thuỷ tổ",
         "Generation": 1,
         "Photo": "Photos/giapha/person_1.jpg",
-        "Father ID": NaN,
-        "Mother ID": 101
+        "Father ID": "00A",
+        "Mother ID": "00B"
     },
     {
         "ID": 2,
@@ -25,11 +25,11 @@ var datajs = [
         "Sex": "F",
         "Address": "Đông Hà",
         "Note": "Wife of Phạm Nam",
-        "Gốc": NaN,
+        "Gốc": Thuỷ tổ,
         "Generation": 1,
         "Photo": "Photos/giapha/person_2.jpg",
-        "Father ID": NaN,
-        "Mother ID": 102
+        "Father ID": "00C",
+        "Mother ID": "102"
     },
     {
         "ID": 3,
