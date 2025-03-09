@@ -517,14 +517,7 @@ function validateTreeStructure(neighbours) {
 }
 function errorOut(error) { console.log(error); alert(error); throw error; }
 
-window.onload = function() {
-    const entries = getEntries();
-    const neighbours = getNeighbours(entries);
-    validateTreeStructure(neighbours);
-    const divs = makeDivs(entries, neighbours);
-    window.state = { entries, divs, neighbours };
-    readHash();
-};
+
 function imageLoadNotify() {
     if (imageTracker.allCreated && imageTracker.numDone === imageTracker.numCreated) redraw();
 }
@@ -552,3 +545,14 @@ function readHash() {
     setVarsFromDetailOption();
     showRootId();
 }
+
+window.onload = function() {
+    const entries = getEntries();
+    const neighbours = getNeighbours(entries);
+    validateTreeStructure(neighbours);
+    const divs = makeDivs(entries, neighbours);
+    window.state = { entries, divs, neighbours };
+    readHash();
+    // Dispatch event to signal initialization
+    window.dispatchEvent(new Event('familyTreeInitialized'));
+};
