@@ -25,7 +25,7 @@ var datajs = [
         "Sex": "F",
         "Address": "Đông Hà",
         "Note": "Wife of Phạm Nam",
-        "Gốc": Thuỷ tổ,
+        "Gốc": "Thuỷ tổ",
         "Generation": 1,
         "Photo": "Photos/giapha/person_2.jpg",
         "Father ID": "00C",
