@@ -35,12 +35,37 @@ document.addEventListener('DOMContentLoaded', function() {
                 } catch (error) {
                     console.error("Error drawing tree:", error);
                 }
-                window.removeEventListener('familyTreeInitialized', handler); // Clean up
+                window.removeEventListener('familyTreeInitialized', handler);
             }, { once: true });
         }
     }
 
     window.checkPassword = checkPassword;
+
+    window.loadSubtree = function() {
+        const personId = document.getElementById('person-id-form').value || document.getElementById('person-id').value;
+        console.log('Loading subtree for ID:', personId);
+        if (!personId) {
+            alert("Please enter a valid Person ID!");
+            return;
+        }
+        if (datajs.some(p => p["ID"] === personId)) {
+            if (window.state && window.state.divs && window.state.neighbours) {
+                changeRoot(personId);
+                redraw();
+            } else {
+                console.log("window.state not initialized, waiting for subtree...");
+                window.addEventListener('familyTreeInitialized', function handler() {
+                    changeRoot(personId);
+                    redraw();
+                    window.removeEventListener('familyTreeInitialized', handler);
+                }, { once: true });
+            }
+        } else {
+            alert("Person ID not found!");
+            console.error("No person found for ID:", personId);
+        }
+    };
 
     const passwordInput = document.getElementById('password-input');
     if (passwordInput) {
@@ -54,40 +79,4 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         console.error("Password input not found");
     }
-
-    window.loadSubtree = function() {
-        const personId = document.getElementById('person-id-form').value || document.getElementById('person-id').value;
-        console.log('Loading subtree for ID:', personId);
-        if (window.state && window.state.divs && window.state.neighbours) {
-            try {
-                const personName = getPersonNameById(personId);
-                if (personName) {
-                    changeRoot(personName);
-                    redraw();
-                } else {
-                    console.error("No person found for ID:", personId);
-                    alert("Person ID not found!");
-                }
-            } catch (error) {
-                console.error("Error loading subtree:", error);
-            }
-        } else {
-            console.log("window.state not initialized yet, waiting for subtree...");
-            window.addEventListener('familyTreeInitialized', function handler() {
-                try {
-                    const personName = getPersonNameById(personId);
-                    if (personName) {
-                        changeRoot(personName);
-                        redraw();
-                    } else {
-                        console.error("No person found for ID:", personId);
-                        alert("Person ID not found!");
-                    }
-                } catch (error) {
-                    console.error("Error loading subtree:", error);
-                }
-                window.removeEventListener('familyTreeInitialized', handler); // Clean up
-            }, { once: true });
-        }
-    };
 });

@@ -2,73 +2,58 @@
 'use strict';
 
 // Override these settings
-var defaultRootName = 'Phạm Nam'; // Matches your data
+var defaultRootId = "1"; // Default root ID (Phạm Nam)
 var lineHeight = 280;
-var photoDir = 'Photos/giapha/'; // Matches your path
+var photoDir = 'Photos/giapha/';
 
 // Rendering settings that user can change
 var includeAll = false;
 var downLimit = Infinity;
-var rootName = defaultRootName;
+var rootId = defaultRootId;
 
 // Stateful global helpers
 var imageTracker = { numCreated: 0, numDone: 0, allCreated: false };
 
 // Basic parsing functions
-function isPerson(name) { return !name.includes(' + '); }
-function isUnion(name) { return name.includes(' + '); }
+function isPerson(id) { return !id.includes(' + '); }
+function isUnion(id) { return id.includes(' + '); }
 
-// Process JSON data from data.js
+// Process JSON data from data.js using string IDs
 function getEntries() {
     console.log("getEntries: Starting");
     const entries = {};
-    const unions = new Map();
+    const unions = new Map(); // Map of "fatherID + motherID" to children IDs
 
     datajs.forEach(person => {
-        const name = person["Real Name"];
-        entries[name] = [];
+        const id = person["ID"];
+        entries[id] = [];
 
         // Add lifespan
         const birth = person["Birthyear"] || '';
         const death = person["Death Date"] || '';
         if (birth || death) {
-            entries[name].push(`l: ${birth}-${death}`);
+            entries[id].push(`l: ${birth}-${death}`);
         }
 
-        // Add address and notes
-        if (person["Address"]) {
-            entries[name].push(`n: Address: ${person["Address"]}`);
-        }
-        if (person["Note"]) {
-            entries[name].push(`n: ${person["Note"]}`);
-        }
-        if (person["Photo"]) {
-            entries[name].push(`p: ${person["Photo"]}`);
-        }
+        // Add address, notes, and photo
+        if (person["Address"]) entries[id].push(`n: Address: ${person["Address"]}`);
+        if (person["Note"]) entries[id].push(`n: ${person["Note"]}`);
+        if (person["Photo"]) entries[id].push(`p: ${person["Photo"]}`);
 
-        // Handle parent-child relationships (unions)
-        if (person["Gốc"] && person["Gốc"] !== null) {
-            const parentId = person["Gốc"].replace('#', '');
-            const parent = datajs.find(p => p["BranchCode"] === parentId);
-            if (parent) {
-                const parentName = parent["Real Name"];
-                let spouse = datajs.find(p => p["BranchCode"].startsWith(parentId + 'w') && p["Generation"] === parent["Generation"]);
-                if (!spouse) spouse = { "Real Name": "?" };
-                const unionName = `${parentName} + ${spouse["Real Name"]}`;
-                if (!entries[unionName]) {
-                    entries[unionName] = [];
-                }
-                if (!unions.has(unionName)) {
-                    unions.set(unionName, []);
-                }
-                unions.get(unionName).push(name);
-            }
+        // Handle parent-child relationships, prioritizing Mother ID
+        const fatherId = person["Father ID"];
+        const motherId = person["Mother ID"];
+        if (motherId && datajs.some(p => p["ID"] === motherId)) { // Only create union if Mother ID exists in datajs
+            const unionId = `${fatherId || '?'}+${motherId}`;
+            if (!entries[unionId]) entries[unionId] = [];
+            if (!unions.has(unionId)) unions.set(unionId, []);
+            unions.get(unionId).push(id);
         }
     });
 
-    unions.forEach((children, unionName) => {
+    unions.forEach((children, unionId) => {
         if (children.length > 0) {
-            entries[unionName].push(`c: ${children.join(', ')}`);
+            entries[unionId].push(`c: ${children.join(', ')}`);
         }
     });
 
@@ -76,50 +61,52 @@ function getEntries() {
     return entries;
 }
 
-// Rewrite as undirected bipartite graph
+// Build undirected bipartite graph using string IDs
 function getNeighbours(entries) {
     const result = {};
-    for (let name of Object.keys(entries)) result[name] = [];
+    for (let id of Object.keys(entries)) result[id] = [];
 
     function addHalfEdge(x, y) {
         if (!result[x]) result[x] = [];
         result[x].push(y);
     }
 
-    for (let [name, props] of Object.entries(entries)) {
-        if (isPerson(name)) continue;
-        const [p1, p2] = name.split(' + ').map(x => x.trim());
+    for (let [id, props] of Object.entries(entries)) {
+        if (isPerson(id)) continue;
+        const [fatherId, motherId] = id.split(' + ');
         const children = props.filter(p => p.startsWith('c: '))
-                            .flatMap(p => p.substring(3).split(', '));
-        for (const x of children.concat([p1, p2])) {
-            addHalfEdge(name, x);
-            addHalfEdge(x, name);
+                             .flatMap(p => p.substring(3).split(', '));
+        for (const x of children.concat([fatherId, motherId].filter(x => x !== '?'))) {
+            addHalfEdge(id, x);
+            addHalfEdge(x, id);
         }
     }
     return result;
 }
 
-// Utility functions
-function getUnion(person, neighbours, side) {
+// Utility functions updated for string IDs
+function getUnion(personId, neighbours, side) {
     const result = [];
-    for (let name of neighbours[person]) {
-        const members = name.split(' + ');
-        if (members[1 - side] === person) result.push(name);
+    for (let unionId of neighbours[personId]) {
+        const [fatherId, motherId] = unionId.split(' + ');
+        if ((side === 0 && fatherId === personId) || (side === 1 && motherId === personId)) result.push(unionId);
     }
-    return result.length === 0 ? null : result.length === 1 ? result[0] : errorOut(person + ' has two unions on side ' + side);
+    return result.length === 0 ? null : result.length === 1 ? result[0] : errorOut(`Person ${personId} has multiple unions on side ${side}`);
 }
 
-function getLeftUnion(person, neighbours) { return getUnion(person, neighbours, 0); }
-function getRightUnion(person, neighbours) { return getUnion(person, neighbours, 1); }
-function getAboveUnion(person, neighbours) {
-    for (let name of neighbours[person]) {
-        if (!name.split(' + ').includes(person)) return name;
+function getLeftUnion(personId, neighbours) { return getUnion(personId, neighbours, 0); } // Father
+function getRightUnion(personId, neighbours) { return getUnion(personId, neighbours, 1); } // Mother
+function getAboveUnion(personId, neighbours) {
+    for (let unionId of neighbours[personId]) {
+        if (!unionId.split(' + ').includes(personId)) return unionId;
     }
     return null;
 }
-function getChildren(union, neighbours) {
-    return union === null ? [] : neighbours[union].filter(name => !union.split(' + ').includes(name));
+function getChildren(unionId, neighbours) {
+    return unionId === null ? [] : neighbours[unionId].filter(id => !unionId.split(' + ').includes(id));
 }
+
+// Layout and rendering functions (unchanged except for string ID usage)
 function shift(layout, delta, sign = 1) {
     const [dx, dy] = [delta.x, delta.y];
     for (const pt of Object.values(layout)) {
@@ -133,11 +120,11 @@ function showDiv(div, displayMode = false) {
 function hideDiv(div, displayMode = false) {
     div.style[displayMode ? 'display' : 'visibility'] = displayMode ? 'none' : 'hidden';
 }
-function xRadius(name, divs) { return isUnion(name) ? 0 : paddingAmount + divs[name].offsetWidth / 2; }
+function xRadius(id, divs) { return isUnion(id) ? 0 : paddingAmount + divs[id].offsetWidth / 2; }
 function rowRanges(layout, divs) {
     const result = {};
-    for (const [name, pt] of Object.entries(layout)) {
-        const delta = xRadius(name, divs);
+    for (const [id, pt] of Object.entries(layout)) {
+        const delta = xRadius(id, divs);
         result[pt.y] = result[pt.y] || { min: Infinity, max: -Infinity };
         result[pt.y].min = Math.min(result[pt.y].min, pt.x - delta);
         result[pt.y].max = Math.max(result[pt.y].max, pt.x + delta);
@@ -146,9 +133,9 @@ function rowRanges(layout, divs) {
 }
 function collides(left, right, divs) {
     const layers = {};
-    for (const [name, pt] of Object.entries(left).concat(Object.entries(right))) {
+    for (const [id, pt] of Object.entries(left).concat(Object.entries(right))) {
         layers[pt.y] = layers[pt.y] || [];
-        layers[pt.y].push([pt.x - xRadius(name, divs), pt.x + xRadius(name, divs)]);
+        layers[pt.y].push([pt.x - xRadius(id, divs), pt.x + xRadius(id, divs)]);
     }
     for (const intervals of Object.values(layers)) {
         const sorted = intervals.sort((a, b) => a[0] === b[0] ? a[1] - b[1] : a[0] - b[0]);
@@ -178,66 +165,66 @@ Set.prototype.union = function(setB) {
     for (const elem of setB) union.add(elem);
     return union;
 };
-function getVisibleNodes(name, pred, neighbours, path = { allowUp: true, downsLeft: downLimit, desc: true }) {
+function getVisibleNodes(id, pred, neighbours, path = { allowUp: true, downsLeft: downLimit, desc: true }) {
     if (includeAll) return new Set(Object.keys(neighbours));
-    const getNodes = (newName, newPath) => {
-        if (newName === null || newName === pred) return new Set([]);
-        return getVisibleNodes(newName, name, neighbours, Object.assign({}, path, newPath));
+    const getNodes = (newId, newPath) => {
+        if (newId === null || newId === pred) return new Set([]);
+        return getVisibleNodes(newId, id, neighbours, Object.assign({}, path, newPath));
     };
-    if (isPerson(name)) {
-        const leftUnion = getLeftUnion(name, neighbours);
-        const rightUnion = getRightUnion(name, neighbours);
-        const aboveUnion = path.allowUp ? getAboveUnion(name, neighbours) : null;
-        return new Set([name])
+    if (isPerson(id)) {
+        const leftUnion = getLeftUnion(id, neighbours);
+        const rightUnion = getRightUnion(id, neighbours);
+        const aboveUnion = path.allowUp ? getAboveUnion(id, neighbours) : null;
+        return new Set([id])
             .union(getNodes(aboveUnion, { desc: false }))
             .union(getNodes(leftUnion, { allowUp: false }))
             .union(getNodes(rightUnion, { allowUp: false }));
     } else {
-        const [leftParent, rightParent] = name.split(' + ');
-        const children = (!path.desc && path.downsLeft === 0) ? [] : getChildren(name, neighbours);
-        let result = new Set([name])
-            .union(getNodes(leftParent, {}))
-            .union(getNodes(rightParent, {}));
+        const [fatherId, motherId] = id.split(' + ');
+        const children = (!path.desc && path.downsLeft === 0) ? [] : getChildren(id, neighbours);
+        let result = new Set([id])
+            .union(getNodes(fatherId, {}))
+            .union(getNodes(motherId, {}));
         for (const child of children) {
             result = result.union(getNodes(child, { allowUp: false, downsLeft: path.downsLeft - 1 }));
         }
         return result;
     }
 }
-function dumbLayout(name, pred, neighbours, divs, visibleNodes) {
+function dumbLayout(id, pred, neighbours, divs, visibleNodes) {
     const doLayout = (next, defaultLocation = { x: 0, y: 0 }) => {
         if (next === null || !visibleNodes.has(next)) return null;
-        if (next === pred) return { [name]: { x: 0, y: 0 }, [next]: defaultLocation };
-        const result = dumbLayout(next, name, neighbours, divs, visibleNodes);
-        if (result) shift(result, result[name], -1);
+        if (next === pred) return { [id]: { x: 0, y: 0 }, [next]: defaultLocation };
+        const result = dumbLayout(next, id, neighbours, divs, visibleNodes);
+        if (result) shift(result, result[id], -1);
         return result;
     };
-    let mainLayout = { [name]: { x: 0, y: 0 } }, leftLayout, rightLayout;
-    if (isPerson(name)) {
-        const leftUnion = getLeftUnion(name, neighbours);
-        const rightUnion = getRightUnion(name, neighbours);
-        const aboveUnion = getAboveUnion(name, neighbours);
+    let mainLayout = { [id]: { x: 0, y: 0 } }, leftLayout, rightLayout;
+    if (isPerson(id)) {
+        const leftUnion = getLeftUnion(id, neighbours);
+        const rightUnion = getRightUnion(id, neighbours);
+        const aboveUnion = getAboveUnion(id, neighbours);
         leftLayout = doLayout(leftUnion);
         rightLayout = doLayout(rightUnion);
         const aboveLayout = doLayout(aboveUnion, { x: 0, y: -1 });
         if (aboveLayout) mainLayout = aboveLayout;
     } else {
-        const [leftParent, rightParent] = name.split(' + ');
-        const children = getChildren(name, neighbours).filter(x => visibleNodes.has(x));
-        leftLayout = doLayout(leftParent);
-        rightLayout = doLayout(rightParent);
+        const [fatherId, motherId] = id.split(' + ');
+        const children = getChildren(id, neighbours).filter(x => visibleNodes.has(x));
+        leftLayout = doLayout(fatherId);
+        rightLayout = doLayout(motherId);
         const childLayouts = children.map(child => doLayout(child, { x: 0, y: 1 }));
         if (childLayouts.length > 0) {
-            for (const childLayout of childLayouts) delete childLayout[name];
+            for (const childLayout of childLayouts) delete childLayout[id];
             mainLayout = childLayouts.reduce((acc, curr) => mergedLayout(acc, curr, divs), childLayouts[0]);
             const childXs = children.map(child => mainLayout[child].x);
             const middle = (Math.min(...childXs) + Math.max(...childXs)) / 2;
             shift(mainLayout, { x: -middle, y: 0 });
-            mainLayout[name] = { x: 0, y: 0 };
+            mainLayout[id] = { x: 0, y: 0 };
         }
     }
-    if (leftLayout) { delete leftLayout[name]; mainLayout = mergedLayout(leftLayout, mainLayout, divs, false, isPerson(name)); }
-    if (rightLayout) { delete rightLayout[name]; mainLayout = mergedLayout(mainLayout, rightLayout, divs, true, isPerson(name)); }
+    if (leftLayout) { delete leftLayout[id]; mainLayout = mergedLayout(leftLayout, mainLayout, divs, false, isPerson(id)); }
+    if (rightLayout) { delete rightLayout[id]; mainLayout = mergedLayout(mainLayout, rightLayout, divs, true, isPerson(id)); }
     return mainLayout;
 }
 function boundingBox(layout, divs) {
@@ -259,28 +246,36 @@ function adjustUnions(neighbours, layout, divs) {
         const children = getRenderedChildren(node, neighbours, layout);
         if (children.length === 0) continue;
         const [p1, p2] = node.split(' + ');
-        const parentBottom = Math.max(layout[p1].y + divs[p1].offsetHeight / 2, layout[p2].y + divs[p2].offsetHeight / 2);
+        const parentBottom = Math.max(
+            p1 && layout[p1] ? layout[p1].y + divs[p1].offsetHeight / 2 : -Infinity,
+            p2 && layout[p2] ? layout[p2].y + divs[p2].offsetHeight / 2 : -Infinity
+        );
         const childTop = Math.min(...children.map(child => layout[child].y - divs[child].offsetHeight / 2));
         if (childTop < parentBottom) errorOut("Union " + node + " overlapped above/below. Try increasing lineHeight");
         layout[node].y = (parentBottom + childTop) / 2;
     }
 }
 function computeLayout(neighbours, divs) {
-    const visibleNodes = getVisibleNodes(rootName, null, neighbours);
-    const layout = dumbLayout(rootName, null, neighbours, divs, visibleNodes);
+    const visibleNodes = getVisibleNodes(rootId, null, neighbours);
+    const layout = dumbLayout(rootId, null, neighbours, divs, visibleNodes);
     shift(layout, boundingBox(layout, divs).bottomLeft, -1);
     shift(layout, { x: 0, y: 1 });
     for (const pt of Object.values(layout)) pt.y *= lineHeight;
     adjustUnions(neighbours, layout, divs);
     return layout;
 }
-function displayName(name) { return name.replace(/#.*$/g, ''); }
+function displayName(id) {
+    const person = datajs.find(p => p["ID"] === id);
+    return person ? person["Real Name"].replace(/#.*$/g, '') : id;
+}
 function photoLoadCallback() { imageTracker.numDone++; imageLoadNotify(); }
-function makeDiv(name, entries, neighbours) {
+function makeDiv(id, entries, neighbours) {
     const result = document.createElement("div");
-    result.onclick = () => { changeRoot(name); };
+    result.onclick = () => { changeRoot(id); };
     result.className = "label";
-    const lines = displayName(name).replace('-', '\u2011').split(" ");
+    const person = datajs.find(p => p["ID"] === id);
+    const name = person ? person["Real Name"] : id;
+    const lines = name.replace('-', '\u2011').split(" ");
     const nameDiv = document.createElement("div");
     lines.forEach((line, i) => {
         if (i > 0) nameDiv.appendChild(document.createElement("br"));
@@ -289,8 +284,8 @@ function makeDiv(name, entries, neighbours) {
     result.appendChild(nameDiv);
 
     let lifespanDiv = null, photoDiv = null, info = [];
-    if (entries[name]) {
-        entries[name].forEach(data => {
+    if (entries[id]) {
+        entries[id].forEach(data => {
             if (data.startsWith("l: ")) {
                 lifespanDiv = document.createElement("div");
                 const [birth, death] = data.substring(3).split('-');
@@ -303,7 +298,7 @@ function makeDiv(name, entries, neighbours) {
                 photoDiv = document.createElement("img");
                 imageTracker.numCreated++;
                 photoDiv.onload = photoDiv.onerror = photoLoadCallback;
-                photoDiv.src = data.substring(3); // Use path directly
+                photoDiv.src = data.substring(3);
                 photoDiv.style.width = "70px";
                 photoDiv = document.createElement("div").appendChild(photoDiv);
             }
@@ -311,13 +306,13 @@ function makeDiv(name, entries, neighbours) {
         });
     }
 
-    const addMarriageInfo = (partner, union) => {
-        const result = entries[union]?.filter(data => data.startsWith("n: ")).map(data => data.substring(3)).join(' ') || '';
-        if (result) info.push(`With ${displayName(partner)}: ${result}`);
+    const addMarriageInfo = (partnerId, unionId) => {
+        const result = entries[unionId]?.filter(data => data.startsWith("n: ")).map(data => data.substring(3)).join(' ') || '';
+        if (result) info.push(`With ${displayName(partnerId)}: ${result}`);
     };
-    const leftUnion = getLeftUnion(name, neighbours);
+    const leftUnion = getLeftUnion(id, neighbours);
     if (leftUnion) addMarriageInfo(leftUnion.split(' + ')[0], leftUnion);
-    const rightUnion = getRightUnion(name, neighbours);
+    const rightUnion = getRightUnion(id, neighbours);
     if (rightUnion) addMarriageInfo(rightUnion.split(' + ')[1], rightUnion);
 
     if (photoDiv) result.appendChild(photoDiv);
@@ -346,7 +341,7 @@ function makeDiv(name, entries, neighbours) {
     if (info.length) result.classList.add('has-info');
 
     result.onmouseover = () => {
-        document.getElementById('info-pane-name').innerHTML = displayName(name);
+        document.getElementById('info-pane-name').innerHTML = displayName(id);
         const details = document.getElementById('info-pane-details');
         while (details.firstChild) details.removeChild(details.firstChild);
         if (info.length) {
@@ -367,8 +362,8 @@ function makeDiv(name, entries, neighbours) {
 }
 function makeDivs(entries, neighbours) {
     const result = {};
-    for (const name of Object.keys(neighbours)) {
-        if (isPerson(name)) result[name] = makeDiv(name, entries, neighbours);
+    for (const id of Object.keys(neighbours)) {
+        if (isPerson(id)) result[id] = makeDiv(id, entries, neighbours);
     }
     imageTracker.allCreated = true;
     return result;
@@ -389,10 +384,10 @@ function createLine(x1, y1, x2, y2, lineClass) {
     return line;
 }
 function drawLine(p, q, lineClass) { document.body.appendChild(createLine(p.x, p.y, q.x, q.y, lineClass)); }
-function getRenderedChildren(union, neighbours, layout) {
-    return getChildren(union, neighbours).filter(child => layout.hasOwnProperty(child));
+function getRenderedChildren(unionId, neighbours, layout) {
+    return getChildren(unionId, neighbours).filter(child => layout.hasOwnProperty(child));
 }
-function hasRenderedChildren(union, neighbours, layout) { return getRenderedChildren(union, neighbours, layout).length > 0; }
+function hasRenderedChildren(unionId, neighbours, layout) { return getRenderedChildren(unionId, neighbours, layout).length > 0; }
 function connect(node1, node2, layout, neighbours, divs, lineClass) {
     const [person, union] = isPerson(node1) ? [node1, node2] : [node2, node1];
     if (union.split(' + ').includes(person)) {
@@ -413,19 +408,147 @@ function scrollToElement(element) {
     window.scrollTo(x, y - document.getElementById('control-panel').offsetHeight / 2);
     element.focus();
 }
-function traverse(name, pred, neighbours, divs, layout, mode, flags = { ancestor: true, descendant: true, blood: true }) {
+function traverse(id, pred, neighbours, divs, layout, mode, flags = { ancestor: true, descendant: true, blood: true }) {
     const posClass = pred === null ? "pos-root" : flags.ancestor ? "pos-ancestor" : flags.descendant ? "pos-descendant" : flags.blood ? "pos-blood" : "pos-other";
-    if (mode === "drawConnections" && layout[name] && layout[pred]) {
-        if (isUnion(name) && name.split(' + ').includes(pred) && !hasRenderedChildren(name, neighbours, layout)) {
-            connect(name, pred, layout, neighbours, divs, "pos-other");
+    if (mode === "drawConnections" && layout[id] && layout[pred]) {
+        if (isUnion(id) && id.split(' + ').includes(pred) && !hasRenderedChildren(id, neighbours, layout)) {
+            connect(id, pred, layout, neighbours, divs, "pos-other");
         } else {
-            connect(name, pred, layout, neighbours, divs, posClass);
+            connect(id, pred, layout, neighbours, divs, posClass);
         }
     }
-    const recur = (newName, newFlags) => {
-        if (newName === null || newName === pred) return;
-        traverse(newName, name, neighbours, divs, layout, mode, Object.assign({}, flags, newFlags));
+    const recur = (newId, newFlags) => {
+        if (newId === null || newId === pred) return;
+        traverse(newId, id, neighbours, divs, layout, mode, Object.assign({}, flags, newFlags));
     };
-    if (isPerson(name)) {
-        if (mode === "setPeopleClasses") divs[name].classList.add(posClass);
-        const leftUnion = getLeftUnion(name, neighbour
+    if (isPerson(id)) {
+        if (mode === "setPeopleClasses") divs[id].classList.add(posClass);
+        const leftUnion = getLeftUnion(id, neighbours);
+        recur(leftUnion, { ancestor: false, blood: flags.ancestor || flags.blood });
+        const rightUnion = getRightUnion(id, neighbours);
+        recur(rightUnion, { ancestor: false, blood: flags.ancestor || flags.blood });
+        const aboveUnion = getAboveUnion(id, neighbours);
+        recur(aboveUnion, { blood: false, descendant: false });
+    } else {
+        const [p1, p2] = id.split(' + ');
+        recur(p1, { blood: false, descendant: false });
+        recur(p2, { blood: false, descendant: false });
+        getChildren(id, neighbours).forEach(child => recur(child, { ancestor: false, blood: flags.ancestor || flags.blood }));
+    }
+}
+function setPeopleClasses(rootId, neighbours, divs) { traverse(rootId, null, neighbours, divs, null, "setPeopleClasses"); }
+function drawConnections(rootId, neighbours, divs, layout) { traverse(rootId, null, neighbours, divs, layout, "drawConnections"); }
+function drawTree(divs, neighbours) {
+    if (!divs[rootId]) throw "Selected ID not found in data: " + rootId;
+    setPeopleClasses(rootId, neighbours, divs);
+    const layout = computeLayout(neighbours, divs);
+    const box = boundingBox(layout, divs);
+    shift(layout, { x: 0, y: 0.5 * lineHeight - box.bottomLeft.y + document.getElementById('control-panel').offsetHeight });
+    drawConnections(rootId, neighbours, divs, layout);
+    for (const id of Object.keys(neighbours)) {
+        if (isPerson(id)) {
+            if (layout[id]) {
+                placeDiv(divs[id], layout[id].x, layout[id].y);
+            } else {
+                hideDiv(divs[id]);
+                divs[id].style.top = '100px';
+                divs[id].style.left = '100px';
+            }
+        }
+    }
+    scrollToElement(divs[rootId]);
+    updateTreeInformation(layout, divs);
+}
+function updateTreeInformation(layout, divs) {
+    const infodiv = document.getElementById('tree-information');
+    let ancestors = 0, descendants = 0, blood = 0, others = 0;
+    for (const [id, div] of Object.entries(divs)) {
+        if (!layout[id]) continue;
+        if (div.classList.contains('pos-ancestor')) ancestors++;
+        if (div.classList.contains('pos-descendant')) descendants++;
+        if (div.classList.contains('pos-blood')) blood++;
+        if (div.classList.contains('pos-other')) others++;
+    }
+    const counts = [];
+    const process = (number, description, textClass) => {
+        if (number > 0) counts.push(`<span class="${textClass}">${number} ${description}</span>`);
+    };
+    process(descendants, "descendants", "text-descendant");
+    process(ancestors, "ancestors", "text-ancestor");
+    process(blood, "blood relatives", "text-blood");
+    process(others, "others", "text-other");
+    infodiv.innerHTML = `Showing ${counts.join(counts.length > 1 ? counts.length === 2 ? " and " : ", " : "")} (total ${ancestors + blood + descendants + others + 1}).`;
+}
+function setVarsFromDetailOption() {
+    const choice = document.getElementById('detail-picker').value;
+    includeAll = choice === 'Everyone';
+    downLimit = choice === 'Everyone' ? Infinity : Number(choice);
+}
+function updateDetail() {
+    setVarsFromDetailOption();
+    redraw();
+    document.activeElement.blur();
+}
+function validateTreeStructure(neighbours) {
+    const parent = {};
+    const buildConnectedComponent = (curr, prev, component) => {
+        if (parent[curr]) {
+            let loop = [curr, prev], unroll = prev;
+            while (unroll !== curr) {
+                if (unroll === null) throw "Internal validation error (file a bug!)";
+                unroll = parent[unroll];
+                loop.push(unroll);
+            }
+            throw "Loop detected: " + loop;
+        }
+        parent[curr] = prev;
+        component[curr] = true;
+        neighbours[curr].forEach(x => { if (x !== prev) buildConnectedComponent(x, curr, component); });
+    };
+    const components = [];
+    for (const id of Object.keys(neighbours)) {
+        if (!parent[id]) {
+            const component = {};
+            buildConnectedComponent(id, null, component);
+            components.push([id, component]);
+        }
+    }
+    if (components.length > 1) throw "Multiple connected components: " + components.map(([n, c]) => `${Object.keys(c).length} connected to ${n}`).join(' | ');
+}
+function errorOut(error) { console.log(error); alert(error); throw error; }
+
+window.onload = function() {
+    const entries = getEntries();
+    const neighbours = getNeighbours(entries);
+    validateTreeStructure(neighbours);
+    const divs = makeDivs(entries, neighbours);
+    window.state = { entries, divs, neighbours };
+    readHash();
+};
+function imageLoadNotify() {
+    if (imageTracker.allCreated && imageTracker.numDone === imageTracker.numCreated) redraw();
+}
+function redraw() {
+    Array.from(document.getElementsByClassName('drawn-line')).forEach(div => div.parentNode.removeChild(div));
+    ["root", "ancestor", "blood", "descendant", "other"].forEach(kind => {
+        Array.from(document.getElementsByClassName("pos-" + kind)).forEach(el => el.classList.remove("pos-" + kind));
+    });
+    drawTree(window.state.divs, window.state.neighbours);
+    updateHash();
+}
+function changeRoot(id) { rootId = id; showRootId(); redraw(); }
+function updateHash() { window.location.hash = '#' + rootId + ':' + document.getElementById('detail-picker').value; }
+function showRootId() {
+    const person = datajs.find(p => p["ID"] === rootId);
+    document.title = person ? `${person["Real Name"]}'s Family Tree` : `Family Tree (ID: ${rootId})`;
+    document.getElementById('root-name').innerText = person ? person["Real Name"] : rootId;
+}
+function readHash() {
+    if (window.location.hash.startsWith('#')) {
+        const [id, detail] = window.location.hash.substr(1).split(':');
+        rootId = id;
+        document.getElementById('detail-picker').value = detail;
+    }
+    setVarsFromDetailOption();
+    showRootId();
+}
