@@ -9,11 +9,9 @@ var datajs = [
         "Sex": "M",
         "Address": "Đông Hà",
         "Note": "Founder of the Phạm lineage",
-        "Gốc": NaN,
+        "Gốc": null,
         "Generation": 1,
-        "Photo": "Photos/giapha/person_1.jpg",
-        "Father ID": NaN,
-        "Mother ID": 101
+        "Photo": "Photos/giapha/person_1.png"
     },
     {
         "ID": 2,
@@ -25,11 +23,9 @@ var datajs = [
         "Sex": "F",
         "Address": "Đông Hà",
         "Note": "Wife of Phạm Nam",
-        "Gốc": NaN,
+        "Gốc": null,
         "Generation": 1,
-        "Photo": "Photos/giapha/person_2.jpg",
-        "Father ID": NaN,
-        "Mother ID": 102
+        "Photo": "Photos/giapha/person_2.jpg"
     },
     {
         "ID": 3,
@@ -43,9 +39,7 @@ var datajs = [
         "Note": "Son 1",
         "Gốc": "#G1",
         "Generation": 2,
-        "Photo": "Photos/giapha/person_3.jpg",
-        "Father ID": 1.0,
-        "Mother ID": 2
+        "Photo": "Photos/giapha/person_3.jpg"
     },
     {
         "ID": 4,
@@ -58,10 +52,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 2",
         "Gốc": "#G1",
-        "Generation": 2,
-        "Photo": NaN,
-        "Father ID": 1.0,
-        "Mother ID": 2
+        "Generation": 2
     },
     {
         "ID": 5,
@@ -74,10 +65,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 3",
         "Gốc": "#G1",
-        "Generation": 2,
-        "Photo": NaN,
-        "Father ID": 1.0,
-        "Mother ID": 2
+        "Generation": 2
     },
     {
         "ID": 6,
@@ -91,9 +79,7 @@ var datajs = [
         "Note": "Daughter of Trần Nữ",
         "Gốc": "#G1",
         "Generation": 2,
-        "Photo": "Photos/giapha/person_6.jpg",
-        "Father ID": 1.0,
-        "Mother ID": 2
+        "Photo": "Photos/giapha/person_6.jpg"
     },
     {
         "ID": 7,
@@ -105,11 +91,8 @@ var datajs = [
         "Sex": "F",
         "Address": "Đông Hà",
         "Note": "Wife of Phạm Nam",
-        "Gốc": NaN,
-        "Generation": 2,
-        "Photo": NaN,
-        "Father ID": 1.0,
-        "Mother ID": 2
+        "Gốc": null,
+        "Generation": 2
     },
     {
         "ID": 8,
@@ -121,11 +104,8 @@ var datajs = [
         "Sex": "F",
         "Address": "Đông Hà",
         "Note": "Wife of Phạm Nam",
-        "Gốc": NaN,
-        "Generation": 2,
-        "Photo": NaN,
-        "Father ID": 1.0,
-        "Mother ID": 2
+        "Gốc": null,
+        "Generation": 2
     },
     {
         "ID": 9,
@@ -137,11 +117,8 @@ var datajs = [
         "Sex": "F",
         "Address": "Đông Hà",
         "Note": "Wife of Phạm Nam",
-        "Gốc": NaN,
-        "Generation": 2,
-        "Photo": NaN,
-        "Father ID": 1.0,
-        "Mother ID": 2
+        "Gốc": null,
+        "Generation": 2
     },
     {
         "ID": 10,
@@ -155,9 +132,7 @@ var datajs = [
         "Note": "Son 1",
         "Gốc": "#G2Chi1",
         "Generation": 3,
-        "Photo": "Photos/giapha/person_10.jpg",
-        "Father ID": 1.0,
-        "Mother ID": 2
+        "Photo": "Photos/giapha/person_10.jpg"
     },
     {
         "ID": 11,
@@ -170,10 +145,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 2",
         "Gốc": "#G2Chi1",
-        "Generation": 3,
-        "Photo": NaN,
-        "Father ID": 1.0,
-        "Mother ID": 2
+        "Generation": 3
     },
     {
         "ID": 12,
@@ -186,10 +158,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 3",
         "Gốc": "#G2Chi1",
-        "Generation": 3,
-        "Photo": NaN,
-        "Father ID": 1.0,
-        "Mother ID": 2
+        "Generation": 3
     },
     {
         "ID": 13,
@@ -202,10 +171,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 4",
         "Gốc": "#G2Chi1",
-        "Generation": 3,
-        "Photo": NaN,
-        "Father ID": 1.0,
-        "Mother ID": 2
+        "Generation": 3
     },
     {
         "ID": 14,
@@ -219,9 +185,7 @@ var datajs = [
         "Note": "Daughter of Nguyễn Nữ",
         "Gốc": "#G2Chi1",
         "Generation": 3,
-        "Photo": "Photos/giapha/person_14.jpg",
-        "Father ID": 1.0,
-        "Mother ID": 2
+        "Photo": "Photos/giapha/person_14.jpg"
     },
     {
         "ID": 15,
@@ -234,10 +198,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 1",
         "Gốc": "#G2Chi2",
-        "Generation": 3,
-        "Photo": NaN,
-        "Father ID": 1.0,
-        "Mother ID": 2
+        "Generation": 3
     },
     {
         "ID": 16,
@@ -250,10 +211,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 2",
         "Gốc": "#G2Chi2",
-        "Generation": 3,
-        "Photo": NaN,
-        "Father ID": 1.0,
-        "Mother ID": 2
+        "Generation": 3
     },
     {
         "ID": 17,
@@ -266,10 +224,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 3",
         "Gốc": "#G2Chi2",
-        "Generation": 3,
-        "Photo": NaN,
-        "Father ID": 1.0,
-        "Mother ID": 2
+        "Generation": 3
     },
     {
         "ID": 18,
@@ -282,10 +237,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 4",
         "Gốc": "#G2Chi2",
-        "Generation": 3,
-        "Photo": NaN,
-        "Father ID": 3.0,
-        "Mother ID": 6
+        "Generation": 3
     },
     {
         "ID": 19,
@@ -299,9 +251,7 @@ var datajs = [
         "Note": "Son 1",
         "Gốc": "#G2Chi3",
         "Generation": 3,
-        "Photo": "Photos/giapha/person_19.jpg",
-        "Father ID": 3.0,
-        "Mother ID": 6
+        "Photo": "Photos/giapha/person_19.jpg"
     },
     {
         "ID": 20,
@@ -314,10 +264,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 2",
         "Gốc": "#G2Chi3",
-        "Generation": 3,
-        "Photo": NaN,
-        "Father ID": 3.0,
-        "Mother ID": 6
+        "Generation": 3
     },
     {
         "ID": 21,
@@ -330,10 +277,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 3",
         "Gốc": "#G2Chi3",
-        "Generation": 3,
-        "Photo": NaN,
-        "Father ID": 3.0,
-        "Mother ID": 6
+        "Generation": 3
     },
     {
         "ID": 22,
@@ -346,10 +290,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 4",
         "Gốc": "#G2Chi3",
-        "Generation": 3,
-        "Photo": NaN,
-        "Father ID": 3.0,
-        "Mother ID": 6
+        "Generation": 3
     },
     {
         "ID": 23,
@@ -362,10 +303,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Daughter of Phạm Nữ",
         "Gốc": "#G2Chi3",
-        "Generation": 3,
-        "Photo": NaN,
-        "Father ID": 3.0,
-        "Mother ID": 6
+        "Generation": 3
     },
     {
         "ID": 24,
@@ -377,11 +315,8 @@ var datajs = [
         "Sex": "F",
         "Address": "Đông Hà",
         "Note": "Wife of Phạm Nam",
-        "Gốc": NaN,
-        "Generation": 3,
-        "Photo": NaN,
-        "Father ID": 3.0,
-        "Mother ID": 6
+        "Gốc": null,
+        "Generation": 3
     },
     {
         "ID": 25,
@@ -393,11 +328,8 @@ var datajs = [
         "Sex": "F",
         "Address": "Đông Hà",
         "Note": "Wife of Phạm Nam",
-        "Gốc": NaN,
-        "Generation": 3,
-        "Photo": NaN,
-        "Father ID": 3.0,
-        "Mother ID": 6
+        "Gốc": null,
+        "Generation": 3
     },
     {
         "ID": 26,
@@ -409,11 +341,8 @@ var datajs = [
         "Sex": "F",
         "Address": "Đông Hà",
         "Note": "Wife of Phạm Nam",
-        "Gốc": NaN,
-        "Generation": 3,
-        "Photo": NaN,
-        "Father ID": 3.0,
-        "Mother ID": 6
+        "Gốc": null,
+        "Generation": 3
     },
     {
         "ID": 27,
@@ -425,11 +354,8 @@ var datajs = [
         "Sex": "F",
         "Address": "Đông Hà",
         "Note": "Wife of Phạm Nam",
-        "Gốc": NaN,
-        "Generation": 3,
-        "Photo": NaN,
-        "Father ID": 3.0,
-        "Mother ID": 6
+        "Gốc": null,
+        "Generation": 3
     },
     {
         "ID": 28,
@@ -441,11 +367,8 @@ var datajs = [
         "Sex": "F",
         "Address": "Đông Hà",
         "Note": "Wife of Phạm Nam",
-        "Gốc": NaN,
-        "Generation": 3,
-        "Photo": NaN,
-        "Father ID": 3.0,
-        "Mother ID": 6
+        "Gốc": null,
+        "Generation": 3
     },
     {
         "ID": 29,
@@ -457,11 +380,8 @@ var datajs = [
         "Sex": "F",
         "Address": "Đông Hà",
         "Note": "Wife of Phạm Nam",
-        "Gốc": NaN,
-        "Generation": 3,
-        "Photo": NaN,
-        "Father ID": 3.0,
-        "Mother ID": 6
+        "Gốc": null,
+        "Generation": 3
     },
     {
         "ID": 30,
@@ -473,11 +393,8 @@ var datajs = [
         "Sex": "F",
         "Address": "Đông Hà",
         "Note": "Wife of Phạm Nam",
-        "Gốc": NaN,
-        "Generation": 3,
-        "Photo": NaN,
-        "Father ID": 3.0,
-        "Mother ID": 6
+        "Gốc": null,
+        "Generation": 3
     },
     {
         "ID": 31,
@@ -491,9 +408,7 @@ var datajs = [
         "Note": "Son 1",
         "Gốc": "#G3Chi1Ng1",
         "Generation": 4,
-        "Photo": "Photos/giapha/person_31.jpg",
-        "Father ID": 10.0,
-        "Mother ID": 14
+        "Photo": "Photos/giapha/person_31.jpg"
     },
     {
         "ID": 32,
@@ -506,10 +421,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 1",
         "Gốc": "#G3Chi1Ng2",
-        "Generation": 4,
-        "Photo": NaN,
-        "Father ID": 10.0,
-        "Mother ID": 14
+        "Generation": 4
     },
     {
         "ID": 33,
@@ -522,10 +434,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 2",
         "Gốc": "#G3Chi1Ng2",
-        "Generation": 4,
-        "Photo": NaN,
-        "Father ID": 10.0,
-        "Mother ID": 14
+        "Generation": 4
     },
     {
         "ID": 34,
@@ -538,10 +447,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 3",
         "Gốc": "#G3Chi1Ng2",
-        "Generation": 4,
-        "Photo": NaN,
-        "Father ID": 10.0,
-        "Mother ID": 14
+        "Generation": 4
     },
     {
         "ID": 35,
@@ -554,10 +460,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 1",
         "Gốc": "#G3Chi1Ng3",
-        "Generation": 4,
-        "Photo": NaN,
-        "Father ID": 10.0,
-        "Mother ID": 14
+        "Generation": 4
     },
     {
         "ID": 36,
@@ -571,9 +474,7 @@ var datajs = [
         "Note": "Daughter of Phạm Nữ",
         "Gốc": "#G3Chi1Ng3",
         "Generation": 4,
-        "Photo": "Photos/giapha/person_36.jpg",
-        "Father ID": 10.0,
-        "Mother ID": 14
+        "Photo": "Photos/giapha/person_36.jpg"
     },
     {
         "ID": 37,
@@ -586,10 +487,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 1",
         "Gốc": "#G3Chi3Ng1",
-        "Generation": 4,
-        "Photo": NaN,
-        "Father ID": 10.0,
-        "Mother ID": 14
+        "Generation": 4
     },
     {
         "ID": 38,
@@ -602,10 +500,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 2",
         "Gốc": "#G3Chi3Ng1",
-        "Generation": 4,
-        "Photo": NaN,
-        "Father ID": 10.0,
-        "Mother ID": 14
+        "Generation": 4
     },
     {
         "ID": 39,
@@ -618,10 +513,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 3",
         "Gốc": "#G3Chi3Ng1",
-        "Generation": 4,
-        "Photo": NaN,
-        "Father ID": 10.0,
-        "Mother ID": 14
+        "Generation": 4
     },
     {
         "ID": 40,
@@ -634,10 +526,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 4",
         "Gốc": "#G3Chi3Ng1",
-        "Generation": 4,
-        "Photo": NaN,
-        "Father ID": 10.0,
-        "Mother ID": 14
+        "Generation": 4
     },
     {
         "ID": 41,
@@ -650,10 +539,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Daughter of Nguyễn Nữ",
         "Gốc": "#G3Chi3Ng1",
-        "Generation": 4,
-        "Photo": NaN,
-        "Father ID": 10.0,
-        "Mother ID": 14
+        "Generation": 4
     },
     {
         "ID": 42,
@@ -666,10 +552,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 1",
         "Gốc": "#G3Chi3Ng2",
-        "Generation": 4,
-        "Photo": NaN,
-        "Father ID": 10.0,
-        "Mother ID": 14
+        "Generation": 4
     },
     {
         "ID": 43,
@@ -682,10 +565,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 1",
         "Gốc": "#G3Chi3Ng3",
-        "Generation": 4,
-        "Photo": NaN,
-        "Father ID": 10.0,
-        "Mother ID": 14
+        "Generation": 4
     },
     {
         "ID": 44,
@@ -698,10 +578,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 1",
         "Gốc": "#G3Chi3Ng4",
-        "Generation": 4,
-        "Photo": NaN,
-        "Father ID": 10.0,
-        "Mother ID": 14
+        "Generation": 4
     },
     {
         "ID": 45,
@@ -713,11 +590,8 @@ var datajs = [
         "Sex": "F",
         "Address": "Đông Hà",
         "Note": "Wife of Phạm Nam",
-        "Gốc": NaN,
-        "Generation": 4,
-        "Photo": NaN,
-        "Father ID": 10.0,
-        "Mother ID": 14
+        "Gốc": null,
+        "Generation": 4
     },
     {
         "ID": 46,
@@ -729,11 +603,8 @@ var datajs = [
         "Sex": "F",
         "Address": "Đông Hà",
         "Note": "Wife of Phạm Nam",
-        "Gốc": NaN,
-        "Generation": 4,
-        "Photo": NaN,
-        "Father ID": 10.0,
-        "Mother ID": 14
+        "Gốc": null,
+        "Generation": 4
     },
     {
         "ID": 47,
@@ -747,9 +618,7 @@ var datajs = [
         "Note": "Son 1",
         "Gốc": "#G4Chi3Ng3",
         "Generation": 5,
-        "Photo": "Photos/giapha/person_47.jpg",
-        "Father ID": 31.0,
-        "Mother ID": 36
+        "Photo": "Photos/giapha/person_47.jpg"
     },
     {
         "ID": 48,
@@ -762,10 +631,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 2",
         "Gốc": "#G4Chi3Ng3",
-        "Generation": 5,
-        "Photo": NaN,
-        "Father ID": 31.0,
-        "Mother ID": 36
+        "Generation": 5
     },
     {
         "ID": 49,
@@ -778,10 +644,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 3",
         "Gốc": "#G4Chi3Ng3",
-        "Generation": 5,
-        "Photo": NaN,
-        "Father ID": 31.0,
-        "Mother ID": 36
+        "Generation": 5
     },
     {
         "ID": 50,
@@ -794,10 +657,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 4",
         "Gốc": "#G4Chi3Ng3",
-        "Generation": 5,
-        "Photo": NaN,
-        "Father ID": 31.0,
-        "Mother ID": 36
+        "Generation": 5
     },
     {
         "ID": 51,
@@ -810,10 +670,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 5",
         "Gốc": "#G4Chi3Ng3",
-        "Generation": 5,
-        "Photo": NaN,
-        "Father ID": 31.0,
-        "Mother ID": 36
+        "Generation": 5
     },
     {
         "ID": 52,
@@ -826,10 +683,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 6",
         "Gốc": "#G4Chi3Ng3",
-        "Generation": 5,
-        "Photo": NaN,
-        "Father ID": 31.0,
-        "Mother ID": 36
+        "Generation": 5
     },
     {
         "ID": 53,
@@ -843,9 +697,7 @@ var datajs = [
         "Note": "Daughter 1",
         "Gốc": "#G4Chi3Ng3",
         "Generation": 5,
-        "Photo": "Photos/giapha/person_53.jpg",
-        "Father ID": 31.0,
-        "Mother ID": 36
+        "Photo": "Photos/giapha/person_53.jpg"
     },
     {
         "ID": 54,
@@ -858,10 +710,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Daughter 2",
         "Gốc": "#G4Chi3Ng3",
-        "Generation": 5,
-        "Photo": NaN,
-        "Father ID": 31.0,
-        "Mother ID": 36
+        "Generation": 5
     },
     {
         "ID": 55,
@@ -874,10 +723,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Daughter 3",
         "Gốc": "#G4Chi3Ng3",
-        "Generation": 5,
-        "Photo": NaN,
-        "Father ID": 31.0,
-        "Mother ID": 36
+        "Generation": 5
     },
     {
         "ID": 56,
@@ -890,10 +736,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Daughter 4",
         "Gốc": "#G4Chi3Ng3",
-        "Generation": 5,
-        "Photo": NaN,
-        "Father ID": 31.0,
-        "Mother ID": 36
+        "Generation": 5
     },
     {
         "ID": 57,
@@ -906,10 +749,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 1",
         "Gốc": "#G4Chi3Ng1Nh1",
-        "Generation": 5,
-        "Photo": NaN,
-        "Father ID": 31.0,
-        "Mother ID": 36
+        "Generation": 5
     },
     {
         "ID": 58,
@@ -922,10 +762,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 2",
         "Gốc": "#G4Chi3Ng1Nh1",
-        "Generation": 5,
-        "Photo": NaN,
-        "Father ID": 31.0,
-        "Mother ID": 36
+        "Generation": 5
     },
     {
         "ID": 59,
@@ -938,10 +775,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 3",
         "Gốc": "#G4Chi3Ng1Nh1",
-        "Generation": 5,
-        "Photo": NaN,
-        "Father ID": 31.0,
-        "Mother ID": 36
+        "Generation": 5
     },
     {
         "ID": 60,
@@ -954,10 +788,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 4",
         "Gốc": "#G4Chi3Ng1Nh1",
-        "Generation": 5,
-        "Photo": NaN,
-        "Father ID": 31.0,
-        "Mother ID": 36
+        "Generation": 5
     },
     {
         "ID": 61,
@@ -971,9 +802,7 @@ var datajs = [
         "Note": "Daughter of Hoàng Nữ",
         "Gốc": "#G4Chi3Ng1Nh1",
         "Generation": 5,
-        "Photo": "Photos/giapha/person_61.jpg",
-        "Father ID": 31.0,
-        "Mother ID": 36
+        "Photo": "Photos/giapha/person_61.jpg"
     },
     {
         "ID": 62,
@@ -986,10 +815,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Daughter of Hoàng Nữ",
         "Gốc": "#G4Chi3Ng1Nh1",
-        "Generation": 5,
-        "Photo": NaN,
-        "Father ID": 31.0,
-        "Mother ID": 36
+        "Generation": 5
     },
     {
         "ID": 63,
@@ -1001,11 +827,8 @@ var datajs = [
         "Sex": "F",
         "Address": "Đông Hà",
         "Note": "Wife of Phạm Nam",
-        "Gốc": NaN,
-        "Generation": 5,
-        "Photo": NaN,
-        "Father ID": 31.0,
-        "Mother ID": 36
+        "Gốc": null,
+        "Generation": 5
     },
     {
         "ID": 64,
@@ -1017,11 +840,8 @@ var datajs = [
         "Sex": "F",
         "Address": "Đông Hà",
         "Note": "Wife of Phạm Nam",
-        "Gốc": NaN,
-        "Generation": 5,
-        "Photo": NaN,
-        "Father ID": 31.0,
-        "Mother ID": 36
+        "Gốc": null,
+        "Generation": 5
     },
     {
         "ID": 65,
@@ -1035,9 +855,7 @@ var datajs = [
         "Note": "Son 1",
         "Gốc": "#G5Chi3Ng3Nh1A1",
         "Generation": 6,
-        "Photo": "Photos/giapha/person_65.jpg",
-        "Father ID": 47.0,
-        "Mother ID": 53
+        "Photo": "Photos/giapha/person_65.jpg"
     },
     {
         "ID": 66,
@@ -1050,10 +868,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 2",
         "Gốc": "#G5Chi3Ng3Nh1A1",
-        "Generation": 6,
-        "Photo": NaN,
-        "Father ID": 47.0,
-        "Mother ID": 53
+        "Generation": 6
     },
     {
         "ID": 67,
@@ -1067,9 +882,7 @@ var datajs = [
         "Note": "Daughter 1",
         "Gốc": "#G5Chi3Ng3Nh1A1",
         "Generation": 6,
-        "Photo": "Photos/giapha/person_67.jpg",
-        "Father ID": 47.0,
-        "Mother ID": 53
+        "Photo": "Photos/giapha/person_67.jpg"
     },
     {
         "ID": 68,
@@ -1082,10 +895,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Daughter 2",
         "Gốc": "#G5Chi3Ng3Nh1A1",
-        "Generation": 6,
-        "Photo": NaN,
-        "Father ID": 47.0,
-        "Mother ID": 53
+        "Generation": 6
     },
     {
         "ID": 69,
@@ -1098,10 +908,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 1",
         "Gốc": "#G5Chi3Ng3Nh1A2",
-        "Generation": 6,
-        "Photo": NaN,
-        "Father ID": 47.0,
-        "Mother ID": 53
+        "Generation": 6
     },
     {
         "ID": 70,
@@ -1114,10 +921,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Daughter 1",
         "Gốc": "#G5Chi3Ng3Nh1A2",
-        "Generation": 6,
-        "Photo": NaN,
-        "Father ID": 47.0,
-        "Mother ID": 53
+        "Generation": 6
     },
     {
         "ID": 71,
@@ -1130,10 +934,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Daughter 2",
         "Gốc": "#G5Chi3Ng3Nh1A2",
-        "Generation": 6,
-        "Photo": NaN,
-        "Father ID": 47.0,
-        "Mother ID": 53
+        "Generation": 6
     },
     {
         "ID": 72,
@@ -1146,10 +947,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Daughter 3",
         "Gốc": "#G5Chi3Ng3Nh1A2",
-        "Generation": 6,
-        "Photo": NaN,
-        "Father ID": 47.0,
-        "Mother ID": 53
+        "Generation": 6
     },
     {
         "ID": 73,
@@ -1162,10 +960,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 1",
         "Gốc": "#G5Chi3Ng3Nh1A3",
-        "Generation": 6,
-        "Photo": NaN,
-        "Father ID": 47.0,
-        "Mother ID": 53
+        "Generation": 6
     },
     {
         "ID": 74,
@@ -1178,10 +973,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 1",
         "Gốc": "#G5Chi3Ng1Nh1A1",
-        "Generation": 6,
-        "Photo": NaN,
-        "Father ID": 47.0,
-        "Mother ID": 53
+        "Generation": 6
     },
     {
         "ID": 75,
@@ -1194,10 +986,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 2",
         "Gốc": "#G5Chi3Ng1Nh1A1",
-        "Generation": 6,
-        "Photo": NaN,
-        "Father ID": 47.0,
-        "Mother ID": 53
+        "Generation": 6
     },
     {
         "ID": 76,
@@ -1210,10 +999,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 3",
         "Gốc": "#G5Chi3Ng1Nh1A1",
-        "Generation": 6,
-        "Photo": NaN,
-        "Father ID": 47.0,
-        "Mother ID": 53
+        "Generation": 6
     },
     {
         "ID": 77,
@@ -1226,10 +1012,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 1 - Died young",
         "Gốc": "#G5Chi3Ng1Nh1A2",
-        "Generation": 6,
-        "Photo": NaN,
-        "Father ID": 47.0,
-        "Mother ID": 53
+        "Generation": 6
     },
     {
         "ID": 78,
@@ -1242,10 +1025,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 1",
         "Gốc": "#G5Chi3Ng1Nh1A3",
-        "Generation": 6,
-        "Photo": NaN,
-        "Father ID": 47.0,
-        "Mother ID": 53
+        "Generation": 6
     },
     {
         "ID": 79,
@@ -1258,10 +1038,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 2",
         "Gốc": "#G5Chi3Ng1Nh1A3",
-        "Generation": 6,
-        "Photo": NaN,
-        "Father ID": 47.0,
-        "Mother ID": 53
+        "Generation": 6
     },
     {
         "ID": 80,
@@ -1274,10 +1051,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 3",
         "Gốc": "#G5Chi3Ng1Nh1A3",
-        "Generation": 6,
-        "Photo": NaN,
-        "Father ID": 47.0,
-        "Mother ID": 53
+        "Generation": 6
     },
     {
         "ID": 81,
@@ -1290,10 +1064,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 4",
         "Gốc": "#G5Chi3Ng1Nh1A3",
-        "Generation": 6,
-        "Photo": NaN,
-        "Father ID": 47.0,
-        "Mother ID": 53
+        "Generation": 6
     },
     {
         "ID": 82,
@@ -1305,11 +1076,8 @@ var datajs = [
         "Sex": "F",
         "Address": "Đông Hà",
         "Note": "Wife of Phạm Nam",
-        "Gốc": NaN,
-        "Generation": 6,
-        "Photo": NaN,
-        "Father ID": 47.0,
-        "Mother ID": 53
+        "Gốc": null,
+        "Generation": 6
     },
     {
         "ID": 83,
@@ -1321,11 +1089,8 @@ var datajs = [
         "Sex": "F",
         "Address": "Đông Hà",
         "Note": "Wife of Phạm Nam",
-        "Gốc": NaN,
-        "Generation": 6,
-        "Photo": NaN,
-        "Father ID": 47.0,
-        "Mother ID": 53
+        "Gốc": null,
+        "Generation": 6
     },
     {
         "ID": 84,
@@ -1339,9 +1104,7 @@ var datajs = [
         "Note": "Son 1",
         "Gốc": "#G6Chi3Ng3Nh1A1B1",
         "Generation": 7,
-        "Photo": "Photos/giapha/person_84.jpg",
-        "Father ID": 65.0,
-        "Mother ID": 67
+        "Photo": "Photos/giapha/person_84.jpg"
     },
     {
         "ID": 85,
@@ -1354,10 +1117,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 2",
         "Gốc": "#G6Chi3Ng3Nh1A1B1",
-        "Generation": 7,
-        "Photo": NaN,
-        "Father ID": 65.0,
-        "Mother ID": 67
+        "Generation": 7
     },
     {
         "ID": 86,
@@ -1371,9 +1131,7 @@ var datajs = [
         "Note": "Daughter of Nguyễn Nữ",
         "Gốc": "#G6Chi3Ng3Nh1A1B1",
         "Generation": 7,
-        "Photo": "Photos/giapha/person_86.jpg",
-        "Father ID": 65.0,
-        "Mother ID": 67
+        "Photo": "Photos/giapha/person_86.jpg"
     },
     {
         "ID": 87,
@@ -1386,10 +1144,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 1",
         "Gốc": "#G6Chi3Ng1Nh1A1B1",
-        "Generation": 7,
-        "Photo": NaN,
-        "Father ID": 65.0,
-        "Mother ID": 67
+        "Generation": 7
     },
     {
         "ID": 88,
@@ -1402,10 +1157,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Daughter of Hoàng Nữ",
         "Gốc": "#G6Chi3Ng1Nh1A1B1",
-        "Generation": 7,
-        "Photo": NaN,
-        "Father ID": 65.0,
-        "Mother ID": 67
+        "Generation": 7
     },
     {
         "ID": 89,
@@ -1418,10 +1170,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Daughter 1",
         "Gốc": "#G6Chi3Ng1Nh1A1B2",
-        "Generation": 7,
-        "Photo": NaN,
-        "Father ID": 65.0,
-        "Mother ID": 67
+        "Generation": 7
     },
     {
         "ID": 90,
@@ -1434,10 +1183,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Daughter 2",
         "Gốc": "#G6Chi3Ng1Nh1A1B2",
-        "Generation": 7,
-        "Photo": NaN,
-        "Father ID": 65.0,
-        "Mother ID": 67
+        "Generation": 7
     },
     {
         "ID": 91,
@@ -1450,10 +1196,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Daughter 3",
         "Gốc": "#G6Chi3Ng1Nh1A1B2",
-        "Generation": 7,
-        "Photo": NaN,
-        "Father ID": 65.0,
-        "Mother ID": 67
+        "Generation": 7
     },
     {
         "ID": 92,
@@ -1466,10 +1209,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Daughter 4",
         "Gốc": "#G6Chi3Ng1Nh1A1B2",
-        "Generation": 7,
-        "Photo": NaN,
-        "Father ID": 65.0,
-        "Mother ID": 67
+        "Generation": 7
     },
     {
         "ID": 93,
@@ -1481,11 +1221,8 @@ var datajs = [
         "Sex": "F",
         "Address": "Đông Hà",
         "Note": "Wife of Phạm Nam",
-        "Gốc": NaN,
-        "Generation": 7,
-        "Photo": NaN,
-        "Father ID": 65.0,
-        "Mother ID": 67
+        "Gốc": null,
+        "Generation": 7
     },
     {
         "ID": 94,
@@ -1499,9 +1236,7 @@ var datajs = [
         "Note": "Son 1",
         "Gốc": "#G7Chi3Ng3Nh1A1B1",
         "Generation": 16,
-        "Photo": "Photos/giapha/person_94.jpg",
-        "Father ID": NaN,
-        "Mother ID": 103
+        "Photo": "Photos/giapha/person_94.jpg"
     },
     {
         "ID": 95,
@@ -1513,11 +1248,8 @@ var datajs = [
         "Sex": "F",
         "Address": "Đông Hà",
         "Note": "Wife of Phạm Nam",
-        "Gốc": NaN,
-        "Generation": 16,
-        "Photo": NaN,
-        "Father ID": NaN,
-        "Mother ID": 104
+        "Gốc": null,
+        "Generation": 16
     },
     {
         "ID": 96,
@@ -1530,10 +1262,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 1",
         "Gốc": "#G16Chi3Ng3Nh1A1B1C1",
-        "Generation": 17,
-        "Photo": NaN,
-        "Father ID": 94.0,
-        "Mother ID": 95
+        "Generation": 17
     },
     {
         "ID": 97,
@@ -1547,9 +1276,7 @@ var datajs = [
         "Note": "Daughter of Nguyễn Nữ",
         "Gốc": "#G16Chi3Ng3Nh1A1B1C1",
         "Generation": 17,
-        "Photo": "Photos/giapha/person_97.jpg",
-        "Father ID": 94.0,
-        "Mother ID": 95
+        "Photo": "Photos/giapha/person_97.jpg"
     },
     {
         "ID": 98,
@@ -1561,11 +1288,8 @@ var datajs = [
         "Sex": "F",
         "Address": "Đông Hà",
         "Note": "Wife of Phạm Nam",
-        "Gốc": NaN,
-        "Generation": 17,
-        "Photo": NaN,
-        "Father ID": 94.0,
-        "Mother ID": 95
+        "Gốc": null,
+        "Generation": 17
     },
     {
         "ID": 99,
@@ -1578,10 +1302,7 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Son 1",
         "Gốc": "#G17Chi3Ng3Nh1A1B1C1D1",
-        "Generation": 18,
-        "Photo": NaN,
-        "Father ID": 96.0,
-        "Mother ID": 97
+        "Generation": 18
     },
     {
         "ID": 100,
@@ -1594,9 +1315,6 @@ var datajs = [
         "Address": "Đông Hà",
         "Note": "Daughter of Hoàng Nữ",
         "Gốc": "#G17Chi3Ng3Nh1A1B1C1D1",
-        "Generation": 18,
-        "Photo": NaN,
-        "Father ID": 96.0,
-        "Mother ID": 97
+        "Generation": 18
     }
-];
+]
