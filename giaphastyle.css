@@ -1,7 +1,7 @@
 
 .container {
     display: flex;
-    margin-top: 60px;
+    margin-top: 80px;
     min-height: calc(100vh - 60px - 40px); /* Adjusted for footer */
     width: 100%;
     box-sizing: border-box;
@@ -57,21 +57,21 @@
         }
             */
         #tree-container {
-            margin-top: 60px; /* Space for nav-bar */
+            
             text-align: center;
         }
         #subtree-form {
-            margin: 60px auto;
+           
             text-align: center;
         }
         #subtree-form input[type="number"] {
-            margin-top: 60px; /* Space for nav-bar */
+            
             padding: 5px;
             font-size: 16px;
             width: 100px;
         }
         #subtree-form button {
-            margin-top: 60px; /* Space for nav-bar */
+           
             padding: 8px 16px;
             background-color: #4CAF50;
             color: white;
@@ -143,7 +143,7 @@
             */
     .container {
         flex-direction: column;
-        margin-top: 60px;
+        margin-top: 80px;
         min-height: calc(100vh - 50px - 16px); /* Adjusted for footer */
     }
     .main-content {

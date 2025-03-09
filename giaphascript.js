@@ -1,82 +1,64 @@
-document.addEventListener('DOMContentLoaded', function() {
-    console.log("giaphascript.js loaded");
-
-    function checkPassword() {
-        console.log("checkPassword called");
-        const passwordInput = document.getElementById('password-input').value;
-        const correctPassword = "Thuy";
-        if (passwordInput === correctPassword) {
-            console.log("Password correct, preparing to load tree");
-            document.getElementById('login-panel').style.display = 'none';
-            document.getElementById('tree-content').style.display = 'block';
-            document.getElementById('control-panel').style.display = 'block';
-            document.getElementById('subtree-input').style.display = 'block';
-            loadTreeWhenReady();
-        } else {
-            alert('Incorrect password');
-            console.log("Incorrect password entered");
-        }
+function checkPassword() {
+    const passwordInput = document.getElementById('password-input').value;
+    if (passwordInput === "Thuy") {
+        console.log("Password correct");
+        document.getElementById('login-panel').style.display = 'none';
+        document.getElementById('tree-content').style.display = 'block';
+        document.getElementById('control-panel').style.display = 'block';
+        document.getElementById('subtree-input').style.display = 'block';
+        loadTreeWhenReady();
+    } else {
+        alert('Incorrect password');
     }
+}
 
-    function loadTreeWhenReady() {
-        if (window.state && window.state.divs && window.state.neighbours) {
-            console.log("window.state initialized, drawing tree");
+function loadTreeWhenReady() {
+    console.log("loadTreeWhenReady, window.state:", window.state);
+    if (window.state && window.state.divs && window.state.neighbours) {
+        console.log("Drawing tree");
+        try {
+            drawTree(window.state.divs, window.state.neighbours);
+        } catch (error) {
+            console.error("Draw tree error:", error);
+            alert("Failed to load tree: " + error.message);
+        }
+    } else {
+        console.log("Awaiting initialization");
+        window.addEventListener('familyTreeInitialized', function handler() {
+            console.log("Initialized, drawing tree");
             try {
                 drawTree(window.state.divs, window.state.neighbours);
             } catch (error) {
-                console.error("Error drawing tree:", error);
+                console.error("Draw tree error:", error);
+                alert("Failed to load tree: " + error.message);
             }
+            window.removeEventListener('familyTreeInitialized', handler);
+        }, { once: true });
+    }
+}
+
+window.loadSubtree = function() {
+    const personId = document.getElementById('person-id-form').value || document.getElementById('person-id').value;
+    console.log('Loading subtree for ID:', personId);
+    if (!personId) {
+        alert("Please enter a valid Person ID!");
+        return;
+    }
+    console.log("datajs IDs:", datajs.map(p => p["ID"]));
+    if (datajs.some(p => p["ID"] === String(personId))) {
+        console.log("ID found:", personId);
+        if (window.state && window.state.divs && window.state.neighbours) {
+            changeRoot(personId);
+            redraw();
         } else {
-            console.log("window.state not initialized yet, waiting...");
             window.addEventListener('familyTreeInitialized', function handler() {
-                console.log("Family tree initialized, drawing tree");
-                try {
-                    drawTree(window.state.divs, window.state.neighbours);
-                } catch (error) {
-                    console.error("Error drawing tree:", error);
-                }
+                changeRoot(personId);
+                redraw();
                 window.removeEventListener('familyTreeInitialized', handler);
             }, { once: true });
         }
-    }
-
-    window.checkPassword = checkPassword;
-
-    window.loadSubtree = function() {
-        const personId = document.getElementById('person-id-form').value || document.getElementById('person-id').value;
-        console.log('Loading subtree for ID:', personId);
-        if (!personId) {
-            alert("Please enter a valid Person ID!");
-            return;
-        }
-        if (datajs.some(p => p["ID"] === personId)) {
-            if (window.state && window.state.divs && window.state.neighbours) {
-                changeRoot(personId);
-                redraw();
-            } else {
-                console.log("window.state not initialized, waiting for subtree...");
-                window.addEventListener('familyTreeInitialized', function handler() {
-                    changeRoot(personId);
-                    redraw();
-                    window.removeEventListener('familyTreeInitialized', handler);
-                }, { once: true });
-            }
-        } else {
-            alert("Person ID not found!");
-            console.error("No person found for ID:", personId);
-        }
-    };
-
-    const passwordInput = document.getElementById('password-input');
-    if (passwordInput) {
-        console.log("Password input found, attaching listener");
-        passwordInput.addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                console.log("Enter key pressed");
-                checkPassword();
-            }
-        });
     } else {
-        console.error("Password input not found");
+        alert("Person ID not found!");
+        console.error("No person found for ID:", personId);
     }
-});
+};
