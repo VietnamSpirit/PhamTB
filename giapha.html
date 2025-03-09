@@ -24,6 +24,7 @@
             <p>Enter password to view the family tree (Nhập mật khẩu để xem gia phả):</p>
             <input type="password" id="password-input" onkeydown="if (event.key === 'Enter') checkPassword()">
             <button onclick="checkPassword()">Submit</button>
+            
             <div id="subtree-input" style="display: none;">
                 <p>Or enter a Person ID for a subtree:</p>
                 <input type="number" id="person-id" placeholder="Person ID" min="0">
